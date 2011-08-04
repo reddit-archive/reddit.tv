@@ -156,6 +156,14 @@ form label {
     text-align: center;
 }
 
+#also-like {
+    margin-top: 15px;
+    margin-left: 100px;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+
 #vote-button {
     padding-top: 6px;
     text-align: center;

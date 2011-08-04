@@ -57,6 +57,12 @@ body {
     color: #333;
 }
 
+#also-like {
+    background: #222;
+    border: 1px solid #333;
+    color: #444;
+}
+
 #vote-button {
     color: #5f99cf;
 }

@@ -16,6 +16,7 @@ var channels = [
 
     ,{"channel": "Music", "feed": "/r/music/.json"}
     ,{"channel": "Listen", "feed": "/r/listentothis/.json"}
+    ,{"channel": "Radio", "feed": "/r/radioreddit/search/.json?q=site%3A{youtube.com}+reddit%3A{radioreddit}&sort=relevance"}
 
     ,{"channel": "Lectures", "feed": "/r/lectures/.json"}
     ,{"channel": "TED", "feed": "/domain/ted.com/.json"}
@@ -160,10 +161,12 @@ function loadTheme(id) {
 }
 
 function displayChannels() {
-    var $channel_list = $('#channel-list'), $list = $('<ul></ul>');
+    var $channel_list = $('#channel-list'), $list = $('<ul></ul>'), title;
     $channel_list.html($list);
     for(var x in channels){
-	$('#channel-list>ul').append('<li id="channel-'+x+'" title="'+channels[x].feed.slice(0,-5)+'">'+channels[x].channel+'</li>');
+	title = channels[x].feed.split("/");
+	title = "/"+title[1]+"/"+title[2];
+	$('#channel-list>ul').append('<li id="channel-'+x+'" title="'+title+'">'+channels[x].channel+'</li>');
 	$('#channel-'+x).bind(
 			       'click'
 	                       ,{channel: channels[x].channel, feed: channels[x].feed}
@@ -176,7 +179,8 @@ function displayChannels() {
 }
 
 function loadChannel(channel, video_id) {
-    var last_req = cur_chan_req, this_chan = getChan(channel), $video_embed = $('#video-embed'), $video_title = $('#video-title');
+    var last_req = cur_chan_req, this_chan = getChan(channel), $video_embed = $('#video-embed'), $video_title = $('#video-title'), title;
+
     if(last_req !== null){
 	last_req.abort();
     }
@@ -189,7 +193,10 @@ function loadChannel(channel, video_id) {
     $('#vote-button').empty();
     $('#video-source').empty();
 
-    $video_title.html('Loading '+channels[this_chan].feed.slice(0,-5)+' ...');
+    title = channels[this_chan].feed.split("/");
+    title = "/"+title[1]+"/"+title[2];
+
+    $video_title.html('Loading '+title+' ...');
     $video_embed.addClass('loading');
     $video_embed.empty();
     
@@ -499,7 +506,7 @@ function getFeedName(channel) {
 
 function getChanName(feed) {
     for(var x in channels){
-        if(channels[x].feed === feed){
+        if(channels[x].feed.indexOf(feed) !== -1){
             return channels[x].channel;
         }
     }
@@ -539,12 +546,12 @@ function checkAnchor(){
         }else{
             var anchor = currentAnchor.substring(1);
 	    var parts = anchor.split("/"); // #/r/videos/id
-	    var feed = "/"+parts[1]+"/"+parts[2]+"/.json";
+	    var feed = "/"+parts[1]+"/"+parts[2]+"/";
 	    var new_chan_name = getChanName(feed);
 	    var new_chan_num = getChan(new_chan_name);
 	    if(new_chan_name !== undefined && new_chan_num !== cur_chan){
 		if(parts[3] === undefined || parts[3] === null || parts[3] === ''){
-                    loadChannel(new_chan_name, null);
+		    loadChannel(new_chan_name, null);
 		}else{
 		    loadChannel(new_chan_name, parts[3]);
 		}
