@@ -7,7 +7,7 @@ var channels = [
     //,{"channel": "Funny", "feed": "/r/funny/.json"}
 
     ,{"channel": "Docs", "feed": "/r/documentaries/.json"}
-    ,{"channel": "Politics", "feed": "/r/politics/.json"}
+    ,{"channel": "Politics", "feed": "/r/politics/search/.json?q=reddit%3Apolitics+site%3Ayoutube.com&sort=relevance"}
 
     ,{"channel": "Gaming", "feed": "/r/gaming/.json"}
     //,{"channel": "Science", "feed": "/r/science/.json"}
@@ -220,6 +220,10 @@ function loadChannel(channel, video_id) {
 			videos[this_chan].video.push(data.data.children[x].data);
                     }
 		}
+		
+		//remove duplicates
+		videos[this_chan].video = filterVideoDupes(videos[this_chan].video);
+
 		if(videos[this_chan].video.length > 0){
 		    if(video_id !== null){
 			loadVideoById(video_id);
@@ -374,26 +378,25 @@ function loadVideo(video) {
 			       + videos[this_chan].video[selected_video].title_unesc + '</a>');
 	$('#video-embed').html(embed);
 	
-	/*
-	var reddit_string="<iframe src=\"http://www.reddit.com/static/button/button1.html?width=120";
-	//reddit_string += '&id=' + videos[cur_chan].video[cur_video].id;
-        reddit_string += '&url=' + encodeURIComponent(videos[cur_chan].video[cur_video].url.replace(/&amp;/g, "&"));
-        reddit_string += '&title=' + encodeURIComponent($.unescapifyHTML(videos[cur_chan].video[cur_video].title));
-        //reddit_string += '&sr=' + encodeURIComponent($.unescapifyHTML(videos[cur_chan].video[cur_video].subreddit));
-        //reddit_string += '&css=' + encodeURIComponent(window.reddit_css);
-        //reddit_string += '&bgcolor=' + encodeURIComponent(window.reddit_bgcolor); 
-        //reddit_string += '&bordercolor=' + encodeURIComponent(window.reddit_bordercolor); 
-        reddit_string += '&newwindow=' + encodeURIComponent('1');
-        reddit_string += "\" height=\"22\" width=\"150\" scrolling='no' frameborder='0'></iframe>";
-	*/
 
 	var score = videos[this_chan].video[selected_video].score;
 	var num_comments = videos[this_chan].video[selected_video].num_comments;
+	
 	var reddit_string = '<a href="'+redditlink+'" target="_blank">'
 	    + score + ((score === 1) ? ' vote' : ' votes')
 	    + ' &bull; '
 	    + num_comments + ((num_comments === 1) ? ' comment' : ' comments')
 	    + '</a>';
+
+	/*
+	console.log("video URL: " + videos[cur_chan].video[cur_video].url);
+	console.log("as send to reddit: " + encodeURIComponent(videos[cur_chan].video[cur_video].url));
+
+	var reddit_string = redditButton(
+	    encodeURIComponent(videos[cur_chan].video[cur_video].url),
+	    encodeURIComponent($.unescapifyHTML(videos[cur_chan].video[cur_video].title))
+	);
+	*/
 
 	var $vote_button = $('#vote-button');
 	$vote_button.stop(true,true).fadeOut('slow', function() {
@@ -450,6 +453,41 @@ function loadVideoById(video_id) {
 
 function isVideo(video_domain) {
     return (domains.indexOf(video_domain) !== -1);
+}
+
+//http://dreaminginjavascript.wordpress.com/2008/08/22/eliminating-duplicates/
+function filterVideoDupes(arr){
+    var i, out=[], obj={}, original_length = arr.length;
+    
+    //work from last video to first video (so hottest dupe is left standing)
+    //first pass on media embed
+    for (i=arr.length-1; i>=0; i--) {
+	if(typeof obj[arr[i].media_embed.content] != 'undefined'){
+	    delete obj[arr[i].media_embed.content];
+	}
+	obj[arr[i].media_embed.content]=arr[i];
+    }
+    for (i in obj) {
+	out.push(obj[i]);
+    }
+
+    arr = out.reverse()
+    out = [];
+    obj = {};
+
+    //second pass on url
+    for (i=arr.length-1; i>=0; i--) {
+	if(typeof obj[arr[i].url] != 'undefined'){
+            delete obj[arr[i].url];
+        }
+        obj[arr[i].url]=arr[i];
+    }
+    for (i in obj) {
+        out.push(obj[i]);
+    }
+
+    console.log('Removed '+ (original_length - out.length) + ' dupes.');
+    return out.reverse();
 }
 
 function findVideoById(chan, id) {
@@ -567,6 +605,23 @@ function checkAnchor(){
         return false;
     }
 }
+
+/* Reddit Functions */
+function redditButton(permalink, title){
+    var reddit_string="<iframe src=\"http://www.reddit.com/static/button/button1.html?width=120";
+    //reddit_string += '&id=' + videos[cur_chan].video[cur_video].id;
+    reddit_string += '&url=' + permalink;
+    reddit_string += '&title=' + title;
+    //reddit_string += '&sr=' + encodeURIComponent($.unescapifyHTML(videos[cur_chan].video[cur_video].subreddit));
+    //reddit_string += '&css=' + encodeURIComponent(window.reddit_css);
+    //reddit_string += '&bgcolor=' + encodeURIComponent(window.reddit_bgcolor);
+    //reddit_string += '&bordercolor=' + encodeURIComponent(window.reddit_bordercolor);
+    reddit_string += '&newwindow=' + encodeURIComponent('1');
+    reddit_string += "\" height=\"22\" width=\"150\" scrolling='no' frameborder='0'></iframe>";
+    
+    return reddit_string;
+}
+
 
 /* Video Functions */
 /* YouTube */
