@@ -386,6 +386,8 @@ function loadVideo(video) {
         $video_embed.html(embed);
         $video_embed.removeClass('loading');
 
+        addListeners(globals.videos[this_chan].video[selected_video].media.type);
+
         var score = globals.videos[this_chan].video[selected_video].score;
         var num_comments = globals.videos[this_chan].video[selected_video].num_comments;
 	
@@ -571,6 +573,15 @@ function prepEmbed(embed, type){
         return embed;
     case 'youtube.com':
         return youtube.prepEmbed(embed);
+    case 'vimeo.com':
+        return vimeo.prepEmbed(embed);
+    }
+}
+
+function addListeners(type){
+    switch(type){
+    case 'vimeo.com':
+        vimeo.addListeners();
     }
 }
 
@@ -596,6 +607,9 @@ function togglePlay(){
     switch(globals.videos[globals.cur_chan].video[globals.cur_video].media.type){
     case 'youtube.com':
         youtube.togglePlay();
+        break;
+    case 'vimeo.com':
+        vimeo.togglePlay();
         break;
     }
 }
