@@ -7,13 +7,11 @@ var globals = {
         ,{"channel": "Videos", "feed": "/r/videos/.json"}
         ,{"channel": "YouTube", "feed": "/domain/youtube.com/.json"}
         ,{"channel": "WTF", "feed": "/r/wtf/.json"}
-        //,{"channel": "Funny", "feed": "/r/funny/.json"}
         
         ,{"channel": "Docs", "feed": "/r/documentaries/.json"}
         ,{"channel": "Politics", "feed": "/r/politics/search/.json?q=reddit%3Apolitics+site%3Ayoutube.com&sort=relevance"}
         
         ,{"channel": "Gaming", "feed": "/r/gaming/.json"}
-        //,{"channel": "Science", "feed": "/r/science/.json"}
         ,{"channel": "Geek", "feed": "/r/geek/.json"}
         ,{"channel": "AWW", "feed": "/r/aww/.json"}
         
@@ -105,8 +103,10 @@ $().ready(function(){
         this.scrollLeft -= (delta * 30);
     });
     $(document).keydown(function (e) {
-        var keyCode = e.keyCode || e.which, arrow = {left: 37, up: 38, right: 39, down: 40 };
-        switch (keyCode) {
+        consoleLog(e.target);
+        if(!$(e.target).is('form>*')) {            
+            var keyCode = e.keyCode || e.which, arrow = {left: 37, up: 38, right: 39, down: 40 };
+            switch (keyCode) {
             case arrow.left:  case 72: // h
                 loadVideo('prev');
                 break;
@@ -134,7 +134,13 @@ $().ready(function(){
             case 67:
                 window.open($('#vote-button>a').attr('href'), '_blank');
                 break;
+            }
         }
+    });
+
+    /* clear add sr on click */
+    $('#channel-name').click(function(){
+        $(this).val('');
     });
 
     /* Anchor Checker */
@@ -557,6 +563,7 @@ function getChanName(feed) {
             return globals.channels[x].channel;
         }
     }
+    return false;
 }
 
 function getChan(channel) {
@@ -565,6 +572,7 @@ function getChan(channel) {
             return x;
         }
     }
+    return false;
 }
 
 function prepEmbed(embed, type){
@@ -614,6 +622,30 @@ function togglePlay(){
     }
 }
 
+function addChannel(subreddit){
+    if(!subreddit){
+        subreddit = encodeURIComponent($('#channel-name').val());
+    }
+    if(!getChan(subreddit)){
+        var feed = "/r/"+subreddit+"/.json";
+        globals.channels.push({"channel": subreddit, "feed": feed});
+        var x = globals.channels.length - 1;
+        var title = globals.channels[x].feed.split("/");
+        title = "/"+title[1]+"/"+title[2];
+        $('#channel-list>ul').append('<li id="channel-'+x+'" title="'+title+'">'+globals.channels[x].channel.substr(0,7)+'</li>');
+        $('#channel-'+x).bind(
+            'click'
+            ,{channel: globals.channels[x].channel, feed: globals.channels[x].feed}
+            ,function(event) {
+                var parts = event.data.feed.split("/");
+                window.location.hash = "/"+parts[1]+"/"+parts[2]+"/";
+            }
+        );
+    }
+
+    return false;
+}
+
 /* Anchor Checker */
 //check fo anchor changes, if there are do stuff
 function checkAnchor(){
@@ -625,6 +657,10 @@ function checkAnchor(){
             var parts = anchor.split("/"); // #/r/videos/id
             var feed = "/"+parts[1]+"/"+parts[2]+"/";
             var new_chan_name = getChanName(feed);
+            if(!new_chan_name){
+                addChannel(parts[2]);
+                new_chan_name = getChanName(feed);
+            }
             var new_chan_num = getChan(new_chan_name);
             if(new_chan_name !== undefined && new_chan_num !== globals.cur_chan){
                 if(parts[3] === undefined || parts[3] === null || parts[3] === ''){

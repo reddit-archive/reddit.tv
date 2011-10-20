@@ -19,7 +19,7 @@ body {
 }
 
 #channel-list {
-    padding-top: 55px;
+    padding-top: 50px;
 }
 
 #about {
@@ -33,6 +33,7 @@ body {
     border-radius: 15px;
     -moz-border-radius: 15px;
     width: 670px;
+    min-height: 590px;
     float: left;
 }
 
@@ -102,6 +103,10 @@ body {
     cursor: pointer;
 }
 
+#channel-list {
+    font-size: small;
+}
+
 #channel-list ul { /* remove bullets and list indents */
     list-style: none;
     margin: 0;
@@ -115,6 +120,10 @@ body {
     cursor: pointer;
     border-radius: 10px 0 0 10px;
     -moz-border-radius: 10px 0 0 10px;
+}
+
+#add-channel {
+    margin-top: 15px;
 }
 
 #header {
