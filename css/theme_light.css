@@ -75,6 +75,17 @@ body {
     background-color: #cee3f8 !important;
 }
 
+#channel-name {
+    background: #EFEFFF;
+    color: gray;
+    border-color: #DDD}
+
+#channel-add {
+    background: #EFEFFF;
+    color: gray;
+    border-color: #DDD;
+}
+
 #fill-nav {
     background-color: white;
 }

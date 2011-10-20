@@ -103,7 +103,6 @@ $().ready(function(){
         this.scrollLeft -= (delta * 30);
     });
     $(document).keydown(function (e) {
-        consoleLog(e.target);
         if(!$(e.target).is('form>*')) {            
             var keyCode = e.keyCode || e.which, arrow = {left: 37, up: 38, right: 39, down: 40 };
             switch (keyCode) {
@@ -223,6 +222,7 @@ function loadChannel(channel, video_id) {
                 for(var x in data.data.children){
                     if(!isEmpty(data.data.children[x].data.media_embed)
                        && isVideo(data.data.children[x].data.media.type)
+                       && (data.data.children[x].data.score > 1)
                       )
                     {
                         globals.videos[this_chan].video.push(data.data.children[x].data);
@@ -625,6 +625,7 @@ function togglePlay(){
 function addChannel(subreddit){
     if(!subreddit){
         subreddit = encodeURIComponent($('#channel-name').val());
+        var click = true;
     }
     if(!getChan(subreddit)){
         var feed = "/r/"+subreddit+"/.json";
@@ -632,7 +633,10 @@ function addChannel(subreddit){
         var x = globals.channels.length - 1;
         var title = globals.channels[x].feed.split("/");
         title = "/"+title[1]+"/"+title[2];
-        $('#channel-list>ul').append('<li id="channel-'+x+'" title="'+title+'">'+globals.channels[x].channel.substr(0,7)+'</li>');
+        var display_title = globals.channels[x].channel.length > 9 ? 
+            globals.channels[x].channel.replace(/[aeiou]/gi,'').substr(0,8) :
+            globals.channels[x].channel;
+        $('#channel-list>ul').append('<li id="channel-'+x+'" title="'+title+'">'+display_title+'</li>');
         $('#channel-'+x).bind(
             'click'
             ,{channel: globals.channels[x].channel, feed: globals.channels[x].feed}
@@ -641,6 +645,9 @@ function addChannel(subreddit){
                 window.location.hash = "/"+parts[1]+"/"+parts[2]+"/";
             }
         );
+        if(click){
+            $('#channel-'+x).click();
+        }
     }
 
     return false;
