@@ -1,26 +1,29 @@
 /* Globals */
-var globals = {
+var search_str = "search/.json?q=%28site%3Ayoutube.com+OR+site%3Avimeo.com%29&restrict_sr=on&sort=relevance";
 
+var globals = {
     /* Channels Object */
     channels: [
-        {"channel": "All", "feed": "/r/all/.json"}
+        {"channel": "All", "feed": "/r/all/"+search_str}
         ,{"channel": "Videos", "feed": "/r/videos/.json"}
-        ,{"channel": "YouTube", "feed": "/domain/youtube.com/.json"}
-        ,{"channel": "WTF", "feed": "/r/wtf/.json"}
         
-        ,{"channel": "Docs", "feed": "/r/documentaries/.json"}
-        ,{"channel": "Politics", "feed": "/r/politics/search/.json?q=reddit%3Apolitics+site%3Ayoutube.com&sort=relevance"}
-        
+        ,{"channel": "Funny", "feed": "/r/funny/"+search_str}
+
+        ,{"channel": "Tech", "feed": "/r/technology/"+search_str}
         ,{"channel": "Gaming", "feed": "/r/gaming/.json"}
-        ,{"channel": "Geek", "feed": "/r/geek/.json"}
-        ,{"channel": "AWW", "feed": "/r/aww/.json"}
+        ,{"channel": "AWW", "feed": "/r/aww/"+search_str}
+        ,{"channel": "WTF", "feed": "/r/wtf/.json"}
         
         ,{"channel": "Music", "feed": "/r/music/.json"}
         ,{"channel": "Listen", "feed": "/r/listentothis/.json"}
-        ,{"channel": "Radio", "feed": "/r/radioreddit/search/.json?q=site%3A{youtube.com}+reddit%3A{radioreddit}&sort=relevance"}
-        
-        ,{"channel": "Lectures", "feed": "/r/lectures/.json"}
+        //,{"channel": "Radio", "feed": "/r/radioreddit/"+search_str}
+
+        ,{"channel": "TIL", "feed": "/r/todayilearned/"+search_str}
+        ,{"channel": "PBS", "feed": "/domain/video.pbs.org/.json"}
         ,{"channel": "TED", "feed": "/domain/ted.com/.json"}
+
+        ,{"channel": "Politics", "feed": "/r/politics/"+search_str}
+        ,{"channel": "Atheism", "feed": "/r/atheism/"+search_str}
         
         ,{"channel": "Sports", "feed": "/r/sports/.json"}
     ]
@@ -420,7 +423,7 @@ function loadVideo(video) {
 
         var video_source_text = 'Source: '
             + '<a href="' + globals.videos[this_chan].video[selected_video].url + '" target="_blank">'
-            + globals.videos[this_chan].video[selected_video].media.oembed.provider_name
+            + globals.videos[this_chan].video[selected_video].domain
             + '</a>';
         var $video_source = $('#video-source');
         $video_source.stop(true,true).fadeOut('slow', function() {
@@ -528,8 +531,10 @@ function getThumbnailUrl(chan, video_id) {
     if (sfwCheck(video_id, chan)) {
         return 'img/nsfw.png';
     }
-    else if (globals.videos[chan].video[video_id].media.oembed.thumbnail_url) {
-        return globals.videos[chan].video[video_id].media.oembed.thumbnail_url;
+    else if (globals.videos[chan].video[video_id].media.oembed) {
+        return globals.videos[chan].video[video_id].media.oembed.thumbnail_url !== undefined ? 
+            globals.videos[chan].video[video_id].media.oembed.thumbnail_url :
+            'img/noimage.png';
     }
     else {
         return 'img/noimage.png';

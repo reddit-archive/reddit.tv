@@ -1,4 +1,6 @@
 body {
+    margin: 0;
+    padding: 0;
     font-family: verdana,arial,helvetica,sans-serif;
 }
 
@@ -140,12 +142,14 @@ body {
 
 #header {
     position: relative;
+    margin-top: 3px;
     margin-left: 100px;
     padding: 0 15px;
     font-size: small;
 }
 
 #options {
+    font-size: x-small;
     position: absolute;
     bottom: 0;
     right: 15px;
