@@ -16,7 +16,6 @@ var globals = {
         
         ,{"channel": "Music", "feed": "/r/music/.json"}
         ,{"channel": "Listen", "feed": "/r/listentothis/.json"}
-        //,{"channel": "Radio", "feed": "/r/radioreddit/"+search_str}
 
         ,{"channel": "TIL", "feed": "/r/todayilearned/"+search_str}
         ,{"channel": "PBS", "feed": "/domain/video.pbs.org/.json"}
@@ -52,6 +51,7 @@ var globals = {
     ]
 
     ,videos: []
+    ,user_channels: []
     ,cur_video: 0
     ,cur_chan: 0
     ,cur_chan_req: null
@@ -151,7 +151,8 @@ $().ready(function(){
 
 /* Main Functions */
 function loadSettings() {
-    var auto_cookie = $.cookie('auto'), sfw_cookie = $.cookie('sfw'), theme_cookie = $.cookie('theme');
+    var channels_cookie = $.parseJSON($.cookie('user_channels')), auto_cookie = $.cookie('auto'), sfw_cookie = $.cookie('sfw'), theme_cookie = $.cookie('theme');
+
     if(auto_cookie !== null && auto_cookie !== globals.auto){
         globals.auto = (auto_cookie === 'true') ? true : false;
         $('#auto').attr('checked', globals.auto);
@@ -163,6 +164,12 @@ function loadSettings() {
     if(theme_cookie !== null && theme_cookie !== globals.theme){
         globals.theme = theme_cookie;
     }
+    if(channels_cookie !== null && channels_cookie !== globals.user_channels){
+        globals.user_channels = channels_cookie;
+        for(var x in globals.user_channels){
+            globals.channels.push(globals.user_channels[x]);
+        }
+    }
 }
 
 function loadTheme(id) {
@@ -171,21 +178,44 @@ function loadTheme(id) {
 }
 
 function displayChannels() {
-    var $channel_list = $('#channel-list'), $list = $('<ul></ul>'), title;
+    var $channel_list = $('#channel-list'), $list = $('<ul></ul>');
     $channel_list.html($list);
     for(var x in globals.channels){
-        title = globals.channels[x].feed.split("/");
-        title = "/"+title[1]+"/"+title[2];
-        $('#channel-list>ul').append('<li id="channel-'+x+'" title="'+title+'">'+globals.channels[x].channel+'</li>');
-        $('#channel-'+x).bind(
-            'click'
-            ,{channel: globals.channels[x].channel, feed: globals.channels[x].feed}
-            ,function(event) {
-                var parts = event.data.feed.split("/");
-                window.location.hash = "/"+parts[1]+"/"+parts[2]+"/";
-            }
-        );
+        displayChannel(x);
     }
+}
+
+function displayChannel(chan){
+    var title, display_title, class_str='', remove_str='';
+
+    title = globals.channels[chan].feed.split("/");
+    title = "/"+title[1]+"/"+title[2];
+
+    display_title = globals.channels[chan].channel.length > 9 ?
+        globals.channels[chan].channel.replace(/[aeiou]/gi,'').substr(0,8) :
+        globals.channels[chan].channel;
+
+    if(isUserChan(globals.channels[chan].channel)){
+        class_str = 'class="user-chan"';
+        remove_str = '<a id="remove-'+chan+'" class="remove-chan">-</a>';
+    }
+
+    $('#channel-list>ul').append('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'>'+display_title+remove_str+'</li>');
+    $('#channel-'+chan).bind(
+            'click'
+        ,{channel: globals.channels[chan].channel, feed: globals.channels[chan].feed}
+        ,function(event) {
+            var parts = event.data.feed.split("/");
+            window.location.hash = "/"+parts[1]+"/"+parts[2]+"/";
+        }
+    );
+    $('#remove-'+chan).bind(
+            'click'
+        ,{channel: chan}
+        ,function(event) {
+            removeChan(event.data.channel);
+        }
+    );
 }
 
 function loadChannel(channel, video_id) {
@@ -504,7 +534,6 @@ function filterVideoDupes(arr){
         out.push(obj[i]);
     }
 
-    consoleLog('Removed '+ (original_length - out.length) + ' dupes.');
     return out.reverse();
 }
 
@@ -543,14 +572,34 @@ function getThumbnailUrl(chan, video_id) {
 
 function chgChan(up_down) {
     var old_chan = globals.cur_chan, this_chan = old_chan;
+
     if(up_down === 'up' && this_chan > 0){
         this_chan--;
+        while(globals.channels[this_chan].channel == '' && this_chan > 0){
+            this_chan--;
+        }
+    }else if(up_down === 'up'){
+        this_chan = globals.channels.length-1;
+        while(globals.channels[this_chan].channel == '' && this_chan > 0){
+            this_chan--;
+        }
     }else if(up_down !== 'up' && this_chan < globals.channels.length-1){
         this_chan++;
+        while(globals.channels[this_chan].channel == ''){
+            this_chan++;
+        }
+    }else if(up_down !== 'up'){
+        this_chan = 0;
+        while(globals.channels[this_chan].channel == ''){
+            this_chan++;
+        }
     }
-    if(this_chan !== old_chan){
+
+    if(this_chan !== old_chan && globals.channels[this_chan].channel !== ''){
         var parts = globals.channels[this_chan].feed.split("/");
         window.location.hash = "/"+parts[1]+"/"+parts[2]+"/";
+    }else if(this_chan !== old_chan){
+        globals.cur_chan = this_chan;
     }
 }
 
@@ -575,6 +624,24 @@ function getChan(channel) {
     for(var x in globals.channels){
         if(globals.channels[x].channel === channel || globals.channels[x].feed === channel){
             return x;
+        }
+    }
+    return false;
+}
+
+function getUserChan(channel) {
+    for(var x in globals.channels){
+        if(globals.user_channels[x].channel === channel || globals.user_channels[x].feed === channel){
+            return x;
+        }
+    }
+    return false;
+}
+
+function isUserChan(channel){
+    for(var x in globals.user_channels){
+        if(globals.user_channels[x].channel === channel){
+            return true;
         }
     }
     return false;
@@ -634,28 +701,36 @@ function addChannel(subreddit){
     }
     if(!getChan(subreddit)){
         var feed = "/r/"+subreddit+"/.json";
-        globals.channels.push({"channel": subreddit, "feed": feed});
+
+        var c_data = {"channel": subreddit, "feed": feed};
+        globals.channels.push(c_data);
+        globals.user_channels.push(c_data);
+        
+        $.cookie('user_channels', JSON.stringify(globals.user_channels));
+
         var x = globals.channels.length - 1;
-        var title = globals.channels[x].feed.split("/");
-        title = "/"+title[1]+"/"+title[2];
-        var display_title = globals.channels[x].channel.length > 9 ? 
-            globals.channels[x].channel.replace(/[aeiou]/gi,'').substr(0,8) :
-            globals.channels[x].channel;
-        $('#channel-list>ul').append('<li id="channel-'+x+'" title="'+title+'">'+display_title+'</li>');
-        $('#channel-'+x).bind(
-            'click'
-            ,{channel: globals.channels[x].channel, feed: globals.channels[x].feed}
-            ,function(event) {
-                var parts = event.data.feed.split("/");
-                window.location.hash = "/"+parts[1]+"/"+parts[2]+"/";
-            }
-        );
+        displayChannel(x);
+
         if(click){
             $('#channel-'+x).click();
         }
     }
 
     return false;
+}
+
+function removeChan(chan){ //by index (integer)
+    var idx = getUserChan(globals.channels[chan].channel);
+    if(idx){
+        if(chan == globals.cur_chan){
+            chgChan('up');
+        }
+        $('#channel-'+chan).remove();
+        globals.user_channels.splice(idx, 1);
+
+        $.cookie('user_channels', JSON.stringify(globals.user_channels));
+        globals.channels[chan] = {'channel': '', 'feed': ''};
+    }
 }
 
 /* Anchor Checker */
@@ -713,7 +788,7 @@ function redditButton(permalink, title){
 //safe console log
 function consoleLog(string){
     if(window.console) {
-        console.log(string);
+        consol.log(string);
     }
 }
 

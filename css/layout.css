@@ -240,6 +240,17 @@ a.nav-button:hover {
     text-decoration: none;
 }
 
+.user-chan:hover .remove-chan {
+    visibility: visible;
+}
+
+.remove-chan {
+    float: right;
+    visibility: hidden;
+    padding-right: 0;
+    margin-right: -8px;
+}
+
 .loading {
     background-repeat: no-repeat;
     background-position: center center;
