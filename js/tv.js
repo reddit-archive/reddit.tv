@@ -1,5 +1,5 @@
 /* Globals */
-var search_str = "search/.json?q=%28site%3Ayoutube.com+OR+site%3Avimeo.com%29&restrict_sr=on&sort=relevance";
+var search_str = "search/.json?q=%28site%3Ayoutube.com+OR+site%3Avimeo.com%29&restrict_sr=on&sort=relevance&limit=100";
 
 var globals = {
     /* Channels Object */
@@ -29,10 +29,10 @@ var globals = {
     
     /* Video Domains */
     ,domains: [
-        '5min.com', 'abcnews.go.com', 'animoto.com', 'atom.com',
+        '5min.com', 'abcnews.go.com', 'animal.discovery.com', 'animoto.com', 'atom.com',
         'bambuser.com', 'bigthink.com', 'blip.tv', 'break.com',
 	'cbsnews.com', 'cnbc.com', 'cnn.com', 'colbertnation.com', 'collegehumor.com',
-	'comedycentral.com', 'crackle.com', 'dailymotion.com',
+	'comedycentral.com', 'crackle.com', 'dailymotion.com', 'dsc.discovery.com', 'discovery.com',
 	'dotsub.com', 'edition.cnn.com', 'escapistmagazine.com', 'espn.go.com',
 	'fancast.com', 'flickr.com', 'fora.tv', 'foxsports.com',
 	'funnyordie.com', 'gametrailers.com', 'godtube.com', 'howcast.com', 'hulu.com',
@@ -45,7 +45,7 @@ var globals = {
 	'spike.com', 'teachertube.com', 'techcrunch.tv', 'ted.com',
 	'thedailyshow.com', 'theonion.com', 'traileraddict.com', 'trailerspy.com',
 	'trutv.com', 'twitvid.com', 'ustream.com', 'viddler.com', 'video.google.com',
-	'video.pbs.org', 'video.yahoo.com', 'vids.myspace.com', 'vimeo.com',
+	'video.nationalgeographic.com', 'video.pbs.org', 'video.yahoo.com', 'vids.myspace.com', 'vimeo.com',
 	'wordpress.tv', 'worldstarhiphop.com', 'xtranormal.com',
 	'youtube.com', 'zapiks.com'
     ]
@@ -191,8 +191,8 @@ function displayChannel(chan){
     title = globals.channels[chan].feed.split("/");
     title = "/"+title[1]+"/"+title[2];
 
-    display_title = globals.channels[chan].channel.length > 9 ?
-        globals.channels[chan].channel.replace(/[aeiou]/gi,'').substr(0,8) :
+    display_title = globals.channels[chan].channel.length > 8 ?
+        globals.channels[chan].channel.replace(/[aeiou]/gi,'').substr(0,7) :
         globals.channels[chan].channel;
 
     if(isUserChan(globals.channels[chan].channel)){
@@ -410,6 +410,8 @@ function loadVideo(video) {
         }
         globals.current_anchor = '#'+hash;
         window.location.hash = hash;
+
+        gaHashTrack();
 
         var $video_embed = $('#video-embed');
 
@@ -788,7 +790,7 @@ function redditButton(permalink, title){
 //safe console log
 function consoleLog(string){
     if(window.console) {
-        consol.log(string);
+        console.log(string);
     }
 }
 
@@ -808,3 +810,8 @@ Object.size = function(obj) {
     }
     return size;
 };
+
+/* analytics */
+function gaHashTrack(){
+    _gaq.push(['_trackPageview',location.pathname + location.hash]);
+}
