@@ -137,6 +137,7 @@ $().ready(function(){
                 window.open($('#vote-button>a').attr('href'), '_blank');
                 break;
             }
+            return false;
         }
     });
 
@@ -146,7 +147,13 @@ $().ready(function(){
     });
 
     /* Anchor Checker */
-    setInterval(checkAnchor, 100);
+    if("onhashchange" in window){
+        window.onhashchange = function(){
+            checkAnchor();
+        }
+    }else{
+        setInterval(checkAnchor, 100);
+    }
 });
 
 /* Main Functions */
@@ -813,5 +820,7 @@ Object.size = function(obj) {
 
 /* analytics */
 function gaHashTrack(){
-    _gaq.push(['_trackPageview',location.pathname + location.hash]);
+    if(_gaq){
+        _gaq.push(['_trackPageview',location.pathname + location.hash]);
+    }
 }
