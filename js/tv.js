@@ -148,9 +148,10 @@ $().ready(function(){
 
     /* Anchor Checker */
     if("onhashchange" in window){
+        checkAnchor(); //perform initial check if hotlinked
         window.onhashchange = function(){
             checkAnchor();
-        }
+        };
     }else{
         setInterval(checkAnchor, 100);
     }
