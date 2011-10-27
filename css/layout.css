@@ -40,10 +40,10 @@ body {
 }
 
 #video-embed {
-    padding: 15px 15px 0px 15px;
+    padding: 0px 15px 0px 15px;
     text-align: center;
     min-width: 640px;
-    min-height: 365px;
+    min-height: 480px;
 }
 
 #video-source {
@@ -60,7 +60,7 @@ body {
     margin-right: auto !important;
     text-align: center !important;
     min-width: 640px !important;
-    min-height: 365px !important;
+    min-height: 480px !important;
 }
 
 #video-title {
@@ -68,7 +68,7 @@ body {
     line-height: 12px;
     border-radius: 15px 15px 0 0;
     -moz-border-radius: 15px 15px 0 0;
-    padding: 12px 15px;
+    padding: 12px 15px 6px 15px;
     white-space: wrap;
 }
 

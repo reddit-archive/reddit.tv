@@ -24,6 +24,11 @@ var youtube = {
         }
     }
 
+    ,errorListener: function(error){
+        consoleLog('youtube error received: '+error);
+        loadVideo('next');
+    }
+
     // prepares embed code for js api access
     ,prepEmbed: function(embed) {
         var js_str = 'version=3&enablejsapi=1&playerapiid=ytplayer';
@@ -41,4 +46,5 @@ var youtube = {
 function onYouTubePlayerReady(playerId) {
     youtube.obj = document.getElementById("ytplayer");
     youtube.obj.addEventListener("onStateChange", "youtube.stateListener", true);
+    youtube.obj.addEventListener("onError", "youtube.errorListener", true);
 }

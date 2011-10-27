@@ -427,6 +427,7 @@ function loadVideo(video) {
         $video_embed.addClass('loading');
         var embed = $.unescapifyHTML(globals.videos[this_chan].video[selected_video].media_embed.content);
         embed = prepEmbed(embed, globals.videos[this_chan].video[selected_video].media.type);
+        embed = prepEmbed(embed, 'size');
 
         var redditlink = 'http://reddit.com'+$.unescapifyHTML(globals.videos[this_chan].video[selected_video].permalink);
         $('#video-title').html('<a href="' + redditlink + '" target="_blank"'
@@ -665,7 +666,12 @@ function prepEmbed(embed, type){
         return youtube.prepEmbed(embed);
     case 'vimeo.com':
         return vimeo.prepEmbed(embed);
+    case 'size':
+        embed = embed.replace(/height\="(\d\w+)"/gi, 'height="480"');
+        embed = embed.replace(/width\="(\d\w+)"/gi, 'width="640"');
+        return embed;
     }
+    
 }
 
 function addListeners(type){

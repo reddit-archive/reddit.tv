@@ -14,12 +14,11 @@ body {
 }
 
 #video-title {
-    color: white;
-    background-color: #5f99cf;
+    color: #5f99cf;
 }
 
 #video-title a {
-    color: white;
+    color: #5f99cf;
 }
 
 #video-list {
