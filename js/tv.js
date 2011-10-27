@@ -268,6 +268,19 @@ function loadChannel(channel, video_id) {
                     {
                         globals.videos[this_chan].video.push(data.data.children[x].data);
                     }
+                    //if reddit's scrape didn't build the embed, built it ourself
+                    else if(data.data.children[x].data.domain == 'youtube.com'
+                            || data.data.children[x].data.domain == 'youtu.be'
+                           )
+                    {
+                        data.data.children[x].data.media_embed.content = youtube.createEmbed(
+                            data.data.children[x].data.url
+                        );
+                        if(data.data.children[x].data.media_embed.content){
+                            consoleLog(data.data.children[x].data);
+                            globals.videos[this_chan].video.push(data.data.children[x].data);
+                        }
+                    }
                 }
 
                 //remove duplicates
@@ -425,9 +438,15 @@ function loadVideo(video) {
 
         $video_embed.empty();
         $video_embed.addClass('loading');
+        
+        consoleLog('embed domain: '+globals.videos[this_chan].video[selected_video].domain);
+        consoleLog('embed content: '+globals.videos[this_chan].video[selected_video].media_embed.content);
+
         var embed = $.unescapifyHTML(globals.videos[this_chan].video[selected_video].media_embed.content);
-        embed = prepEmbed(embed, globals.videos[this_chan].video[selected_video].media.type);
+        embed = prepEmbed(embed, globals.videos[this_chan].video[selected_video].domain);
         embed = prepEmbed(embed, 'size');
+
+        consoleLog('embed prepped: '+embed);
 
         var redditlink = 'http://reddit.com'+$.unescapifyHTML(globals.videos[this_chan].video[selected_video].permalink);
         $('#video-title').html('<a href="' + redditlink + '" target="_blank"'
@@ -436,7 +455,7 @@ function loadVideo(video) {
         $video_embed.html(embed);
         $video_embed.removeClass('loading');
 
-        addListeners(globals.videos[this_chan].video[selected_video].media.type);
+        addListeners(globals.videos[this_chan].video[selected_video].domain);
 
         var score = globals.videos[this_chan].video[selected_video].score;
         var num_comments = globals.videos[this_chan].video[selected_video].num_comments;
@@ -571,7 +590,7 @@ function getThumbnailUrl(chan, video_id) {
     if (sfwCheck(video_id, chan)) {
         return 'img/nsfw.png';
     }
-    else if (globals.videos[chan].video[video_id].media.oembed) {
+    else if (globals.videos[chan].video[video_id].media) {
         return globals.videos[chan].video[video_id].media.oembed.thumbnail_url !== undefined ? 
             globals.videos[chan].video[video_id].media.oembed.thumbnail_url :
             'img/noimage.png';
@@ -662,7 +681,7 @@ function prepEmbed(embed, type){
     switch(type){
     default:
         return embed;
-    case 'youtube.com':
+    case 'youtube.com': case 'youtu.be':
         return youtube.prepEmbed(embed);
     case 'vimeo.com':
         return vimeo.prepEmbed(embed);
@@ -682,8 +701,8 @@ function addListeners(type){
 }
 
 function fillScreen() {
-    var fill_screen_domains = ['youtube.com'];
-    if(fill_screen_domains.indexOf(globals.videos[globals.cur_chan].video[globals.cur_video].media.type) !== -1){
+    var fill_screen_domains = ['youtube.com', 'youtu.be'];
+    if(fill_screen_domains.indexOf(globals.videos[globals.cur_chan].video[globals.cur_video].domain) !== -1){
         $object = $('#video-embed embed');
         $fill = $('#fill');
         $filloverlay = $('#fill-overlay');
@@ -700,8 +719,8 @@ function fillScreen() {
 }
 
 function togglePlay(){
-    switch(globals.videos[globals.cur_chan].video[globals.cur_video].media.type){
-    case 'youtube.com':
+    switch(globals.videos[globals.cur_chan].video[globals.cur_video].domain){
+    case 'youtube.com': case 'youtu.be':
         youtube.togglePlay();
         break;
     case 'vimeo.com':

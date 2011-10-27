@@ -29,13 +29,49 @@ var youtube = {
         loadVideo('next');
     }
 
+    ,createEmbed: function(url){
+        var ID, parts;
+
+        if(url.match(/youtu\.be/)){
+            parts = url.split("/");
+            ID = parts[3].substr(0,11);
+            consoleLog('youtu.be ID: '+ID);
+        }
+
+        if(url.match('youtube.com')){
+            if(url.match(/\?v\=/)){
+                parts = url.split('?v=');
+                ID = parts[1].substr(0,11);
+                consoleLog('youtube.com ID: '+ID);
+            }
+        }
+        
+        if(ID){
+
+            return "&lt;object width=\"600\" height=\"338\"&gt;&lt;param name=\"movie\" value=\"http://www.youtube.com/v/"
+            +ID+"?version=3&amp;feature=oembed\"&gt;&lt;/param&gt;&lt;param name=\"allowFullScreen\" value=\"true\"&gt;&lt;/param&gt;&lt;param name=\"allowscriptaccess\" value=\"always\"&gt;&lt;/param&gt;&lt;embed src=\"http://www.youtube.com/v/"+ID+"?version=3&amp;feature=oembed\" type=\"application/x-shockwave-flash\" width=\"600\" height=\"338\" allowscriptaccess=\"always\" allowfullscreen=\"true\"&gt;&lt;/embed&gt;&lt;/object&gt;";
+            
+/*
+            return '<object width="640" height="480">'
+                +'<param name="movie" value="http://www.youtube.com/v/'
+                +ID+'?version=3&amp;enablejsapi=1&amp;playerapiid=ytplayer&amp;feature=oembed">'
+                +'<param name="allowFullScreen" value="true">'
+                +'<param name="allowscriptaccess" value="always">'
+                +'<embed id="ytplayer" src="http://www.youtube.com/v/'
+                +ID+'?version=3&amp;enablejsapi=1&amp;playerapiid=ytplayer&amp;feature=oembed" type="application/x-shockwave-flash" width="640" height="480" allowscriptaccess="always" allowfullscreen="true"></object>';
+*/
+        }else{
+            return false;
+        }
+    }
+
     // prepares embed code for js api access
     ,prepEmbed: function(embed) {
         var js_str = 'version=3&enablejsapi=1&playerapiid=ytplayer';
 
         embed = embed.replace(/version\=3/gi, js_str);        
         embed = embed.replace(/\<embed/i,'<embed id="ytplayer"');
-    
+        
         return embed;
     }
 }
