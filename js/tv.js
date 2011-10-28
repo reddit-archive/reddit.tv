@@ -90,6 +90,12 @@ $().ready(function(){
     });
     $('#sfw').click(function() {
         globals.sfw = ($('#sfw').is(':checked')) ? true : false;
+        if(!globals.sfw){
+            if(!confirm("Are you over 18?")){
+                $("#sfw").prop("checked", true);
+                globals.sfw = true;
+            }
+        }
         $.cookie('sfw', globals.sfw, {expires: 7});
         showHideNsfwThumbs(globals.sfw, globals.cur_chan);
     });
@@ -277,7 +283,6 @@ function loadChannel(channel, video_id) {
                             data.data.children[x].data.url
                         );
                         if(data.data.children[x].data.media_embed.content){
-                            consoleLog(data.data.children[x].data);
                             globals.videos[this_chan].video.push(data.data.children[x].data);
                         }
                     }
@@ -392,6 +397,12 @@ function loadVideo(video) {
     if(typeof(video) === 'number'){ //must be a number NOT A STRING - allows direct load of video # in video array
         selected_video = video;
     }
+
+    //exit if trying to load over_18 content without confirmed over 18
+    if(sfwCheck(selected_video, this_chan)){
+        return false;
+    }
+
     if(selected_video !== this_video || video === 'first' || video === 0) {
         globals.cur_video = selected_video;
 
@@ -439,14 +450,9 @@ function loadVideo(video) {
         $video_embed.empty();
         $video_embed.addClass('loading');
         
-        consoleLog('embed domain: '+globals.videos[this_chan].video[selected_video].domain);
-        consoleLog('embed content: '+globals.videos[this_chan].video[selected_video].media_embed.content);
-
         var embed = $.unescapifyHTML(globals.videos[this_chan].video[selected_video].media_embed.content);
         embed = prepEmbed(embed, globals.videos[this_chan].video[selected_video].domain);
         embed = prepEmbed(embed, 'size');
-
-        consoleLog('embed prepped: '+embed);
 
         var redditlink = 'http://reddit.com'+$.unescapifyHTML(globals.videos[this_chan].video[selected_video].permalink);
         $('#video-title').html('<a href="' + redditlink + '" target="_blank"'
@@ -580,9 +586,9 @@ function sfwCheck(video, chan) {
     return (globals.sfw && globals.videos[chan].video[video].over_18);
 }
 
-function showHideNsfwThumbs(this_sfw, this_chan) {
+function showHideNsfwThumbs(sfw, this_chan) {
     $('.nsfw_thumb').each(function() {
-        $(this).attr('src', getThumbnailUrl(this_chan, Number($(this).attr('rel'))));
+            $(this).attr('src', getThumbnailUrl(this_chan, Number($(this).attr('rel'))));
     });
 }
 
