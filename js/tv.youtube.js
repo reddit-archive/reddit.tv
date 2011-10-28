@@ -20,6 +20,12 @@ var youtube = {
                 loadVideo('next');  //tv.js
             }else if(state === -1){
                 youtube.togglePlay();
+            }else if(state === 1){
+                var qual = youtube.obj.getPlaybackQuality();
+                var avail = youtube.obj.getAvailableQualityLevels();
+                if((qual === 'small' || qual === 'medium') && avail.indexOf('large') !== -1){
+                    youtube.obj.setPlaybackQuality('large');
+                }
             }
         }
     }
@@ -30,7 +36,7 @@ var youtube = {
     }
 
     ,createEmbed: function(url){
-        var ID, parts;
+        var ID, parts, data = {};
 
         if(url.match(/youtu\.be/)){
             parts = url.split("/");
@@ -47,19 +53,10 @@ var youtube = {
         }
         
         if(ID){
-
-            return "&lt;object width=\"600\" height=\"338\"&gt;&lt;param name=\"movie\" value=\"http://www.youtube.com/v/"
+            data.embed = "&lt;object width=\"600\" height=\"338\"&gt;&lt;param name=\"movie\" value=\"http://www.youtube.com/v/"
             +ID+"?version=3&amp;feature=oembed\"&gt;&lt;/param&gt;&lt;param name=\"allowFullScreen\" value=\"true\"&gt;&lt;/param&gt;&lt;param name=\"allowscriptaccess\" value=\"always\"&gt;&lt;/param&gt;&lt;embed src=\"http://www.youtube.com/v/"+ID+"?version=3&amp;feature=oembed\" type=\"application/x-shockwave-flash\" width=\"600\" height=\"338\" allowscriptaccess=\"always\" allowfullscreen=\"true\"&gt;&lt;/embed&gt;&lt;/object&gt;";
-            
-/*
-            return '<object width="640" height="480">'
-                +'<param name="movie" value="http://www.youtube.com/v/'
-                +ID+'?version=3&amp;enablejsapi=1&amp;playerapiid=ytplayer&amp;feature=oembed">'
-                +'<param name="allowFullScreen" value="true">'
-                +'<param name="allowscriptaccess" value="always">'
-                +'<embed id="ytplayer" src="http://www.youtube.com/v/'
-                +ID+'?version=3&amp;enablejsapi=1&amp;playerapiid=ytplayer&amp;feature=oembed" type="application/x-shockwave-flash" width="640" height="480" allowscriptaccess="always" allowfullscreen="true"></object>';
-*/
+            data.thumbnail = "http://i2.ytimg.com/vi/"+ID+"/hqdefault.jpg";
+            return data;
         }else{
             return false;
         }

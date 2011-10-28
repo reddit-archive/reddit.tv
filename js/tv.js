@@ -1,5 +1,5 @@
 /* Globals */
-var search_str = "search/.json?q=%28site%3Ayoutube.com+OR+site%3Avimeo.com%29&restrict_sr=on&sort=relevance&limit=100";
+var search_str = "search/.json?q=%28site%3Ayoutube.com+OR+site%3Avimeo.com+OR+site%3Ayoutu.be%29&restrict_sr=on&sort=relevance&limit=100";
 
 var globals = {
     /* Channels Object */
@@ -279,9 +279,11 @@ function loadChannel(channel, video_id) {
                             || data.data.children[x].data.domain == 'youtu.be'
                            )
                     {
-                        data.data.children[x].data.media_embed.content = youtube.createEmbed(
-                            data.data.children[x].data.url
-                        );
+                        var created = youtube.createEmbed(data.data.children[x].data.url);
+                        data.data.children[x].data.media_embed.content = created.embed;
+                        data.data.children[x].data.media = {};
+                        data.data.children[x].data.media.oembed = {};
+                        data.data.children[x].data.media.oembed.thumbnail_url = created.thumbnail;
                         if(data.data.children[x].data.media_embed.content){
                             globals.videos[this_chan].video.push(data.data.children[x].data);
                         }
