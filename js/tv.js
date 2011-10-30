@@ -47,7 +47,7 @@ var globals = {
 	'trutv.com', 'twitvid.com', 'ustream.com', 'viddler.com', 'video.google.com',
 	'video.nationalgeographic.com', 'video.pbs.org', 'video.yahoo.com', 'vids.myspace.com', 'vimeo.com',
 	'wordpress.tv', 'worldstarhiphop.com', 'xtranormal.com',
-	'youtube.com', 'zapiks.com'
+	'youtube.com', 'youtu.be', 'zapiks.com'
     ]
 
     ,videos: []
@@ -267,23 +267,16 @@ function loadChannel(channel, video_id) {
                 globals.videos[this_chan] = {};
                 globals.videos[this_chan].video = []; //clear out stored videos
                 for(var x in data.data.children){
-                    if(!isEmpty(data.data.children[x].data.media_embed)
-                       && isVideo(data.data.children[x].data.media.type)
-                       && (data.data.children[x].data.score > 1)
-                      )
-                    {
-                        globals.videos[this_chan].video.push(data.data.children[x].data);
-                    }
-                    //if reddit's scrape didn't build the embed, built it ourself
-                    else if(data.data.children[x].data.domain == 'youtube.com'
-                            || data.data.children[x].data.domain == 'youtu.be'
-                           )
-                    {
-                        var created = youtube.createEmbed(data.data.children[x].data.url);
-                        data.data.children[x].data.media_embed.content = created.embed;
-                        data.data.children[x].data.media = {};
-                        data.data.children[x].data.media.oembed = {};
-                        data.data.children[x].data.media.oembed.thumbnail_url = created.thumbnail;
+                    if(isVideo(data.data.children[x].data.domain) && (data.data.children[x].data.score > 1)){
+                        if(isEmpty(data.data.children[x].data.media_embed)){
+                            var created = createEmbed(data.data.children[x].data.url, data.data.children[x].data.domain);
+                            if(created !== false){
+                                data.data.children[x].data.media_embed.content = created.embed;
+                                data.data.children[x].data.media = {};
+                                data.data.children[x].data.media.oembed = {};
+                                data.data.children[x].data.media.oembed.thumbnail_url = created.thumbnail;
+                            }
+                        }
                         if(data.data.children[x].data.media_embed.content){
                             globals.videos[this_chan].video.push(data.data.children[x].data);
                         }
@@ -683,6 +676,15 @@ function isUserChan(channel){
         }
     }
     return false;
+}
+
+function createEmbed(url, type){
+    switch(type){
+    default:
+        return false;
+    case 'youtube.com': case 'youtu.be':
+        return youtube.createEmbed(url);
+    }
 }
 
 function prepEmbed(embed, type){

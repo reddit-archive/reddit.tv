@@ -36,25 +36,27 @@ var youtube = {
     }
 
     ,createEmbed: function(url){
-        var ID, parts, data = {};
+        var ID, time, parts, data = {};
 
-        if(url.match(/youtu\.be/)){
+        consoleLog('url: '+url);
+
+        time = url.match(/(&|&amp;|\?)t=([HhMmSs0-9]+)/);
+        time = time !== null ? '&amp;' + time[0].replace(/(&|\?)/gi, '') : '';
+        consoleLog('time: '+time);
+
+        if(url.match(/(\?v\=|&v\=|&amp;v=)/)){
+            parts = url.split('v=');
+            ID = parts[1].substr(0,11);
+            consoleLog('youtube ID: '+ID);
+        }else if(url.match(/youtu\.be/)){
             parts = url.split("/");
             ID = parts[3].substr(0,11);
             consoleLog('youtu.be ID: '+ID);
         }
-
-        if(url.match('youtube.com')){
-            if(url.match(/\?v\=/)){
-                parts = url.split('?v=');
-                ID = parts[1].substr(0,11);
-                consoleLog('youtube.com ID: '+ID);
-            }
-        }
         
         if(ID){
             data.embed = "&lt;object width=\"600\" height=\"338\"&gt;&lt;param name=\"movie\" value=\"http://www.youtube.com/v/"
-            +ID+"?version=3&amp;feature=oembed\"&gt;&lt;/param&gt;&lt;param name=\"allowFullScreen\" value=\"true\"&gt;&lt;/param&gt;&lt;param name=\"allowscriptaccess\" value=\"always\"&gt;&lt;/param&gt;&lt;embed src=\"http://www.youtube.com/v/"+ID+"?version=3&amp;feature=oembed\" type=\"application/x-shockwave-flash\" width=\"600\" height=\"338\" allowscriptaccess=\"always\" allowfullscreen=\"true\"&gt;&lt;/embed&gt;&lt;/object&gt;";
+            +ID+"?version=3&amp;feature=oembed"+time+"\"&gt;&lt;/param&gt;&lt;param name=\"allowFullScreen\" value=\"true\"&gt;&lt;/param&gt;&lt;param name=\"allowscriptaccess\" value=\"always\"&gt;&lt;/param&gt;&lt;embed src=\"http://www.youtube.com/v/"+ID+"?version=3&amp;feature=oembed"+time+"\" type=\"application/x-shockwave-flash\" width=\"600\" height=\"338\" allowscriptaccess=\"always\" allowfullscreen=\"true\"&gt;&lt;/embed&gt;&lt;/object&gt;";
             data.thumbnail = "http://i2.ytimg.com/vi/"+ID+"/hqdefault.jpg";
             return data;
         }else{
