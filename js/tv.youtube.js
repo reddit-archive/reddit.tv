@@ -42,7 +42,7 @@ var youtube = {
 
         time = url.match(/(&|&amp;|\?|#)t=([HhMmSs0-9]+)/);
         if(time !== null){
-            time = time[2]            
+            time = time[2];
             hours = time.match(/(\d+)h/i);
             minutes = time.match(/(\d+)m/i);
             seconds = time.match(/(\d+)s/i);

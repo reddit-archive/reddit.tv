@@ -29,6 +29,25 @@ var vimeo = {
         vimeo.sendMsg(msg);
     }
 
+    ,createEmbed: function(url){
+        var ID, created = {};
+        consoleLog('vimeo url: '+url);
+
+        ID = url.match(/\/(\d+)/);
+        
+        if(ID){
+            ID = ID[1];
+            consoleLog('vimeo id: '+ID);
+        }
+        
+        if(ID){
+            created.embed = "&lt;iframe src=\"http://player.vimeo.com/video/"+ID+"\" width=\"600\" height=\"338\" frameborder=\"0\" webkitallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;";
+            created.thumbnail = null;
+            return created;
+        }else{
+            return false;
+        }
+    }
 
     // prepares embed code for js api access
     ,prepEmbed: function(embed) {

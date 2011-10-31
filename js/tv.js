@@ -684,6 +684,8 @@ function createEmbed(url, type){
         return false;
     case 'youtube.com': case 'youtu.be':
         return youtube.createEmbed(url);
+    case 'vimeo.com':
+        return vimeo.createEmbed(url);
     }
 }
 
