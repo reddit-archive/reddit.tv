@@ -36,13 +36,22 @@ var youtube = {
     }
 
     ,createEmbed: function(url){
-        var ID, time, parts, data = {};
+        var ID, time, hours, minutes, seconds, total_seconds, parts, data = {};
 
         consoleLog('url: '+url);
 
-        time = url.match(/(&|&amp;|\?)t=([HhMmSs0-9]+)/);
-        time = time !== null ? '&amp;' + time[0].replace(/(&|\?)/gi, '') : '';
-        consoleLog('time: '+time);
+        time = url.match(/(&|&amp;|\?|#)t=([HhMmSs0-9]+)/);
+        if(time !== null){
+            time = time[2]            
+            hours = time.match(/(\d+)h/i);
+            minutes = time.match(/(\d+)m/i);
+            seconds = time.match(/(\d+)s/i);
+
+            total_seconds = hours !== null ? parseInt(hours[1])*60*60 : 0;
+            total_seconds += minutes !== null ? parseInt(minutes[1])*60 : 0;
+            total_seconds += seconds !== null ? parseInt(seconds[1]) : 0;
+        }
+        time = total_seconds > 0 ? '&start='+total_seconds : '';
 
         if(url.match(/(\?v\=|&v\=|&amp;v=)/)){
             parts = url.split('v=');
