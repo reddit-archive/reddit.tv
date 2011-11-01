@@ -59,6 +59,8 @@ var globals = {
     ,current_anchor: null
     ,auto: true
     ,sfw: true
+    ,shuffle: false
+    ,shuffled: []
     ,theme: 'light'
 }
 
@@ -87,6 +89,11 @@ $().ready(function(){
     $('#auto').click(function() {
         globals.auto = ($('#auto').is(':checked')) ? true : false;
         $.cookie('auto', globals.auto, {expires: 7});
+    });
+    $('#shuffle').click(function() {
+        globals.shuffle = ($('#shuffle').is(':checked')) ? true : false;
+        globals.shuffled = []; //reset
+        $.cookie('shuffle', globals.shuffle, {expires: 7});
     });
     $('#sfw').click(function() {
         globals.sfw = ($('#sfw').is(':checked')) ? true : false;
@@ -165,11 +172,15 @@ $().ready(function(){
 
 /* Main Functions */
 function loadSettings() {
-    var channels_cookie = $.parseJSON($.cookie('user_channels')), auto_cookie = $.cookie('auto'), sfw_cookie = $.cookie('sfw'), theme_cookie = $.cookie('theme');
+    var channels_cookie = $.parseJSON($.cookie('user_channels')), auto_cookie = $.cookie('auto'), sfw_cookie = $.cookie('sfw'), theme_cookie = $.cookie('theme'), shuffle_cookie = $.cookie('shuffle');
 
     if(auto_cookie !== null && auto_cookie !== globals.auto){
         globals.auto = (auto_cookie === 'true') ? true : false;
         $('#auto').attr('checked', globals.auto);
+    }
+    if(shuffle_cookie !== null && shuffle_cookie !== globals.shuffle){
+        globals.shuffle = (shuffle_cookie === 'true') ? true : false;
+        $('#shuffle').attr('checked', globals.shuffle);
     }
     if(sfw_cookie !== null && sfw_cookie !== globals.sfw){
         globals.sfw = (sfw_cookie === 'true') ? true : false;
@@ -364,6 +375,13 @@ function loadVideo(video) {
         this_video = globals.cur_video,
         selected_video = this_video, 
         videos_size = Object.size(globals.videos[this_chan].video)-1;
+
+    if(globals.shuffle){
+        if(globals.shuffle.length != videos_size){
+            shuffleChan(this_chan);
+        }
+        selected_video = globals.shuffled[selected_video];
+    }
     
     if(video === 'next' && selected_video < videos_size){
         selected_video++;
@@ -373,7 +391,12 @@ function loadVideo(video) {
         if(sfwCheck(selected_video, this_chan)){
             selected_video = this_video;
         }
-    }else if (selected_video > 0 && video === 'prev'){
+    }else if(video == 'next' && selected_video == videos_size){
+        selected_video = 0;
+        if(globals.shuffle){
+            selected_video = globals.shuffled[0];
+        }
+    }else if(selected_video > 0 && video === 'prev'){
         selected_video--;
         while(sfwCheck(selected_video, this_chan) && selected_video > 0){
             selected_video--;
@@ -776,8 +799,22 @@ function removeChan(chan){ //by index (integer)
         globals.user_channels.splice(idx, 1);
 
         $.cookie('user_channels', JSON.stringify(globals.user_channels));
+        //free some memory bitches
         globals.channels[chan] = {'channel': '', 'feed': ''};
+        globals.videos[chan] = undefined;
     }
+}
+
+function shuffleChan(chan){ //by index (integer
+    /* 
+       does not shuffle actual video array
+       but rather creates a global array of shuffled keys
+    */
+    globals.shuffled = []; // reset
+    for(x in globals.videos[chan].video){
+        globals.shuffled.push(x);
+    }
+    globals.shuffled = shuffleArray(globals.shuffled);
 }
 
 /* Anchor Checker */
@@ -837,6 +874,20 @@ function consoleLog(string){
     if(window.console) {
         console.log(string);
     }
+}
+
+//http://stackoverflow.com/questions/962802/is-it-correct-to-use-javascript-array-sort-method-for-shuffling/962890#962890
+function shuffleArray(array) {
+    var tmp, current, top = array.length;
+
+    if(top) while(--top) {
+        current = Math.floor(Math.random() * (top + 1));
+        tmp = array[current];
+        array[current] = array[top];
+        array[top] = tmp;
+    }
+
+    return array;
 }
 
 function isEmpty(obj) {
