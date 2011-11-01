@@ -249,8 +249,10 @@ function loadChannel(channel, video_id) {
     if(last_req !== null){
         last_req.abort();
     }
-
+    
+    globals.shuffled = [];
     globals.cur_chan = this_chan;
+    
     $('#video-list').stop(true, true).animate({ height:0, padding:0 }, 500, function() {
         $(this).empty().hide();
     });
@@ -377,41 +379,67 @@ function loadVideo(video) {
         videos_size = Object.size(globals.videos[this_chan].video)-1;
 
     if(globals.shuffle){
-        if(globals.shuffle.length != videos_size){
+        if(globals.shuffled.length == 0){
             shuffleChan(this_chan);
+        }else{
+            selected_video = globals.shuffled.indexOf(selected_video);
+        }
+        if(video === 'next' && selected_video < videos_size){
+            selected_video++;
+            while(sfwCheck(globals.shuffled[selected_video], this_chan) && selected_video < videos_size){
+                selected_video++;
+            }
+            if(sfwCheck(globals.shuffled[selected_video], this_chan)){
+                selected_video = this_video;
+            }
+        }else if(video == 'next' && selected_video == videos_size){
+            selected_video = 0;
+        }else if(selected_video > 0 && video === 'prev'){
+            selected_video--;
+            while(sfwCheck(globals.shuffled[selected_video], this_chan) && selected_video > 0){
+                selected_video--;
+            }
+            if(sfwCheck(globals.shuffled[selected_video], this_chan)){
+                selected_video = this_video;
+            }
+        }else if(video === 'first'){
+            selected_video = 0;
+            if(sfwCheck(globals.shuffled[selected_video], this_chan)){
+                while(sfwCheck(selected_video, this_chan) && selected_video < videos_size){
+                    selected_video++;
+                }
+            }
         }
         selected_video = globals.shuffled[selected_video];
-    }
-    
-    if(video === 'next' && selected_video < videos_size){
-        selected_video++;
-        while(sfwCheck(selected_video, this_chan) && selected_video < videos_size){
+    }else{
+        if(video === 'next' && selected_video < videos_size){
             selected_video++;
-        }
-        if(sfwCheck(selected_video, this_chan)){
-            selected_video = this_video;
-        }
-    }else if(video == 'next' && selected_video == videos_size){
-        selected_video = 0;
-        if(globals.shuffle){
-            selected_video = globals.shuffled[0];
-        }
-    }else if(selected_video > 0 && video === 'prev'){
-        selected_video--;
-        while(sfwCheck(selected_video, this_chan) && selected_video > 0){
-            selected_video--;
-        }
-        if(sfwCheck(selected_video, this_chan)){
-            selected_video = this_video;
-        }
-    }
-    if(video === 'first'){
-        if(sfwCheck(selected_video, this_chan)){
             while(sfwCheck(selected_video, this_chan) && selected_video < videos_size){
                 selected_video++;
             }
+            if(sfwCheck(selected_video, this_chan)){
+                selected_video = this_video;
+            }
+        }else if(video == 'next' && selected_video == videos_size){
+            selected_video = 0;
+        }else if(selected_video > 0 && video === 'prev'){
+            selected_video--;
+            while(sfwCheck(selected_video, this_chan) && selected_video > 0){
+                selected_video--;
+            }
+            if(sfwCheck(selected_video, this_chan)){
+                selected_video = this_video;
+            }
+        }else if(video === 'first'){
+            selected_video = 0;
+            if(sfwCheck(selected_video, this_chan)){
+                while(sfwCheck(selected_video, this_chan) && selected_video < videos_size){
+                    selected_video++;
+                }
+            }
         }
     }
+
     if(typeof(video) === 'number'){ //must be a number NOT A STRING - allows direct load of video # in video array
         selected_video = video;
     }
@@ -815,6 +843,7 @@ function shuffleChan(chan){ //by index (integer
         globals.shuffled.push(x);
     }
     globals.shuffled = shuffleArray(globals.shuffled);
+    consoleLog('shuffling channel '+chan);
 }
 
 /* Anchor Checker */
