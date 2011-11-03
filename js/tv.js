@@ -381,64 +381,42 @@ function loadVideo(video) {
     if(globals.shuffle){
         if(globals.shuffled.length == 0){
             shuffleChan(this_chan);
-        }else{
-            selected_video = globals.shuffled.indexOf(selected_video);
         }
-        if(video === 'next' && selected_video < videos_size){
-            selected_video++;
-            while(sfwCheck(globals.shuffled[selected_video], this_chan) && selected_video < videos_size){
-                selected_video++;
-            }
-            if(sfwCheck(globals.shuffled[selected_video], this_chan)){
-                selected_video = this_video;
-            }
-        }else if(video == 'next' && selected_video == videos_size){
+        //get normal key if shuffled already
+        selected_video = globals.shuffled.indexOf(selected_video);
+    }
+     
+    if(video === 'next' && selected_video <= videos_size){
+        selected_video++;
+        if(selected_video > videos_size){
             selected_video = 0;
-        }else if(selected_video > 0 && video === 'prev'){
-            selected_video--;
-            while(sfwCheck(globals.shuffled[selected_video], this_chan) && selected_video > 0){
-                selected_video--;
-            }
-            if(sfwCheck(globals.shuffled[selected_video], this_chan)){
-                selected_video = this_video;
-            }
-        }else if(video === 'first'){
-            selected_video = 0;
-            if(sfwCheck(globals.shuffled[selected_video], this_chan)){
-                while(sfwCheck(selected_video, this_chan) && selected_video < videos_size){
-                    selected_video++;
-                }
-            }
         }
-        selected_video = globals.shuffled[selected_video];
-    }else{
-        if(video === 'next' && selected_video < videos_size){
+        while(sfwCheck(getVideoKey(selected_video), this_chan) && selected_video < videos_size){
             selected_video++;
-            while(sfwCheck(selected_video, this_chan) && selected_video < videos_size){
-                selected_video++;
-            }
-            if(sfwCheck(selected_video, this_chan)){
-                selected_video = this_video;
-            }
-        }else if(video == 'next' && selected_video == videos_size){
-            selected_video = 0;
-        }else if(selected_video > 0 && video === 'prev'){
+        }
+        if(sfwCheck(getVideoKey(selected_video), this_chan)){
+            selected_video = this_video;
+        }
+    }else if(selected_video >= 0 && video === 'prev'){
+        selected_video--;
+        if(selected_video < 0){
+            selected_video = videos_size;
+        }
+        while(sfwCheck(getVideoKey(selected_video), this_chan) && selected_video > 0){
             selected_video--;
-            while(sfwCheck(selected_video, this_chan) && selected_video > 0){
-                selected_video--;
-            }
-            if(sfwCheck(selected_video, this_chan)){
-                selected_video = this_video;
-            }
-        }else if(video === 'first'){
-            selected_video = 0;
-            if(sfwCheck(selected_video, this_chan)){
-                while(sfwCheck(selected_video, this_chan) && selected_video < videos_size){
-                    selected_video++;
-                }
+        }
+        if(sfwCheck(getVideoKey(selected_video), this_chan)){
+            selected_video = this_video;
+        }
+    }else if(video === 'first'){
+        selected_video = 0;
+        if(sfwCheck(getVideoKey(selected_video), this_chan)){
+            while(sfwCheck(getVideoKey(selected_video), this_chan) && selected_video < videos_size){
+                selected_video++;
             }
         }
     }
+    selected_video = getVideoKey(selected_video);
 
     if(typeof(video) === 'number'){ //must be a number NOT A STRING - allows direct load of video # in video array
         selected_video = video;
@@ -543,6 +521,14 @@ function loadVideo(video) {
         });
 
         fillScreen();
+    }
+}
+
+function getVideoKey(key){
+    if(globals.shuffle && globals.shuffled.length == globals.videos[globals.cur_chan].video.length){
+        return globals.shuffled[key];
+    }else{
+        return key;
     }
 }
 
