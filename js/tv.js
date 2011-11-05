@@ -628,7 +628,7 @@ function getThumbnailUrl(chan, video_id) {
     if (sfwCheck(video_id, chan)) {
         return 'img/nsfw.png';
     }
-    else if (globals.videos[chan].video[video_id].media) {
+    else if (globals.videos[chan].video[video_id].media.oembed) {
         return globals.videos[chan].video[video_id].media.oembed.thumbnail_url !== undefined ? 
             globals.videos[chan].video[video_id].media.oembed.thumbnail_url :
             'img/noimage.png';
