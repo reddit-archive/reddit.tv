@@ -281,7 +281,7 @@ function loadChannel(channel, video_id) {
                 globals.videos[this_chan].video = []; //clear out stored videos
                 for(var x in data.data.children){
                     if(isVideo(data.data.children[x].data.domain) && (data.data.children[x].data.score > 1)){
-                        if(isEmpty(data.data.children[x].data.media_embed)){
+                        if(isEmpty(data.data.children[x].data.media_embed) || data.data.children[x].data.domain == 'youtube.com' || data.data.children[x].data.domain == 'youtu.be'){
                             var created = createEmbed(data.data.children[x].data.url, data.data.children[x].data.domain);
                             if(created !== false){
                                 data.data.children[x].data.media_embed.content = created.embed;

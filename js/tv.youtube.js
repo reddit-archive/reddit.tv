@@ -79,6 +79,7 @@ var youtube = {
 
         embed = embed.replace(/version\=3/gi, js_str);        
         embed = embed.replace(/\<embed/i,'<embed id="ytplayer"');
+        embed = embed.replace(/\<iframe/i,'<iframe id="ytplayer"');
         
         return embed;
     }
