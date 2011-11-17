@@ -91,4 +91,5 @@ function onYouTubePlayerReady(playerId) {
     youtube.obj = document.getElementById("ytplayer");
     youtube.obj.addEventListener("onStateChange", "youtube.stateListener", true);
     youtube.obj.addEventListener("onError", "youtube.errorListener", true);
+    youtube.stateListener(-1);
 }
