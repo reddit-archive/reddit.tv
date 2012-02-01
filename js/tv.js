@@ -158,7 +158,7 @@ $().ready(function(){
                 }
                 break;
             case 67:
-                window.open($('#vote-button>a').attr('href'), '_blank');
+                window.open($('#video-title>a').attr('href'), '_blank');
                 break;
             }
             return false;
