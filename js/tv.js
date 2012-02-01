@@ -498,25 +498,7 @@ function loadVideo(video) {
 
         addListeners(globals.videos[this_chan].video[selected_video].domain);
 
-        var score = globals.videos[this_chan].video[selected_video].score;
-        var num_comments = globals.videos[this_chan].video[selected_video].num_comments;
-	
-	var reddit_string = '<a href="'+redditlink+'" target="_blank">'
-            + score + ((score === 1) ? ' vote' : ' votes')
-            + ' &bull; '
-            + num_comments + ((num_comments === 1) ? ' comment' : ' comments')
-            + '</a>';
-
-        /*
-          console.log("video URL: " + videos[cur_chan].video[cur_video].url);
-          console.log("as send to reddit: " + encodeURIComponent(videos[cur_chan].video[cur_video].url));
-
-          var reddit_string = redditButton(
-	      encodeURIComponent(videos[cur_chan].video[cur_video].url),
-              encodeURIComponent($.unescapifyHTML(videos[cur_chan].video[cur_video].title))
-          );
-	*/
-
+        var reddit_string = redditButton('t3_' + globals.videos[this_chan].video[selected_video].id);
         var $vote_button = $('#vote-button');
         $vote_button.stop(true,true).fadeOut('slow', function() {
             $vote_button.html(reddit_string).fadeIn('slow');
@@ -879,12 +861,9 @@ function checkAnchor(){
 }
 
 /* Reddit Functions */
-function redditButton(permalink, title){
+function redditButton(id){
     var reddit_string="<iframe src=\"http://www.reddit.com/static/button/button1.html?width=120";
-    //reddit_string += '&id=' + videos[cur_chan].video[cur_video].id;
-    reddit_string += '&url=' + permalink;
-    reddit_string += '&title=' + title;
-    //reddit_string += '&sr=' + encodeURIComponent($.unescapifyHTML(videos[cur_chan].video[cur_video].subreddit));
+    reddit_string += '&id=' + id;
     //reddit_string += '&css=' + encodeURIComponent(window.reddit_css);
     //reddit_string += '&bgcolor=' + encodeURIComponent(window.reddit_bgcolor);
     //reddit_string += '&bordercolor=' + encodeURIComponent(window.reddit_bordercolor);
