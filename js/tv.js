@@ -1,5 +1,5 @@
 /* Globals */
-var search_str = "search/.json?q=%28site%3Ayoutube.com+OR+site%3Avimeo.com+OR+site%3Ayoutu.be%29&restrict_sr=on&sort=relevance&limit=100";
+var search_str = "search/.json?q=%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29&sort=new&restrict_sr=on&limit=100";
 
 var globals = {
     /* Channels Object */
