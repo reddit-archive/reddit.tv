@@ -1,34 +1,34 @@
 /* Globals */
-var search_str = "search/.json?q=%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29&sort=new&restrict_sr=on&limit=100";
+/* we need the date in unixtime */
+var one_day = 86400,
+    date = new Date(),
+    unixtime_ms = date.getTime(),
+    unixtime = parseInt(unixtime_ms / 1000);
+
+var search_str = "search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A"+(unixtime - 5*one_day)+"..%29&restrict_sr=on&sort=top";
 
 var globals = {
     /* Channels Object */
     channels: [
-        {"channel": "All", "feed": "/r/all/"+search_str}
-        ,{"channel": "Videos", "feed": "/r/videos/.json"}
-        
-        ,{"channel": "Funny", "feed": "/r/funny/"+search_str}
-
-        ,{"channel": "Tech", "feed": "/r/technology/"+search_str}
-        ,{"channel": "Gaming", "feed": "/r/gaming/.json"}
-        ,{"channel": "AWW", "feed": "/r/aww/"+search_str}
-        ,{"channel": "WTF", "feed": "/r/wtf/.json"}
-        
-        ,{"channel": "Music", "feed": "/r/music/.json"}
-        ,{"channel": "Listen", "feed": "/r/listentothis/.json"}
-
-        ,{"channel": "TIL", "feed": "/r/todayilearned/"+search_str}
-        ,{"channel": "PBS", "feed": "/domain/video.pbs.org/.json"}
-        ,{"channel": "TED", "feed": "/domain/ted.com/.json"}
-
-        ,{"channel": "Politics", "feed": "/r/politics/"+search_str}
-        ,{"channel": "Atheism", "feed": "/r/atheism/"+search_str}
-        
-        ,{"channel": "Sports", "feed": "/r/sports/.json"}
-    ]
+        {"channel": "All", "feed": "/r/all/"+search_str},
+        {"channel": "Videos", "feed": "/r/videos/.json"},
+        {"channel": "Funny", "feed": "/r/funny/"+search_str},
+        {"channel": "Tech", "feed": "/r/technology/"+search_str},
+        {"channel": "Gaming", "feed": "/r/gaming/.json"},
+        {"channel": "AWW", "feed": "/r/aww/"+search_str},
+        {"channel": "WTF", "feed": "/r/wtf/.json"},
+        {"channel": "Music", "feed": "/r/music/.json"},
+        {"channel": "Listen", "feed": "/r/listentothis/.json"},
+        {"channel": "TIL", "feed": "/r/todayilearned/"+search_str},
+        {"channel": "PBS", "feed": "/domain/video.pbs.org/.json"},
+        {"channel": "TED", "feed": "/domain/ted.com/.json"},
+        {"channel": "Politics", "feed": "/r/politics/"+search_str},
+        {"channel": "Atheism", "feed": "/r/atheism/"+search_str},
+        {"channel": "Sports", "feed": "/r/sports/.json"}
+               ],
     
     /* Video Domains */
-    ,domains: [
+    domains: [
         '5min.com', 'abcnews.go.com', 'animal.discovery.com', 'animoto.com', 'atom.com',
         'bambuser.com', 'bigthink.com', 'blip.tv', 'break.com',
 	'cbsnews.com', 'cnbc.com', 'cnn.com', 'colbertnation.com', 'collegehumor.com',
@@ -48,35 +48,24 @@ var globals = {
 	'video.nationalgeographic.com', 'video.pbs.org', 'video.yahoo.com', 'vids.myspace.com', 'vimeo.com',
 	'wordpress.tv', 'worldstarhiphop.com', 'xtranormal.com',
 	'youtube.com', 'youtu.be', 'zapiks.com'
-    ]
+              ],
 
-    ,videos: []
-    ,user_channels: []
-    ,cur_video: 0
-    ,cur_chan: 0
-    ,cur_chan_req: null
-    ,cur_vid_req: null
-    ,current_anchor: null
-    ,auto: true
-    ,sfw: true
-    ,shuffle: false
-    ,shuffled: []
-    ,theme: 'light'
-}
+    videos: [],
+    user_channels: [],
+    cur_video: 0,
+    cur_chan: 0,
+    cur_chan_req: null,
+    cur_vid_req: null,
+    current_anchor: null,
+    auto: true,
+    sfw: true,
+    shuffle: false,
+    shuffled: [],
+    theme: 'light'
+};
 
 /* Document Ready */
-$().ready(function(){
-    /* SOPA Blackout */
-    var sd = '2012018';
-    var td = new Date();
-    td = td.getFullYear().toString() + td.getMonth().toString() + td.getDate().toString();
-    if(sd === td){
-        var html = '<style type="text/css">#fuck-sopa-wrapper{background-color:#000;position:absolute;top:0;left:0;width:100%;height:100%;margin:0;padding:0;}#fuck-sopa-content{font-family:helvetica,verdana;background:gray;width:300px;margin:100px auto 0 auto;padding:15px;text-align:center;border:2px solid darkred;-webkit-border-radius:15px;-moz-border-radius:15px;border-radius:15px;}#fuck-sopa-content h1{margin-top:0;font-size:x-large;color:darkred;}#fuck-sopa-content a{color:#000;}</style><div id="fuck-sopa-wrapper">  <div id="fuck-sopa-content">    <h1>WEBSITE BLOCKED</h1>    <p>If internet blacklist legislation becomes law, this may be all that remains of this website in the future.</p>    <p>Learn more about the adverse effects SOPA and PIPA will have for you and the internet at <a href="http://americancensorship.org/">americancensorship.org</a>  </div></div>';
-        document.write(html);
-        return false;
-    }
-    /* END SOPA Blackout */
-    
+$().ready(function(){    
     loadSettings();
     loadTheme(globals.theme);
     displayChannels();
@@ -238,17 +227,17 @@ function displayChannel(chan){
 
     $('#channel-list>ul').append('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'>'+display_title+remove_str+'</li>');
     $('#channel-'+chan).bind(
-            'click'
-        ,{channel: globals.channels[chan].channel, feed: globals.channels[chan].feed}
-        ,function(event) {
+        'click',
+        {channel: globals.channels[chan].channel, feed: globals.channels[chan].feed},
+        function(event) {
             var parts = event.data.feed.split("/");
             window.location.hash = "/"+parts[1]+"/"+parts[2]+"/";
         }
     );
     $('#remove-'+chan).bind(
-            'click'
-        ,{channel: chan}
-        ,function(event) {
+        'click',
+        {channel: chan},
+        function(event) {
             removeChan(event.data.channel);
         }
     );
@@ -292,7 +281,7 @@ function loadChannel(channel, video_id) {
                 globals.videos[this_chan].video = []; //clear out stored videos
                 for(var x in data.data.children){
                     if(isVideo(data.data.children[x].data.domain) && (data.data.children[x].data.score > 1)){
-                        if(isEmpty(data.data.children[x].data.media_embed) || data.data.children[x].data.domain == 'youtube.com' || data.data.children[x].data.domain == 'youtu.be'){
+                        if(isEmpty(data.data.children[x].data.media_embed) || data.data.children[x].data.domain === 'youtube.com' || data.data.children[x].data.domain === 'youtu.be'){
                             var created = createEmbed(data.data.children[x].data.url, data.data.children[x].data.domain);
                             if(created !== false){
                                 data.data.children[x].data.media_embed.content = created.embed;
@@ -333,7 +322,7 @@ function loadChannel(channel, video_id) {
     }else{
         if(globals.videos[this_chan].video.length > 0){
             if(video_id !== null){
-	        loadVideoById(video_id);
+                loadVideoById(video_id);
             }else{
                 loadVideoList(this_chan);
                 globals.cur_video = 0;
@@ -364,7 +353,8 @@ function loadVideoList(chan) {
         }
 
         $thumbnail
-            .attr('src', getThumbnailUrl(this_chan, i))
+            .attr('src', 'img/noimage.png')
+            .attr('data-original', getThumbnailUrl(this_chan, i))
             .click(function() { loadVideo( Number($(this).attr('rel')) ); });
 
         $list.append($thumbnail);
@@ -376,7 +366,6 @@ function loadVideoList(chan) {
         .show()
         .animate({ height: '88px', padding: '5px' }, 1000, function() {
             $('img').lazyload({
-                placeholder : "img/noimage.png",
                 effect : "fadeIn",
                 container: $("#video-list")
             });
@@ -390,7 +379,7 @@ function loadVideo(video) {
         videos_size = Object.size(globals.videos[this_chan].video)-1;
 
     if(globals.shuffle){
-        if(globals.shuffled.length == 0){
+        if(globals.shuffled.length === 0){
             shuffleChan(this_chan);
         }
         //get normal key if shuffled already
@@ -465,14 +454,14 @@ function loadVideo(video) {
         }
 
         //set location hash
-        var hash = document.location.hash;
+        var parts, hash = document.location.hash;
         if(!hash){
             var feed = globals.channels[this_chan].feed;
-            var parts = feed.split("/");
+            parts = feed.split("/");
             hash = '/'+parts[1]+'/'+parts[2]+'/'+globals.videos[this_chan].video[selected_video].id;
         }else{
             var anchor = hash.substring(1);
-            var parts = anchor.split("/"); // #/r/videos/id
+            parts = anchor.split("/"); // #/r/videos/id
             hash = '/'+parts[1]+'/'+parts[2]+'/'+globals.videos[this_chan].video[selected_video].id;
         }
         globals.current_anchor = '#'+hash;
@@ -518,7 +507,7 @@ function loadVideo(video) {
 }
 
 function getVideoKey(key){
-    if(globals.shuffle && globals.shuffled.length == globals.videos[globals.cur_chan].video.length){
+    if(globals.shuffle && globals.shuffled.length === globals.videos[globals.cur_chan].video.length){
         return globals.shuffled[key];
     }else{
         return key;
@@ -571,7 +560,7 @@ function filterVideoDupes(arr){
     //work from last video to first video (so hottest dupe is left standing)
     //first pass on media embed
     for (i=arr.length-1; i>=0; i--) {
-        if(typeof obj[arr[i].media_embed.content] != 'undefined'){
+        if(typeof obj[arr[i].media_embed.content] !== 'undefined'){
             delete obj[arr[i].media_embed.content];
         }
         obj[arr[i].media_embed.content]=arr[i];
@@ -580,13 +569,13 @@ function filterVideoDupes(arr){
         out.push(obj[i]);
     }
 
-    arr = out.reverse()
+    arr = out.reverse();
     out = [];
     obj = {};
 
     //second pass on url
     for (i=arr.length-1; i>=0; i--) {
-        if(typeof obj[arr[i].url] != 'undefined'){
+        if(typeof obj[arr[i].url] !== 'undefined'){
             delete obj[arr[i].url];
         }
         obj[arr[i].url]=arr[i];
@@ -636,22 +625,22 @@ function chgChan(up_down) {
 
     if(up_down === 'up' && this_chan > 0){
         this_chan--;
-        while(globals.channels[this_chan].channel == '' && this_chan > 0){
+        while(globals.channels[this_chan].channel === '' && this_chan > 0){
             this_chan--;
         }
     }else if(up_down === 'up'){
         this_chan = globals.channels.length-1;
-        while(globals.channels[this_chan].channel == '' && this_chan > 0){
+        while(globals.channels[this_chan].channel === '' && this_chan > 0){
             this_chan--;
         }
     }else if(up_down !== 'up' && this_chan < globals.channels.length-1){
         this_chan++;
-        while(globals.channels[this_chan].channel == ''){
+        while(globals.channels[this_chan].channel === ''){
             this_chan++;
         }
     }else if(up_down !== 'up'){
         this_chan = 0;
-        while(globals.channels[this_chan].channel == ''){
+        while(globals.channels[this_chan].channel === ''){
             this_chan++;
         }
     }
@@ -710,19 +699,17 @@ function isUserChan(channel){
 
 function createEmbed(url, type){
     switch(type){
-    default:
-        return false;
     case 'youtube.com': case 'youtu.be':
         return youtube.createEmbed(url);
     case 'vimeo.com':
         return vimeo.createEmbed(url);
+    default:
+        return false;
     }
 }
 
 function prepEmbed(embed, type){
     switch(type){
-    default:
-        return embed;
     case 'youtube.com': case 'youtu.be':
         return youtube.prepEmbed(embed);
     case 'vimeo.com':
@@ -730,6 +717,8 @@ function prepEmbed(embed, type){
     case 'size':
         embed = embed.replace(/height\="(\d\w+)"/gi, 'height="480"');
         embed = embed.replace(/width\="(\d\w+)"/gi, 'width="640"');
+        return embed;
+    default:
         return embed;
     }
     
@@ -743,7 +732,7 @@ function addListeners(type){
 }
 
 function fillScreen() {
-    var fill_screen_domains = ['youtube.com', 'youtu.be'];
+    var $object, $fill, $filloverlay, fill_screen_domains = ['youtube.com', 'youtu.be'];
     if(fill_screen_domains.indexOf(globals.videos[globals.cur_chan].video[globals.cur_video].domain) !== -1){
         $object = $('#video-embed embed');
         $fill = $('#fill');
@@ -772,9 +761,10 @@ function togglePlay(){
 }
 
 function addChannel(subreddit){
+    var click;
     if(!subreddit){
         subreddit = encodeURIComponent($('#channel-name').val());
-        var click = true;
+        click = true;
     }
     if(!getChan(subreddit)){
         var feed = "/r/"+subreddit+"/.json";
@@ -799,7 +789,7 @@ function addChannel(subreddit){
 function removeChan(chan){ //by index (integer)
     var idx = getUserChan(globals.channels[chan].channel);
     if(idx){
-        if(chan == globals.cur_chan){
+        if(chan === globals.cur_chan){
             chgChan('up');
         }
         $('#channel-'+chan).remove();
@@ -818,7 +808,7 @@ function shuffleChan(chan){ //by index (integer
        but rather creates a global array of shuffled keys
     */
     globals.shuffled = []; // reset
-    for(x in globals.videos[chan].video){
+    for(var x in globals.videos[chan].video){
         globals.shuffled.push(x);
     }
     globals.shuffled = shuffleArray(globals.shuffled);
@@ -831,6 +821,7 @@ function checkAnchor(){
     if(globals.current_anchor !== document.location.hash){
         globals.current_anchor = document.location.hash;
         if(!globals.current_anchor){
+            /* do nothing */
         }else{
             var anchor = globals.current_anchor.substring(1);
             var parts = anchor.split("/"); // #/r/videos/id
@@ -885,13 +876,15 @@ function consoleLog(string){
 function shuffleArray(array) {
     var tmp, current, top = array.length;
 
-    if(top) while(--top) {
-        current = Math.floor(Math.random() * (top + 1));
-        tmp = array[current];
-        array[current] = array[top];
-        array[top] = tmp;
+    if(top){
+        while(--top) {
+            current = Math.floor(Math.random() * (top + 1));
+            tmp = array[current];
+            array[current] = array[top];
+            array[top] = tmp;
+        }
     }
-
+    
     return array;
 }
 
@@ -907,7 +900,9 @@ function isEmpty(obj) {
 Object.size = function(obj) {
     var size = 0, key;
     for(key in obj) {
-        if (obj.hasOwnProperty(key)) size++;
+        if(obj.hasOwnProperty(key)){
+            size++;
+        }
     }
     return size;
 };

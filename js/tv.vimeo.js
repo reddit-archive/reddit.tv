@@ -3,10 +3,10 @@
  *  vimeo's universal embed makes use of window.postMessage for cross domain script access
  */
 var vimeo = {
-    obj: null //will reference the current vimeo embed
+    obj: null, //will reference the current vimeo embed
 
     //sends request for paused state or reacts to paused state
-    ,togglePlay: function(paused){
+    togglePlay: function(paused){
         if(paused === undefined){
             var msg = '{"method": "paused"}';
             vimeo.sendMsg(msg);
@@ -17,19 +17,19 @@ var vimeo = {
                 vimeo.pause();
             }
         }
-    }
+    },
 
-    ,play: function(){
+    play: function(){
         var msg = '{"method": "play"}';
         vimeo.sendMsg(msg);
-    }
+    },
 
-    ,pause: function(){
+    pause: function(){
         var msg = '{"method": "pause"}';
         vimeo.sendMsg(msg);
-    }
+    },
 
-    ,createEmbed: function(url){
+    createEmbed: function(url){
         var ID, created = {};
         consoleLog('vimeo url: '+url);
 
@@ -47,11 +47,11 @@ var vimeo = {
         }else{
             return false;
         }
-    }
+    },
 
     // prepares embed code for js api access
-    ,prepEmbed: function(embed) {
-        var js_str = '?api=1&player_id=vimeoplayer';
+    prepEmbed: function(embed) {
+        var split, js_str = '?api=1&player_id=vimeoplayer';
         
         if(embed.indexOf('" width="') !== -1){
             split = embed.indexOf('" width="');
@@ -62,9 +62,9 @@ var vimeo = {
         }
     
         return embed;
-    }
+    },
 
-    ,readyListener: function(){
+    readyListener: function(){
         //register finish listener
         var msg = '{"method": "addEventListener", "value": "finish"}';
         vimeo.sendMsg(msg);
@@ -73,26 +73,25 @@ var vimeo = {
         if(globals.auto){
             vimeo.play();
         }
-    }
+    },
 
-    ,finishListener: function(){
+    finishListener: function(){
         if(globals.auto){
             loadVideo('next');
         }
-    }
+    },
 
-    ,addListeners: function(){
+    addListeners: function(){
         vimeo.obj = document.getElementById("vimeoplayer");
         window.addEventListener("message", vimeo.receiveMessage, false);  
-    }
+    },
 
-    ,sendMsg: function(msg){
+    sendMsg: function(msg){
         var target = vimeo.obj.contentWindow;
         target.postMessage(msg, 'http://player.vimeo.com/');
-    }
+    },
 
-    ,receiveMessage: function(msg)
-    {
+    receiveMessage: function(msg){
         var msgData = eval('(' + msg.data + ')');
         var the_switch = (msgData.event === undefined ? msgData.method : msgData.event);
 
@@ -111,4 +110,4 @@ var vimeo = {
             break;
         }
     }
-}
+};

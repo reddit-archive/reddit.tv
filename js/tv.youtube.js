@@ -2,9 +2,9 @@
  *  youtube singleton oh yeah! 
  */
 var youtube = {
-    obj: null //will hold the current youtube embed
+    obj: null, //will hold the current youtube embed
 
-    ,togglePlay: function(){
+    togglePlay: function(){
         //unstarted (-1), ended (0), playing (1), 
         //paused (2), buffering (3), video cued (5)
         if(youtube.obj.getPlayerState() !== 1){
@@ -12,9 +12,9 @@ var youtube = {
         }else{
             youtube.obj.pauseVideo();
         }
-    }
+    },
 
-    ,stateListener: function(state){
+    stateListener: function(state){
         if(globals.auto){ //global scope
             if(state === 0){
                 loadVideo('next');  //tv.js
@@ -28,14 +28,14 @@ var youtube = {
                 }
             }
         }
-    }
+    },
 
-    ,errorListener: function(error){
+    errorListener: function(error){
         consoleLog('youtube error received: '+error);
         loadVideo('next');
-    }
+    },
 
-    ,createEmbed: function(url){
+    createEmbed: function(url){
         var ID, time, hours, minutes, seconds, total_seconds, parts, data = {};
 
         consoleLog('url: '+url);
@@ -71,10 +71,10 @@ var youtube = {
         }else{
             return false;
         }
-    }
+    },
 
     // prepares embed code for js api access
-    ,prepEmbed: function(embed) {
+    prepEmbed: function(embed) {
         var js_str = 'version=3&enablejsapi=1&playerapiid=ytplayer';
 
         embed = embed.replace(/version\=3/gi, js_str);        
@@ -83,10 +83,11 @@ var youtube = {
         
         return embed;
     }
-}
+};
 
 /* 
- *  youtube listener - called by youtube flash/html5 when present 
+ *  youtube listener - called by youtube flash/html5 when present
+ *  MUST REMAIN IN GLOBAL SCOPE
  */
 function onYouTubePlayerReady(playerId) {
     youtube.obj = document.getElementById("ytplayer");
