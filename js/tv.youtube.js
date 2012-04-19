@@ -15,7 +15,7 @@ var youtube = {
     },
 
     stateListener: function(state){
-        if(globals.auto){ //global scope
+        if(Globals.auto){ //global scope
             if(state === 0){
                 loadVideo('next');  //tv.js
             }else if(state === -1){
@@ -38,8 +38,6 @@ var youtube = {
     createEmbed: function(url){
         var ID, time, hours, minutes, seconds, total_seconds, parts, data = {};
 
-        consoleLog('url: '+url);
-
         time = url.match(/(&|&amp;|\?|#)t=([HhMmSs0-9]+)/);
         if(time !== null){
             time = time[2];
@@ -56,11 +54,9 @@ var youtube = {
         if(url.match(/(\?v\=|&v\=|&amp;v=)/)){
             parts = url.split('v=');
             ID = parts[1].substr(0,11);
-            consoleLog('youtube ID: '+ID);
         }else if(url.match(/youtu\.be/)){
             parts = url.split("/");
             ID = parts[3].substr(0,11);
-            consoleLog('youtu.be ID: '+ID);
         }
         
         if(ID){

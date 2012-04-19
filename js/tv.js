@@ -1,30 +1,31 @@
 /* Globals */
-/* we need the date in unixtime */
-var one_day = 86400,
-    date = new Date(),
-    unixtime_ms = date.getTime(),
-    unixtime = parseInt(unixtime_ms / 1000);
+var Globals = {
+    /* build uri for search type channels */
+    search_str: (function(){
+            var one_day = 86400,
+            date = new Date(),
+            unixtime_ms = date.getTime(),
+            unixtime = parseInt(unixtime_ms / 1000);
+            return "search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A"+(unixtime - 5*one_day)+"..%29&restrict_sr=on&sort=top";
+        })(),
 
-var search_str = "search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A"+(unixtime - 5*one_day)+"..%29&restrict_sr=on&sort=top";
-
-var globals = {
     /* Channels Object */
     channels: [
-        {"channel": "All", "feed": "/r/all/"+search_str},
-        {"channel": "Videos", "feed": "/r/videos/.json"},
-        {"channel": "Funny", "feed": "/r/funny/"+search_str},
-        {"channel": "Tech", "feed": "/r/technology/"+search_str},
-        {"channel": "Gaming", "feed": "/r/gaming/.json"},
-        {"channel": "AWW", "feed": "/r/aww/"+search_str},
-        {"channel": "WTF", "feed": "/r/wtf/.json"},
-        {"channel": "Music", "feed": "/r/music/.json"},
-        {"channel": "Listen", "feed": "/r/listentothis/.json"},
-        {"channel": "TIL", "feed": "/r/todayilearned/"+search_str},
-        {"channel": "PBS", "feed": "/domain/video.pbs.org/.json"},
-        {"channel": "TED", "feed": "/domain/ted.com/.json"},
-        {"channel": "Politics", "feed": "/r/politics/"+search_str},
-        {"channel": "Atheism", "feed": "/r/atheism/"+search_str},
-        {"channel": "Sports", "feed": "/r/sports/.json"}
+        {channel: 'All', type: 'search', feed: '/r/all/'},
+        {channel: 'Videos', type: 'normal', feed: '/r/videos/'},
+        {channel: 'Funny', type: 'search', feed: '/r/funny/'},
+        {channel: 'Tech', type: 'search', feed: '/r/technology/'},
+        {channel: 'Gaming', type: 'normal', feed: '/r/gaming/'},
+        {channel: 'AWW', type: 'search', feed: '/r/aww/'},
+        {channel: 'WTF', type: 'search', feed: '/r/wtf/'},
+        {channel: 'Music', type: 'normal', feed: '/r/music/'},
+        {channel: 'Listen', type: 'normal', feed: '/r/listentothis/'},
+        {channel: 'TIL', type: 'search', feed: '/r/todayilearned/'},
+        {channel: 'PBS', type: 'domain', feed: '/domain/video.pbs.org/'},
+        {channel: 'TED', type: 'domain', feed: '/domain/ted.com/'},
+        {channel: 'Politics', type: 'search', feed: '/r/politics/'},
+        {channel: 'Atheism', type: 'search', feed: '/r/atheism/'},
+        {channel: 'Sports', type: 'normal', feed: '/r/sports/'}
                ],
     
     /* Video Domains */
@@ -64,10 +65,10 @@ var globals = {
     theme: 'light'
 };
 
-/* Document Ready */
-$().ready(function(){    
+/* MAIN (Document Ready) */
+$().ready(function(){ 
     loadSettings();
-    loadTheme(globals.theme);
+    loadTheme(Globals.theme);
     displayChannels();
     loadChannel("Videos", null);
     
@@ -87,24 +88,24 @@ $().ready(function(){
         return false;
     });
     $('#auto').click(function() {
-        globals.auto = ($('#auto').is(':checked')) ? true : false;
-        $.cookie('auto', globals.auto, {expires: 7});
+        Globals.auto = ($('#auto').is(':checked')) ? true : false;
+        $.jStorage.set('auto', Globals.auto);
     });
     $('#shuffle').click(function() {
-        globals.shuffle = ($('#shuffle').is(':checked')) ? true : false;
-        globals.shuffled = []; //reset
-        $.cookie('shuffle', globals.shuffle, {expires: 7});
+        Globals.shuffle = ($('#shuffle').is(':checked')) ? true : false;
+        Globals.shuffled = []; //reset
+        $.jStorage.set('shuffle', Globals.shuffle);
     });
     $('#sfw').click(function() {
-        globals.sfw = ($('#sfw').is(':checked')) ? true : false;
-        if(!globals.sfw){
+        Globals.sfw = ($('#sfw').is(':checked')) ? true : false;
+        if(!Globals.sfw){
             if(!confirm("Are you over 18?")){
                 $("#sfw").prop("checked", true);
-                globals.sfw = true;
+                Globals.sfw = true;
             }
         }
-        $.cookie('sfw', globals.sfw, {expires: 7});
-        showHideNsfwThumbs(globals.sfw, globals.cur_chan);
+        $.jStorage.set('sfw', Globals.sfw);
+        showHideNsfwThumbs(Globals.sfw, Globals.cur_chan);
     });
     $('#fill').click(function() {
         fillScreen();
@@ -172,40 +173,44 @@ $().ready(function(){
 
 /* Main Functions */
 function loadSettings() {
-    var channels_cookie = $.parseJSON($.cookie('user_channels')), auto_cookie = $.cookie('auto'), sfw_cookie = $.cookie('sfw'), theme_cookie = $.cookie('theme'), shuffle_cookie = $.cookie('shuffle');
+    var channels_cookie = $.jStorage.get('user_channels'),
+        auto_cookie = $.jStorage.get('auto'), 
+        sfw_cookie = $.jStorage.get('sfw'), 
+        theme_cookie = $.jStorage.get('theme'), 
+        shuffle_cookie = $.jStorage.get('shuffle');
 
-    if(auto_cookie !== null && auto_cookie !== globals.auto){
-        globals.auto = (auto_cookie === 'true') ? true : false;
-        $('#auto').attr('checked', globals.auto);
+    if(auto_cookie !== null && auto_cookie !== Globals.auto){
+        Globals.auto = (auto_cookie === 'true') ? true : false;
+        $('#auto').attr('checked', Globals.auto);
     }
-    if(shuffle_cookie !== null && shuffle_cookie !== globals.shuffle){
-        globals.shuffle = (shuffle_cookie === 'true') ? true : false;
-        $('#shuffle').attr('checked', globals.shuffle);
+    if(shuffle_cookie !== null && shuffle_cookie !== Globals.shuffle){
+        Globals.shuffle = (shuffle_cookie === 'true') ? true : false;
+        $('#shuffle').attr('checked', Globals.shuffle);
     }
-    if(sfw_cookie !== null && sfw_cookie !== globals.sfw){
-        globals.sfw = (sfw_cookie === 'true') ? true : false;
-        $('#sfw').attr('checked', globals.sfw);
+    if(sfw_cookie !== null && sfw_cookie !== Globals.sfw){
+        Globals.sfw = (sfw_cookie === 'true') ? true : false;
+        $('#sfw').attr('checked', Globals.sfw);
     }
-    if(theme_cookie !== null && theme_cookie !== globals.theme){
-        globals.theme = theme_cookie;
+    if(theme_cookie !== null && theme_cookie !== Globals.theme){
+        Globals.theme = theme_cookie;
     }
-    if(channels_cookie !== null && channels_cookie !== globals.user_channels){
-        globals.user_channels = channels_cookie;
-        for(var x in globals.user_channels){
-            globals.channels.push(globals.user_channels[x]);
+    if(channels_cookie !== null && channels_cookie !== Globals.user_channels){
+        Globals.user_channels = channels_cookie;
+        for(var x in Globals.user_channels){
+            Globals.channels.push(Globals.user_channels[x]);
         }
     }
 }
 
 function loadTheme(id) {
     $('#theme').attr('href', 'css/theme_' + id + '.css');
-    $.cookie('theme', id, {expires: 7});
+    $.jStorage.set('theme', id);
 }
 
 function displayChannels() {
     var $channel_list = $('#channel-list'), $list = $('<ul></ul>');
     $channel_list.html($list);
-    for(var x in globals.channels){
+    for(var x in Globals.channels){
         displayChannel(x);
     }
 }
@@ -213,14 +218,14 @@ function displayChannels() {
 function displayChannel(chan){
     var title, display_title, class_str='', remove_str='';
 
-    title = globals.channels[chan].feed.split("/");
+    title = Globals.channels[chan].feed.split("/");
     title = "/"+title[1]+"/"+title[2];
 
-    display_title = globals.channels[chan].channel.length > 8 ?
-        globals.channels[chan].channel.replace(/[aeiou]/gi,'').substr(0,7) :
-        globals.channels[chan].channel;
+    display_title = Globals.channels[chan].channel.length > 8 ?
+        Globals.channels[chan].channel.replace(/[aeiou]/gi,'').substr(0,7) :
+        Globals.channels[chan].channel;
 
-    if(isUserChan(globals.channels[chan].channel)){
+    if(isUserChan(Globals.channels[chan].channel)){
         class_str = 'class="user-chan"';
         remove_str = '<a id="remove-'+chan+'" class="remove-chan">-</a>';
     }
@@ -228,7 +233,7 @@ function displayChannel(chan){
     $('#channel-list>ul').append('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'>'+display_title+remove_str+'</li>');
     $('#channel-'+chan).bind(
         'click',
-        {channel: globals.channels[chan].channel, feed: globals.channels[chan].feed},
+        {channel: Globals.channels[chan].channel, feed: Globals.channels[chan].feed},
         function(event) {
             var parts = event.data.feed.split("/");
             window.location.hash = "/"+parts[1]+"/"+parts[2]+"/";
@@ -244,14 +249,14 @@ function displayChannel(chan){
 }
 
 function loadChannel(channel, video_id) {
-    var last_req = globals.cur_chan_req, this_chan = getChan(channel), $video_embed = $('#video-embed'), $video_title = $('#video-title'), title;
+    var last_req = Globals.cur_chan_req, this_chan = getChan(channel), $video_embed = $('#video-embed'), $video_title = $('#video-title'), title;
 
     if(last_req !== null){
         last_req.abort();
     }
     
-    globals.shuffled = [];
-    globals.cur_chan = this_chan;
+    Globals.shuffled = [];
+    Globals.cur_chan = this_chan;
     
     $('#video-list').stop(true, true).animate({ height:0, padding:0 }, 500, function() {
         $(this).empty().hide();
@@ -260,7 +265,7 @@ function loadChannel(channel, video_id) {
     $('#vote-button').empty();
     $('#video-source').empty();
 
-    title = globals.channels[this_chan].feed.split("/");
+    title = Globals.channels[this_chan].feed.split("/");
     title = "/"+title[1]+"/"+title[2];
 
     $video_title.html('Loading '+title+' ...');
@@ -270,15 +275,15 @@ function loadChannel(channel, video_id) {
     $('#channel-list>ul>li').removeClass('chan-selected');
     $('#channel-'+this_chan).addClass('chan-selected');
 
-    if(globals.videos[this_chan] === undefined){
-        var feed = getFeedName(channel);
-        globals.cur_chan_req = $.ajax({
+    if(Globals.videos[this_chan] === undefined){
+        var feed = getFeedURI(channel);
+        Globals.cur_chan_req = $.ajax({
             url: "http://www.reddit.com"+feed+"?limit=100",
             dataType: "jsonp",
             jsonp: "jsonp",
             success: function(data) {
-                globals.videos[this_chan] = {};
-                globals.videos[this_chan].video = []; //clear out stored videos
+                Globals.videos[this_chan] = {};
+                Globals.videos[this_chan].video = []; //clear out stored videos
                 for(var x in data.data.children){
                     if(isVideo(data.data.children[x].data.domain) && (data.data.children[x].data.score > 1)){
                         if(isEmpty(data.data.children[x].data.media_embed) || data.data.children[x].data.domain === 'youtube.com' || data.data.children[x].data.domain === 'youtu.be'){
@@ -291,26 +296,26 @@ function loadChannel(channel, video_id) {
                             }
                         }
                         if(data.data.children[x].data.media_embed.content){
-                            globals.videos[this_chan].video.push(data.data.children[x].data);
+                            Globals.videos[this_chan].video.push(data.data.children[x].data);
                         }
                     }
                 }
 
                 //remove duplicates
-                globals.videos[this_chan].video = filterVideoDupes(globals.videos[this_chan].video);
+                Globals.videos[this_chan].video = filterVideoDupes(Globals.videos[this_chan].video);
 
-                if(globals.videos[this_chan].video.length > 0){
+                if(Globals.videos[this_chan].video.length > 0){
                     if(video_id !== null){
                         loadVideoById(video_id);
                     }else{
                         loadVideoList(this_chan);
-                        globals.cur_video = 0;
+                        Globals.cur_video = 0;
                         loadVideo('first');
                     }
                     $video_embed.removeClass('loading');
                 }else{
                     $video_embed.removeClass('loading');
-                    alert('No videos found in '+globals.channels[this_chan].feed.slice(0,-5));
+                    alert('No videos found in '+Globals.channels[this_chan].feed.slice(0,-5));
                 }
             },
             error: function(jXHR, textStatus, errorThrown) {
@@ -320,24 +325,24 @@ function loadChannel(channel, video_id) {
             }
         });
     }else{
-        if(globals.videos[this_chan].video.length > 0){
+        if(Globals.videos[this_chan].video.length > 0){
             if(video_id !== null){
                 loadVideoById(video_id);
             }else{
                 loadVideoList(this_chan);
-                globals.cur_video = 0;
+                Globals.cur_video = 0;
                 loadVideo('first');
             }
         }else{
-            alert('No videos loaded for '+globals.channels[this_chan].feed.slice(0,-5));
+            alert('No videos loaded for '+Globals.channels[this_chan].feed.slice(0,-5));
         }
     }
 }
 
 function loadVideoList(chan) {
     var this_chan = chan, $list = $('<span></span>');
-    for(var i in globals.videos[this_chan].video) {
-        var this_video = globals.videos[this_chan].video[i];
+    for(var i in Globals.videos[this_chan].video) {
+        var this_video = Globals.videos[this_chan].video[i];
 
         if (! this_video.title_unesc) {
             this_video.title_unesc = $.unescapifyHTML(this_video.title);
@@ -373,17 +378,17 @@ function loadVideoList(chan) {
 }
 
 function loadVideo(video) {
-    var this_chan = globals.cur_chan,
-        this_video = globals.cur_video,
+    var this_chan = Globals.cur_chan,
+        this_video = Globals.cur_video,
         selected_video = this_video, 
-        videos_size = Object.size(globals.videos[this_chan].video)-1;
+        videos_size = Object.size(Globals.videos[this_chan].video)-1;
 
-    if(globals.shuffle){
-        if(globals.shuffled.length === 0){
+    if(Globals.shuffle){
+        if(Globals.shuffled.length === 0){
             shuffleChan(this_chan);
         }
         //get normal key if shuffled already
-        selected_video = globals.shuffled.indexOf(selected_video);
+        selected_video = Globals.shuffled.indexOf(selected_video);
     }
      
     if(video === 'next' && selected_video <= videos_size){
@@ -428,7 +433,7 @@ function loadVideo(video) {
     }
 
     if(selected_video !== this_video || video === 'first' || video === 0) {
-        globals.cur_video = selected_video;
+        Globals.cur_video = selected_video;
 
         // scroll to thumbnail in video list and highlight it
         $('#video-list .focus').removeClass('focus');
@@ -445,7 +450,7 @@ function loadVideo(video) {
             $prevbutton.hide().css({ 'visibility':'visible' }).stop(true,true).fadeIn('slow');
         }
 
-        if(globals.cur_video >= videos_size){
+        if(Globals.cur_video >= videos_size){
             $nextbutton.stop(true,true).fadeOut('slow', function() {
                 $(this).css({ 'visibility':'hidden', 'display':'inline' });
             });
@@ -456,15 +461,15 @@ function loadVideo(video) {
         //set location hash
         var parts, hash = document.location.hash;
         if(!hash){
-            var feed = globals.channels[this_chan].feed;
+            var feed = Globals.channels[this_chan].feed;
             parts = feed.split("/");
-            hash = '/'+parts[1]+'/'+parts[2]+'/'+globals.videos[this_chan].video[selected_video].id;
+            hash = '/'+parts[1]+'/'+parts[2]+'/'+Globals.videos[this_chan].video[selected_video].id;
         }else{
             var anchor = hash.substring(1);
             parts = anchor.split("/"); // #/r/videos/id
-            hash = '/'+parts[1]+'/'+parts[2]+'/'+globals.videos[this_chan].video[selected_video].id;
+            hash = '/'+parts[1]+'/'+parts[2]+'/'+Globals.videos[this_chan].video[selected_video].id;
         }
-        globals.current_anchor = '#'+hash;
+        Globals.current_anchor = '#'+hash;
         window.location.hash = hash;
 
         gaHashTrack();
@@ -474,28 +479,28 @@ function loadVideo(video) {
         $video_embed.empty();
         $video_embed.addClass('loading');
         
-        var embed = $.unescapifyHTML(globals.videos[this_chan].video[selected_video].media_embed.content);
-        embed = prepEmbed(embed, globals.videos[this_chan].video[selected_video].domain);
+        var embed = $.unescapifyHTML(Globals.videos[this_chan].video[selected_video].media_embed.content);
+        embed = prepEmbed(embed, Globals.videos[this_chan].video[selected_video].domain);
         embed = prepEmbed(embed, 'size');
 
-        var redditlink = 'http://reddit.com'+$.unescapifyHTML(globals.videos[this_chan].video[selected_video].permalink);
+        var redditlink = 'http://reddit.com'+$.unescapifyHTML(Globals.videos[this_chan].video[selected_video].permalink);
         $('#video-title').html('<a href="' + redditlink + '" target="_blank"'
-                               + ' title="' + globals.videos[this_chan].video[selected_video].title_quot + '">'
-                               + globals.videos[this_chan].video[selected_video].title_unesc + '</a>');
+                               + ' title="' + Globals.videos[this_chan].video[selected_video].title_quot + '">'
+                               + Globals.videos[this_chan].video[selected_video].title_unesc + '</a>');
         $video_embed.html(embed);
         $video_embed.removeClass('loading');
 
-        addListeners(globals.videos[this_chan].video[selected_video].domain);
+        addListeners(Globals.videos[this_chan].video[selected_video].domain);
 
-        var reddit_string = redditButton('t3_' + globals.videos[this_chan].video[selected_video].id);
+        var reddit_string = redditButton('t3_' + Globals.videos[this_chan].video[selected_video].id);
         var $vote_button = $('#vote-button');
         $vote_button.stop(true,true).fadeOut('slow', function() {
-            $vote_button.html(reddit_string).fadeIn('slow');
+                $vote_button.html(reddit_string).fadeTo('slow', 1);
         });
 
         var video_source_text = 'Source: '
-            + '<a href="' + globals.videos[this_chan].video[selected_video].url + '" target="_blank">'
-            + globals.videos[this_chan].video[selected_video].domain
+            + '<a href="' + Globals.videos[this_chan].video[selected_video].url + '" target="_blank">'
+            + Globals.videos[this_chan].video[selected_video].domain
             + '</a>';
         var $video_source = $('#video-source');
         $video_source.stop(true,true).fadeOut('slow', function() {
@@ -507,26 +512,26 @@ function loadVideo(video) {
 }
 
 function getVideoKey(key){
-    if(globals.shuffle && globals.shuffled.length === globals.videos[globals.cur_chan].video.length){
-        return globals.shuffled[key];
+    if(Globals.shuffle && Globals.shuffled.length === Globals.videos[Globals.cur_chan].video.length){
+        return Globals.shuffled[key];
     }else{
         return key;
     }
 }
 
 function loadVideoById(video_id) {
-    var this_chan = globals.cur_chan, video = findVideoById(video_id, this_chan);  //returns number typed
+    var this_chan = Globals.cur_chan, video = findVideoById(video_id, this_chan);  //returns number typed
     if(video !== false){
         loadVideoList(this_chan);
         loadVideo(Number(video));
     }else{
         //ajax request
-        var last_req = globals.cur_vid_req;
+        var last_req = Globals.cur_vid_req;
         if(last_req !== null){
             last_req.abort();
         }
 	
-        globals.cur_vid_req = $.ajax({
+        Globals.cur_vid_req = $.ajax({
             url: "http://www.reddit.com/by_id/t3_"+video_id+".json",
             dataType: "jsonp",
             jsonp: "jsonp",
@@ -535,7 +540,7 @@ function loadVideoById(video_id) {
                    && isVideo(data.data.children[0].data.media.type)
                   )
                 {
-                    globals.videos[this_chan].video.splice(0,0,data.data.children[0].data);
+                    Globals.videos[this_chan].video.splice(0,0,data.data.children[0].data);
                 }
                 loadVideoList(this_chan);
                 loadVideo('first');
@@ -550,7 +555,7 @@ function loadVideoById(video_id) {
 }
 
 function isVideo(video_domain) {
-    return (globals.domains.indexOf(video_domain) !== -1);
+    return (Globals.domains.indexOf(video_domain) !== -1);
 }
 
 //http://dreaminginjavascript.wordpress.com/2008/08/22/eliminating-duplicates/
@@ -588,8 +593,8 @@ function filterVideoDupes(arr){
 }
 
 function findVideoById(id,chan) {
-    for(var x in globals.videos[chan].video){
-        if(globals.videos[chan].video[x].id === id){
+    for(var x in Globals.videos[chan].video){
+        if(Globals.videos[chan].video[x].id === id){
             return Number(x); //if found return array pos
         }
     }
@@ -597,7 +602,7 @@ function findVideoById(id,chan) {
 }
 
 function sfwCheck(video, chan) {
-    return (globals.sfw && globals.videos[chan].video[video].over_18);
+    return (Globals.sfw && Globals.videos[chan].video[video].over_18);
 }
 
 function showHideNsfwThumbs(sfw, this_chan) {
@@ -610,9 +615,9 @@ function getThumbnailUrl(chan, video_id) {
     if (sfwCheck(video_id, chan)) {
         return 'img/nsfw.png';
     }
-    else if (globals.videos[chan].video[video_id].media.oembed) {
-        return globals.videos[chan].video[video_id].media.oembed.thumbnail_url !== undefined ? 
-            globals.videos[chan].video[video_id].media.oembed.thumbnail_url :
+    else if (Globals.videos[chan].video[video_id].media.oembed) {
+        return Globals.videos[chan].video[video_id].media.oembed.thumbnail_url !== undefined ? 
+            Globals.videos[chan].video[video_id].media.oembed.thumbnail_url :
             'img/noimage.png';
     }
     else {
@@ -621,58 +626,67 @@ function getThumbnailUrl(chan, video_id) {
 }
 
 function chgChan(up_down) {
-    var old_chan = globals.cur_chan, this_chan = old_chan;
+    var old_chan = Globals.cur_chan, this_chan = old_chan;
 
     if(up_down === 'up' && this_chan > 0){
         this_chan--;
-        while(globals.channels[this_chan].channel === '' && this_chan > 0){
+        while(Globals.channels[this_chan].channel === '' && this_chan > 0){
             this_chan--;
         }
     }else if(up_down === 'up'){
-        this_chan = globals.channels.length-1;
-        while(globals.channels[this_chan].channel === '' && this_chan > 0){
+        this_chan = Globals.channels.length-1;
+        while(Globals.channels[this_chan].channel === '' && this_chan > 0){
             this_chan--;
         }
-    }else if(up_down !== 'up' && this_chan < globals.channels.length-1){
+    }else if(up_down !== 'up' && this_chan < Globals.channels.length-1){
         this_chan++;
-        while(globals.channels[this_chan].channel === ''){
+        while(Globals.channels[this_chan].channel === ''){
             this_chan++;
         }
     }else if(up_down !== 'up'){
         this_chan = 0;
-        while(globals.channels[this_chan].channel === ''){
+        while(Globals.channels[this_chan].channel === ''){
             this_chan++;
         }
     }
 
-    if(this_chan !== old_chan && globals.channels[this_chan].channel !== ''){
-        var parts = globals.channels[this_chan].feed.split("/");
+    if(this_chan !== old_chan && Globals.channels[this_chan].channel !== ''){
+        var parts = Globals.channels[this_chan].feed.split("/");
         window.location.hash = "/"+parts[1]+"/"+parts[2]+"/";
     }else if(this_chan !== old_chan){
-        globals.cur_chan = this_chan;
+        Globals.cur_chan = this_chan;
     }
 }
 
-function getFeedName(channel) {
-    for(var x in globals.channels){
-        if(globals.channels[x].channel === channel){
-            return globals.channels[x].feed;
+function getFeedURI(channel){
+    for(var x in Globals.channels){
+        if(Globals.channels[x].channel === channel){
+            return formatFeedURI(Globals.channels[x]);
         }
     }
 }
 
-function getChanName(feed) {
-    for(var x in globals.channels){
-        if(globals.channels[x].feed.indexOf(feed) !== -1){
-            return globals.channels[x].channel;
+function formatFeedURI(channel_obj){
+    switch(channel_obj.type){
+    case 'search':
+        return channel_obj.feed + Globals.search_str;
+    default:
+        return channel_obj.feed + '.json';
+    }
+}
+
+function getChanName(feed){
+    for(var x in Globals.channels){
+        if(Globals.channels[x].feed.indexOf(feed) !== -1){
+            return Globals.channels[x].channel;
         }
     }
     return false;
 }
 
 function getChan(channel) {
-    for(var x in globals.channels){
-        if(globals.channels[x].channel === channel || globals.channels[x].feed === channel){
+    for(var x in Globals.channels){
+        if(Globals.channels[x].channel === channel || Globals.channels[x].feed === channel){
             return x;
         }
     }
@@ -680,8 +694,8 @@ function getChan(channel) {
 }
 
 function getUserChan(channel) {
-    for(var x in globals.channels){
-        if(globals.user_channels[x].channel === channel || globals.user_channels[x].feed === channel){
+    for(var x in Globals.channels){
+        if(Globals.user_channels[x].channel === channel || Globals.user_channels[x].feed === channel){
             return x;
         }
     }
@@ -689,8 +703,8 @@ function getUserChan(channel) {
 }
 
 function isUserChan(channel){
-    for(var x in globals.user_channels){
-        if(globals.user_channels[x].channel === channel){
+    for(var x in Globals.user_channels){
+        if(Globals.user_channels[x].channel === channel){
             return true;
         }
     }
@@ -733,7 +747,7 @@ function addListeners(type){
 
 function fillScreen() {
     var $object, $fill, $filloverlay, fill_screen_domains = ['youtube.com', 'youtu.be'];
-    if(fill_screen_domains.indexOf(globals.videos[globals.cur_chan].video[globals.cur_video].domain) !== -1){
+    if(fill_screen_domains.indexOf(Globals.videos[Globals.cur_chan].video[Globals.cur_video].domain) !== -1){
         $object = $('#video-embed embed');
         $fill = $('#fill');
         $filloverlay = $('#fill-overlay');
@@ -750,7 +764,7 @@ function fillScreen() {
 }
 
 function togglePlay(){
-    switch(globals.videos[globals.cur_chan].video[globals.cur_video].domain){
+    switch(Globals.videos[Globals.cur_chan].video[Globals.cur_video].domain){
     case 'youtube.com': case 'youtu.be':
         youtube.togglePlay();
         break;
@@ -767,15 +781,15 @@ function addChannel(subreddit){
         click = true;
     }
     if(!getChan(subreddit)){
-        var feed = "/r/"+subreddit+"/.json";
+        var feed = "/r/"+subreddit+"/";
 
-        var c_data = {"channel": subreddit, "feed": feed};
-        globals.channels.push(c_data);
-        globals.user_channels.push(c_data);
+        var c_data = {'channel': subreddit, feed: feed};
+        Globals.channels.push(c_data);
+        Globals.user_channels.push(c_data);
         
-        $.cookie('user_channels', JSON.stringify(globals.user_channels));
+        $.jStorage.set('user_channels', Globals.user_channels);
 
-        var x = globals.channels.length - 1;
+        var x = Globals.channels.length - 1;
         displayChannel(x);
 
         if(click){
@@ -787,18 +801,18 @@ function addChannel(subreddit){
 }
 
 function removeChan(chan){ //by index (integer)
-    var idx = getUserChan(globals.channels[chan].channel);
+    var idx = getUserChan(Globals.channels[chan].channel);
     if(idx){
-        if(chan === globals.cur_chan){
+        if(chan === Globals.cur_chan){
             chgChan('up');
         }
         $('#channel-'+chan).remove();
-        globals.user_channels.splice(idx, 1);
+        Globals.user_channels.splice(idx, 1);
 
-        $.cookie('user_channels', JSON.stringify(globals.user_channels));
+        $.jStorage('user_channels', Globals.user_channels);
         //free some memory bitches
-        globals.channels[chan] = {'channel': '', 'feed': ''};
-        globals.videos[chan] = undefined;
+        Globals.channels[chan] = {channel: '', feed: ''};
+        Globals.videos[chan] = undefined;
     }
 }
 
@@ -807,23 +821,23 @@ function shuffleChan(chan){ //by index (integer
        does not shuffle actual video array
        but rather creates a global array of shuffled keys
     */
-    globals.shuffled = []; // reset
-    for(var x in globals.videos[chan].video){
-        globals.shuffled.push(x);
+    Globals.shuffled = []; // reset
+    for(var x in Globals.videos[chan].video){
+        Globals.shuffled.push(x);
     }
-    globals.shuffled = shuffleArray(globals.shuffled);
+    Globals.shuffled = shuffleArray(Globals.shuffled);
     consoleLog('shuffling channel '+chan);
 }
 
 /* Anchor Checker */
 //check fo anchor changes, if there are do stuff
 function checkAnchor(){
-    if(globals.current_anchor !== document.location.hash){
-        globals.current_anchor = document.location.hash;
-        if(!globals.current_anchor){
+    if(Globals.current_anchor !== document.location.hash){
+        Globals.current_anchor = document.location.hash;
+        if(!Globals.current_anchor){
             /* do nothing */
         }else{
-            var anchor = globals.current_anchor.substring(1);
+            var anchor = Globals.current_anchor.substring(1);
             var parts = anchor.split("/"); // #/r/videos/id
             var feed = "/"+parts[1]+"/"+parts[2]+"/";
             var new_chan_name = getChanName(feed);
@@ -832,14 +846,14 @@ function checkAnchor(){
                 new_chan_name = getChanName(feed);
             }
             var new_chan_num = getChan(new_chan_name);
-            if(new_chan_name !== undefined && new_chan_num !== globals.cur_chan){
+            if(new_chan_name !== undefined && new_chan_num !== Globals.cur_chan){
                 if(parts[3] === undefined || parts[3] === null || parts[3] === ''){
                     loadChannel(new_chan_name, null);
                 }else{
                     loadChannel(new_chan_name, parts[3]);
                 }
             }else{
-                if(globals.videos[new_chan_num] !== undefined){
+                if(Globals.videos[new_chan_num] !== undefined){
                     loadVideoById(parts[3]);
                 }else{
                     loadChannel(new_chan_name, parts[3]);
