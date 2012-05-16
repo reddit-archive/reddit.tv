@@ -554,6 +554,58 @@ function loadVideoById(video_id) {
     }
 }
 
+function loadPromo(type, id, desc){
+    consoleLog('loading promo');
+    if(Globals.cur_chan_req){
+        Globals.cur_chan_req.abort();
+    }
+    var created, url, embed, domain = type + '.com',
+        hash = '/promo/' + type + '/' + id + '/' + desc;
+
+    Globals.current_anchor = '#' + hash;
+    window.location.hash = hash;
+    gaHashTrack();
+
+    switch(type){
+    case 'youtube':
+        url = 'http://www.youtube.com/watch?v=' + id;
+        break;
+    case 'vimeo':
+        url = 'http://vimeo.com/' + id;
+        break;
+    default:
+        consoleLog('unsupported promo type');
+    }
+    
+    created = createEmbed(url, domain);
+    if(created !== false){
+        embed = prepEmbed($.unescapifyHTML(created.embed), domain);
+        embed = prepEmbed(embed, 'size');
+
+        var $video_embed = $('#video-embed');
+        $video_embed.empty();
+        $video_embed.addClass('loading');
+
+        $('#video-title').text(unescape(desc));
+        $video_embed.html(embed);
+        $video_embed.removeClass('loading');
+
+        addListeners(domain);
+
+        var video_source_text = 'Source: '
+            + '<a href="' + url + '" target="_blank">'
+            + domain
+            + '</a>';
+        var $video_source = $('#video-source');
+        $video_source.stop(true,true).fadeOut('slow', function() {
+                $video_source.html(video_source_text).fadeIn('slow');
+            });
+
+    }else{
+        consoleLog('unable to create promo embed');
+    }
+}
+
 function isVideo(video_domain) {
     return (Globals.domains.indexOf(video_domain) !== -1);
 }
@@ -803,13 +855,14 @@ function addChannel(subreddit){
 function removeChan(chan){ //by index (integer)
     var idx = getUserChan(Globals.channels[chan].channel);
     if(idx){
-        if(chan === Globals.cur_chan){
+        if(parseInt(chan) === parseInt(Globals.cur_chan)){
             chgChan('up');
         }
         $('#channel-'+chan).remove();
         Globals.user_channels.splice(idx, 1);
 
-        $.jStorage('user_channels', Globals.user_channels);
+        $.jStorage.set('user_channels', Globals.user_channels);
+
         //free some memory bitches
         Globals.channels[chan] = {channel: '', feed: ''};
         Globals.videos[chan] = undefined;
@@ -833,30 +886,35 @@ function shuffleChan(chan){ //by index (integer
 //check fo anchor changes, if there are do stuff
 function checkAnchor(){
     if(Globals.current_anchor !== document.location.hash){
+        consoleLog('anchor changed');
         Globals.current_anchor = document.location.hash;
         if(!Globals.current_anchor){
             /* do nothing */
         }else{
             var anchor = Globals.current_anchor.substring(1);
             var parts = anchor.split("/"); // #/r/videos/id
-            var feed = "/"+parts[1]+"/"+parts[2]+"/";
-            var new_chan_name = getChanName(feed);
-            if(!new_chan_name){
-                addChannel(parts[2]);
-                new_chan_name = getChanName(feed);
-            }
-            var new_chan_num = getChan(new_chan_name);
-            if(new_chan_name !== undefined && new_chan_num !== Globals.cur_chan){
-                if(parts[3] === undefined || parts[3] === null || parts[3] === ''){
-                    loadChannel(new_chan_name, null);
-                }else{
-                    loadChannel(new_chan_name, parts[3]);
-                }
+            if(parts[1] === 'promo'){
+                loadPromo(parts[2], parts[3], parts[4]);
             }else{
-                if(Globals.videos[new_chan_num] !== undefined){
-                    loadVideoById(parts[3]);
+                var feed = "/"+parts[1]+"/"+parts[2]+"/";
+                var new_chan_name = getChanName(feed);
+                if(!new_chan_name){
+                    addChannel(parts[2]);
+                    new_chan_name = getChanName(feed);
+                }
+                var new_chan_num = getChan(new_chan_name);
+                if(new_chan_name !== undefined && new_chan_num !== Globals.cur_chan){
+                    if(parts[3] === undefined || parts[3] === null || parts[3] === ''){
+                        loadChannel(new_chan_name, null);
+                    }else{
+                        loadChannel(new_chan_name, parts[3]);
+                    }
                 }else{
-                    loadChannel(new_chan_name, parts[3]);
+                    if(Globals.videos[new_chan_num] !== undefined){
+                        loadVideoById(parts[3]);
+                    }else{
+                        loadChannel(new_chan_name, parts[3]);
+                    }
                 }
             }
         }
