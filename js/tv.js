@@ -6,7 +6,7 @@ var Globals = {
             date = new Date(),
             unixtime_ms = date.getTime(),
             unixtime = parseInt(unixtime_ms / 1000);
-            return "search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A"+(unixtime - 5*one_day)+"..%29&restrict_sr=on&sort=top";
+            return "search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A"+(unixtime - 5*one_day)+"..%29&restrict_sr=on&sort=top&syntax=cloudsearch";
         })(),
 
     /* Channels Object */
@@ -278,10 +278,11 @@ function loadChannel(channel, video_id) {
     if(Globals.videos[this_chan] === undefined){
         var feed = getFeedURI(channel);
         Globals.cur_chan_req = $.ajax({
-            url: "http://www.reddit.com"+feed+"?limit=100",
+            url: "http://www.reddit.com"+feed+"&limit=100",
             dataType: "jsonp",
             jsonp: "jsonp",
             success: function(data) {
+                console.log(data);
                 Globals.videos[this_chan] = {};
                 Globals.videos[this_chan].video = []; //clear out stored videos
                 for(var x in data.data.children){
@@ -721,6 +722,7 @@ function getFeedURI(channel){
 function formatFeedURI(channel_obj){
     switch(channel_obj.type){
     case 'search':
+        console.log(channel_obj.feed + Globals.search_str);
         return channel_obj.feed + Globals.search_str;
     default:
         return channel_obj.feed + '.json';
