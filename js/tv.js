@@ -275,14 +275,15 @@ function loadChannel(channel, video_id) {
     $('#channel-list>ul>li').removeClass('chan-selected');
     $('#channel-'+this_chan).addClass('chan-selected');
 
+    
+
     if(Globals.videos[this_chan] === undefined){
         var feed = getFeedURI(channel);
         Globals.cur_chan_req = $.ajax({
-            url: "http://www.reddit.com"+feed+"&limit=100",
+            url: "http://www.reddit.com"+feed,
             dataType: "jsonp",
             jsonp: "jsonp",
             success: function(data) {
-                console.log(data);
                 Globals.videos[this_chan] = {};
                 Globals.videos[this_chan].video = []; //clear out stored videos
                 for(var x in data.data.children){
@@ -722,10 +723,9 @@ function getFeedURI(channel){
 function formatFeedURI(channel_obj){
     switch(channel_obj.type){
     case 'search':
-        console.log(channel_obj.feed + Globals.search_str);
-        return channel_obj.feed + Globals.search_str;
+        return channel_obj.feed + Globals.search_str + '&limit=100';
     default:
-        return channel_obj.feed + '.json';
+        return channel_obj.feed + '.json?limit=100';
     }
 }
 
