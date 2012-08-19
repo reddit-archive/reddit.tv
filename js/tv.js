@@ -62,7 +62,12 @@ var Globals = {
     sfw: true,
     shuffle: false,
     shuffled: [],
-    theme: 'light'
+    theme: 'light',
+
+    content_minwidth: 130,  // minimum width of #content w/o width of player
+    content_minheight: 320, // minimum height of #content w/o height of player
+    vd_minwidth: 30,        // minimum width of #video-display w/o width of player
+    vd_minheight: 213,      // minimum height of #video-display w/o height of player
 };
 
 /* MAIN (Document Ready) */
@@ -153,6 +158,10 @@ $().ready(function(){
             }
             return false;
         }
+    });
+
+    $(window).resize(function() {
+        resizePlayer();
     });
 
     /* clear add sr on click */
@@ -509,6 +518,7 @@ function loadVideo(video) {
             $video_source.html(video_source_text).fadeIn('slow');
         });
 
+        resizePlayer();
         fillScreen();
     }
 }
@@ -815,6 +825,62 @@ function fillScreen() {
             $filloverlay.css('display', 'block');
         }
     }
+}
+
+function resizePlayer() {
+    if(typeof(Globals.cur_chan) == 'undefined' ||
+       typeof(Globals.videos[Globals.cur_chan]) == 'undefined') {
+        setTimeout(resizePlayer, 100);
+        return;
+    }
+
+    consoleLog('window size changed: ' + $(window).width() + 'x' + $(window).height());
+    sitename = Globals.videos[Globals.cur_chan].video[Globals.cur_video].domain;
+
+    if(sitename == 'youtube.com' || sitename == 'youtu.be') {
+        player = $('#ytplayer');
+    }
+    else if(sitename == 'vimeo.com') {
+        player = $('#vimeoplayer');
+    }
+    else {
+        consoleLog('unsupported player: '+sitename);
+        return;
+    }
+
+    curr_player_width = player.width();
+    curr_player_height = player.height();
+    win_width = $(window).width()
+    win_height = $(window).height()
+
+    // consoleLog('content_min size: ' + (Globals.content_minwidth+curr_player_width) + 'x' + (Globals.content_minheight+curr_player_height));
+    // consoleLog('vd_min size: ' + (Globals.vd_minwidth+curr_player_width) + 'x' + (Globals.vd_minheight+curr_player_height));
+
+    if(win_width < 853+Globals.content_minwidth || win_height < 505+Globals.content_minheight) {
+        player_width  = 640;
+        player_height = 385;
+    }
+    else if(win_width < 1280+Globals.content_minwidth || win_height < 745+Globals.content_minheight) {
+        player_width  = 853;
+        player_height = 505;
+    }
+    else {
+        player_width  = 1280;
+        player_height = 745;
+    }
+
+    if(player_width == curr_player_width) { return; }  // nothing to do
+    consoleLog('resizing player to '+player_width+'x'+player_height);
+    player.width(player_width);
+    player.height(player_height);
+    player_width = player.width();    // player may not accept our request
+    player_height = player.height();
+
+    consoleLog('new player size: '+player_width+'x'+player_height);
+
+    $('#content').width(player_width + Globals.content_minwidth);
+    $('#video-display').width(player_width + Globals.vd_minwidth);
+    $('#video-display').height(player_height + Globals.vd_minheight);
 }
 
 function togglePlay(){
