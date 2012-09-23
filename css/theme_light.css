@@ -1,3 +1,44 @@
+@media (min-width:1123px) and (max-width:1318px) {
+
+  #gutter-1 {
+    left:-90px;
+  }
+
+  #gutter-2 {
+    right: 4% !important;
+  }
+}
+
+@media (max-width:1122px) {
+
+  #gutter-1 {
+    right:0px;
+  }
+
+  #gutter-2 {
+    display: none;
+  }
+}
+
+#gutter-1 {
+  top: 48px;
+  z-index: -1;
+  position: absolute;
+  width: 256px;
+  background: url(../img/left.png);
+  height: 612px;
+}
+
+#gutter-2 {
+  top: 50px;
+  width: 150px;
+  background: url(../img/right.png);
+  position: absolute;
+  z-index: -1;
+  right: 65px;
+  height: 599px;
+}
+
 body {
     background-color: white;
 }
