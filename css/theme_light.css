@@ -25,14 +25,14 @@
   z-index: -1;
   position: absolute;
   width: 256px;
-  background: url(../img/left.png);
+  //background: url(../img/left.png);
   height: 612px;
 }
 
 #gutter-2 {
   top: 50px;
   width: 150px;
-  background: url(../img/right.png);
+  //background: url(../img/right.png);
   position: absolute;
   z-index: -1;
   right: 65px;
