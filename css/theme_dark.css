@@ -34,11 +34,11 @@ body {
     border: 6px solid #5f99cf;
 }
 
-#channel-list li {
+#channel-list li, #promo-channel li {
     color: gray;
 }
 
-#channel-list li:hover {
+#channel-list li:hover, #promo-channel li:hover {
     background-color: #e0e0e0;
     background-color: rgba(256,256,256,0.2);
 }
@@ -66,7 +66,7 @@ body {
     color: #5f99cf;
 }
 
-#channel-list .chan-selected, .chan-selected li:hover {
+#channel-list .chan-selected, #promo-channel .chan-selected, .chan-selected li:hover {
     color: darkblue;
     -moz-box-shadow: 5px 5px 5px darkblue;
     -webkit-box-shadow: 5px 5px 5px darkblue;

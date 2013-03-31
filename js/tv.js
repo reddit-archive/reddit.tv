@@ -28,7 +28,18 @@ var Globals = {
         {channel: 'Atheism', type: 'search', feed: '/r/atheism/'},
         {channel: 'Sports', type: 'normal', feed: '/r/sports/'}
         ],
-    
+
+    promo: {
+
+        'channel': 'Vice',
+        'videos': [
+            {
+                'id': 'X51rPtxmd3Y',
+                'title': 'VICE Season 1 Trailer'
+            }
+        ]
+    },
+
     /* Video Domains */
     domains: [
         '5min.com', 'abcnews.go.com', 'animal.discovery.com', 'animoto.com', 'atom.com',
@@ -78,8 +89,39 @@ $().ready(function(){
     loadSettings();
     loadTheme(Globals.theme);
     displayChannels();
-    loadChannel("Videos", null);
-    
+
+    if ('promo' in Globals) {
+
+        var $channelList = $('#channel-list');
+        $channelList.addClass('promo');
+
+        var $promoList = $('#promo-channel').append($('<ul/>'));
+        $promoList.find('ul').append($('<li/>').text(Globals.promo.channel));
+        $promoList.find('li').addClass('chan-selected');
+
+        function loadThePromo () {
+
+            var type = 'youtube';
+            var id = Globals.promo.videos[0].id;
+            var desc = Globals.promo.videos[0].title;
+            loadPromo(type, id, desc);
+        }
+
+        $promoList.find('li').on('click', function () {
+
+            $promoList.find('li').addClass('chan-selected');
+            $channelList.find('li').removeClass('chan-selected');
+            loadThePromo();
+        });
+
+        loadThePromo();
+    }
+    else {
+
+        loadChannel("Videos", null);
+    }
+
+
     /* Bindings */
     var $filloverlay = $('#fill-overlay'), $fillnav = $('#fill-nav');
     $filloverlay.mouseenter(function() {
@@ -268,6 +310,9 @@ function displayChannel(chan){
 
 function loadChannel(channel, video_id) {
     var last_req = Globals.cur_chan_req, this_chan = getChan(channel), $video_embed = $('#video-embed'), $video_title = $('#video-title'), title;
+
+    // update promo state
+    $('#promo-channel li').removeClass('chan-selected');
 
     if(last_req !== null){
         last_req.abort();
