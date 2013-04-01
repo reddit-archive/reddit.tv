@@ -1,3 +1,41 @@
+@media (max-width:1170px) {
+
+  #gutter-1 {
+
+    left: 0px !important;
+    margin-left: auto !important;
+  }
+
+  #gutter-2 {
+    right: 0px !important;
+    margin-right: auto !important;
+  }
+}
+
+#gutter-1 {
+  left: 50%;
+  margin-left: -575px;
+  top: 0px;
+  z-index: -1;
+  position: absolute;
+  width: 500px;
+  background-repeat: no-repeat;
+  background: url("../img/left-big-2.jpg");
+  height: 600px;
+}
+
+#gutter-2 {
+  right: 50%;
+  margin-right: -575px;
+  top: 0px;
+  width: 499px;
+  position: absolute;
+  z-index: -2;
+  height: 610px;
+  background-repeat: no-repeat;
+  background: url("../img/right-big-2.jpg");
+}
+
 body {
     background-color: black;
 }
@@ -35,12 +73,15 @@ body {
 }
 
 #channel-list li, #promo-channel li {
-    color: gray;
+    color: black;
+    font-weight: bold;
+    background: rgba(255,255,255 -.2);
 }
 
 #channel-list li:hover, #promo-channel li:hover {
     background-color: #e0e0e0;
     background-color: rgba(256,256,256,0.2);
+    color: white;
 }
 
 #about {
