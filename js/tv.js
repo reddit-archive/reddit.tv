@@ -32,10 +32,26 @@ var Globals = {
     promo: {
 
         'channel': 'Vice',
+        'type': 'youtube',
         'videos': [
             {
                 'id': 'X51rPtxmd3Y',
                 'title': 'VICE Season 1 Trailer'
+            },
+
+            {
+                'title': 'VICE Season 1 Preview',
+                'id': '56lGttuY0cY'
+            },
+
+            {
+                'title': 'What is VICE? Featurette',
+                'id': 'UT18_goPvHc'
+            },
+
+            {
+                'title': 'What is VICE? Extended Version',
+                'id': '5jhYMlfuVNI'
             }
         ]
     },
@@ -99,7 +115,10 @@ $().ready(function(){
         $promoList.find('ul').append($('<li/>').text(Globals.promo.channel));
         $promoList.find('li').addClass('chan-selected');
 
+
         function loadThePromo () {
+
+            loadPromoVideoList();
 
             var type = 'youtube';
             var id = Globals.promo.videos[0].id;
@@ -438,6 +457,51 @@ function loadVideoList(chan) {
         .show()
         .animate({ height: '88px', padding: '5px' }, 1000, function() {
             $('img').lazyload({
+                effect : "fadeIn",
+                container: $("#video-list")
+            });
+        });
+}
+
+function loadPromoVideoList () {
+
+    $list = $('<span></span>');
+
+    for (var i in Globals.promo.videos) {
+
+        var this_video = Globals.promo.videos[i];
+
+        var $thumbnail = $('<img id="video-list-thumb-' + i + '"' + ' rel="' + i + '"' +
+                           ' title="' + this_video.title + '"/>');
+
+        var thumbNail;
+        if (Globals.promo.type === 'youtube') {
+
+            thumbNail = 'http://i2.ytimg.com/vi/' + this_video.id + '/hqdefault.jpg';
+        }
+
+        $thumbnail
+            .attr('src', 'img/noimage.png')
+            .attr('data-original', thumbNail)
+            .attr('data-id', this_video.id)
+            .attr('data-title', this_video.title)
+            .click( function () {
+
+                var $this = $(this);
+                loadPromo(Globals.promo.type, $this.attr('data-id'), $this.attr('data-title'));
+            });
+
+        $list.append($thumbnail);
+    }
+
+    $('#video-list')
+        .stop(true, true)
+        .html($list)
+        .show()
+        .animate({ height: '88px', padding: '5px' }, 1000, function () {
+
+            $('img').lazyload({
+
                 effect : "fadeIn",
                 container: $("#video-list")
             });
