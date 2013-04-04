@@ -124,6 +124,8 @@ $().ready(function(){
             var id = Globals.promo.videos[0].id;
             var desc = Globals.promo.videos[0].title;
             loadPromo(type, id, desc);
+            Globals.cur_chan = -1;
+            Globals.cur_video = 0;
         }
 
         $promoList.find('li').on('click', function () {
@@ -485,9 +487,11 @@ function loadPromoVideoList () {
             .attr('data-original', thumbNail)
             .attr('data-id', this_video.id)
             .attr('data-title', this_video.title)
+            .attr('data-index', i)
             .click( function () {
 
                 var $this = $(this);
+                Globals.cur_video = parseInt($this.attr('data-index'), 10);
                 loadPromo(Globals.promo.type, $this.attr('data-id'), $this.attr('data-title'));
             });
 
@@ -683,6 +687,17 @@ function loadVideoById(video_id) {
                 }
             }
         });
+    }
+}
+
+function loadNextPromo () {
+
+    var numVids = Globals.promo.videos.length;
+    if (Globals.cur_video < numVids -1) {
+
+        Globals.cur_video++;
+        var nextVideo = Globals.promo.videos[Globals.cur_video];
+        loadPromo(Globals.promo.type, nextVideo.id, nextVideo.title);
     }
 }
 
