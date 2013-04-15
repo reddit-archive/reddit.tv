@@ -1,46 +1,46 @@
-@media (max-width:1170px) {
+@media (min-width:1123px) and (max-width:1318px) {
 
   #gutter-1 {
-
-    left: 0px !important;
-    margin-left: auto !important;
+    left:-90px;
   }
 
   #gutter-2 {
-    right: 0px !important;
-    margin-right: auto !important;
+    right: 4% !important;
+  }
+}
+
+@media (max-width:1122px) {
+
+  #gutter-1 {
+    right:0px;
+  }
+
+  #gutter-2 {
+    display: none;
   }
 }
 
 #gutter-1 {
-  left: 50%;
-  margin-left: -575px;
-  top: 0px;
+  top: 48px;
   z-index: -1;
   position: absolute;
-  width: 500px;
-  background-repeat: no-repeat;
-  background: url("../img/left-big-2.jpg");
-  height: 600px;
+  width: 256px;
+  //background: url(../img/left.png);
+  height: 612px;
 }
 
 #gutter-2 {
-  right: 50%;
-  margin-right: -575px;
-  top: 0px;
-  width: 499px;
+  top: 50px;
+  width: 150px;
+  //background: url(../img/right.png);
   position: absolute;
-  z-index: -2;
-  height: 610px;
-  background-repeat: no-repeat;
-  background: url("../img/right-big-2.jpg");
+  z-index: -1;
+  right: 65px;
+  height: 599px;
 }
 
 body {
-
-    min-width: 1170px;
-    background-color: black;
-//    background-color: white;
+    background-color: white;
 }
 
 #video-display {
@@ -75,16 +75,13 @@ body {
     border: 6px solid #5f99cf;
 }
 
-#channel-list li, #promo-channel li {
-    color: black;
-    font-weight: bold;
-    background: rgba(255,255,255, 0.2);
+#channel-list li {
+    color: gray;
 }
 
-#channel-list li:hover, #promo-channel li:hover {
+#channel-list li:hover {
     background-color: #e0e0e0;
     background-color: rgba(0,0,0,0.1);
-    color: white;
 }
 
 #about {
@@ -110,7 +107,7 @@ body {
     color: #5f99cf;
 }
 
-#channel-list .chan-selected, #promo-channel .chan-selected, .chan-selected li:hover {
+#channel-list .chan-selected, .chan-selected li:hover {
     color: darkblue;
     -moz-box-shadow: 5px 5px 5px gray;
     -webkit-box-shadow: 5px 5px 5px gray;
