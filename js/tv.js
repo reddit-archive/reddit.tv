@@ -76,7 +76,11 @@ var Globals = {
 /* MAIN (Document Ready) */
 $().ready(function(){
     loadSettings();
-    loadTheme(Globals.theme);
+    if (Globals.forceTheme) {
+        loadTheme(Globals.forceTheme, false);
+    } else {
+        loadTheme(Globals.theme);
+    }
     displayChannels();
 
     if ('promo' in Globals) {
@@ -256,9 +260,11 @@ function loadSettings() {
     }
 }
 
-function loadTheme(id) {
+function loadTheme(id, save) {
     $('#theme').attr('href', 'css/theme_' + id + '.css');
-    $.jStorage.set('theme', id);
+    if (save != false) {
+        $.jStorage.set('theme', id);
+    }
 }
 
 function displayChannels() {
