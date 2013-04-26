@@ -150,6 +150,8 @@ body {
     margin-top: 3px;
     margin-left: 100px;
     padding: 0 15px;
+    height: 25px;
+    line-height: 25px;
     font-size: small;
 }
 
