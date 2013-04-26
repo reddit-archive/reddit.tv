@@ -20,8 +20,13 @@ body {
     width: 100px;
 }
 
-#channel-list {
+#channel-list, #promo-channel {
     padding-top: 50px;
+}
+
+#channel-list.promo {
+
+    padding-top: 0px !important;
 }
 
 #about {
@@ -105,17 +110,17 @@ body {
     cursor: pointer;
 }
 
-#channel-list {
+#channel-list, #promo-channel {
     font-size: small;
 }
 
-#channel-list ul { /* remove bullets and list indents */
+#channel-list ul, #promo-channel ul { /* remove bullets and list indents */
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-#channel-list li {
+#channel-list li, #promo-channel li {
     padding: 1px 15px;
     margin-bottom: 2px;
     cursor: hand;
@@ -201,7 +206,7 @@ form label {
     float: left;
 }
 
-#channel-list .chan-selected {
+#channel-list .chan-selected, #promo-channel .chan-selected {
     font-weight: bold;
 }
 

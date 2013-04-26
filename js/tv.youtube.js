@@ -15,6 +15,21 @@ var youtube = {
     },
 
     stateListener: function(state){
+
+        if (Globals.cur_chan === -1) {
+
+            if (state === 0) {
+
+                loadNextPromo();
+            }
+            else if (state === -1) {
+
+                youtube.togglePlay();
+            }
+
+            return;
+        }
+
         if(Globals.auto){ //global scope
             if(state === 0){
                 loadVideo('next');  //tv.js

@@ -28,7 +28,7 @@ var Globals = {
         {channel: 'Atheism', type: 'search', feed: '/r/atheism/'},
         {channel: 'Sports', type: 'normal', feed: '/r/sports/'}
         ],
-    
+
     /* Video Domains */
     domains: [
         '5min.com', 'abcnews.go.com', 'animal.discovery.com', 'animoto.com', 'atom.com',
@@ -78,8 +78,44 @@ $().ready(function(){
     loadSettings();
     loadTheme(Globals.theme);
     displayChannels();
-    loadChannel("Videos", null);
-    
+
+    if ('promo' in Globals) {
+
+        var $channelList = $('#channel-list');
+        $channelList.addClass('promo');
+
+        var $promoList = $('#promo-channel').append($('<ul/>'));
+        $promoList.find('ul').append($('<li/>').text(Globals.promo.channel));
+        $promoList.find('li').addClass('chan-selected');
+
+
+        function loadThePromo () {
+
+            loadPromoVideoList();
+
+            var type = 'youtube';
+            var id = Globals.promo.videos[0].id;
+            var desc = Globals.promo.videos[0].title;
+            loadPromo(type, id, desc);
+            Globals.cur_chan = -1;
+            Globals.cur_video = 0;
+        }
+
+        $promoList.find('li').on('click', function () {
+
+            $promoList.find('li').addClass('chan-selected');
+            $channelList.find('li').removeClass('chan-selected');
+            loadThePromo();
+        });
+
+        loadThePromo();
+    }
+    else {
+
+        loadChannel("Videos", null);
+    }
+
+
     /* Bindings */
     var $filloverlay = $('#fill-overlay'), $fillnav = $('#fill-nav');
     $filloverlay.mouseenter(function() {
@@ -269,6 +305,9 @@ function displayChannel(chan){
 function loadChannel(channel, video_id) {
     var last_req = Globals.cur_chan_req, this_chan = getChan(channel), $video_embed = $('#video-embed'), $video_title = $('#video-title'), title;
 
+    // update promo state
+    $('#promo-channel li').removeClass('chan-selected');
+
     if(last_req !== null){
         last_req.abort();
     }
@@ -393,6 +432,53 @@ function loadVideoList(chan) {
         .show()
         .animate({ height: '88px', padding: '5px' }, 1000, function() {
             $('img').lazyload({
+                effect : "fadeIn",
+                container: $("#video-list")
+            });
+        });
+}
+
+function loadPromoVideoList () {
+
+    $list = $('<span></span>');
+
+    for (var i in Globals.promo.videos) {
+
+        var this_video = Globals.promo.videos[i];
+
+        var $thumbnail = $('<img id="video-list-thumb-' + i + '"' + ' rel="' + i + '"' +
+                           ' title="' + this_video.title + '"/>');
+
+        var thumbNail;
+        if (Globals.promo.type === 'youtube') {
+
+            thumbNail = 'http://i2.ytimg.com/vi/' + this_video.id + '/hqdefault.jpg';
+        }
+
+        $thumbnail
+            .attr('src', 'img/noimage.png')
+            .attr('data-original', thumbNail)
+            .attr('data-id', this_video.id)
+            .attr('data-title', this_video.title)
+            .attr('data-index', i)
+            .click( function () {
+
+                var $this = $(this);
+                Globals.cur_video = parseInt($this.attr('data-index'), 10);
+                loadPromo(Globals.promo.type, $this.attr('data-id'), $this.attr('data-title'));
+            });
+
+        $list.append($thumbnail);
+    }
+
+    $('#video-list')
+        .stop(true, true)
+        .html($list)
+        .show()
+        .animate({ height: '88px', padding: '5px' }, 1000, function () {
+
+            $('img').lazyload({
+
                 effect : "fadeIn",
                 container: $("#video-list")
             });
@@ -574,6 +660,17 @@ function loadVideoById(video_id) {
                 }
             }
         });
+    }
+}
+
+function loadNextPromo () {
+
+    var numVids = Globals.promo.videos.length;
+    if (Globals.cur_video < numVids -1) {
+
+        Globals.cur_video++;
+        var nextVideo = Globals.promo.videos[Globals.cur_video];
+        loadPromo(Globals.promo.type, nextVideo.id, nextVideo.title);
     }
 }
 
