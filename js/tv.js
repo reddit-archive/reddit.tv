@@ -83,7 +83,7 @@ $().ready(function(){
     }
     displayChannels();
 
-    if ('promo' in Globals) {
+    if ('promo' in Globals && !window.location.hash) {
 
         var $channelList = $('#channel-list');
         $channelList.addClass('promo');
