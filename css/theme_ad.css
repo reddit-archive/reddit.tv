@@ -1,5 +1,5 @@
 body {
-    background: black;
+    background: url(../img/HBO_Hello_Ladies_Reddit_Skin_SUN_v6.jpg) black top center no-repeat;
 }
 
 #gutter-1, #gutter-2 {
@@ -8,7 +8,7 @@ body {
     height: 1000px;
     top: 0;
 }
-
+/*
 #gutter-1 {
     background: url(../img/left.jpg) no-repeat;
     float: left;
@@ -20,7 +20,7 @@ body {
     float: right;
     margin-right: -340px;
 }
-
+*/
 #content-wrapper {
     overflow: hidden;
 }
