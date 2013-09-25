@@ -1,32 +1,35 @@
 body {
-    background: url(../img/HBO-HL-SUN.jpg) black top center no-repeat;
+    background: black;
 }
-
-#gutter-1, #gutter-2 {
-    display: block;
-    width: 320px;
-    height: 1000px;
-    top: 0;
-}
-/*
-#gutter-1 {
-    background: url(../img/left.jpg) no-repeat;
-    float: left;
-    margin-left: -335px;
-}
-
-#gutter-2 {
-    background: url(../img/right.jpg) no-repeat;
-    float: right;
-    margin-right: -340px;
-}
-*/
 #content-wrapper {
     overflow: hidden;
 }
 
 #content {
     padding-right: 0;
+    position:relative
+}
+
+#content:before,
+#content:after{
+    content: "";
+    display: block;
+    height: 536px;
+    width: 141px;
+    position: absolute;
+    top:0;
+    z-index: -1;
+    background: url(../img/HBO-HL-SUN.jpg) no-repeat;
+}
+
+#content:before{
+    background-position:top left;
+    left: -161px;
+}
+
+#content:after{
+    background-position:top right;
+    right: -171px;
 }
 
 #footer {
