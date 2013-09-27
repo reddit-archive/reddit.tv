@@ -6,6 +6,18 @@
 
 <link rel="shortcut icon" href="favicon.ico" />
 
+<!-- HTML5 Boilerplate -->
+
+
+<!-- Unsemantic Grid -->
+<!-- <link rel="stylesheet" href="./lib/unsemantic-grid/assets/stylesheets/demo.css" /> -->
+<!--[if (gt IE 8) | (IEMobile)]><!-->
+  <link rel="stylesheet" href="./css/unsemantic-grid-responsive.css" />
+<!--<![endif]-->
+<!--[if (lt IE 9) & (!IEMobile)]>
+  <link rel="stylesheet" href="./css/ie.css" />
+<![endif]-->
+
 <link rel="stylesheet" href="css/layout.css" type="text/css" />
 <link rel="alternate stylesheet" href="css/theme_dark.css" type="text/css" />
 <link rel="stylesheet" href="css/theme_light.css" type="text/css" id="theme" />
@@ -40,77 +52,40 @@
 </script>
 </head>
 <body>
-<div id="gutter-1"></div>
-<div id="gutter-2"></div>
-<div id="content-wrapper">
-  <div id="content">
-    <div id="header">
-      &nbsp;
-      <div id="options">
-        <ul id="css" class="right">
-                <li><a href="#" rel="light">light</a></li>
-                <li><a href="#" rel="dark">dark</a></li>
-        </ul>
+  <header>
+    <div class="grid-container">
+      <div id="logo" class="grid-25">
+        <img src="img/logo.png" />
+      </div>
+      <div class="grid-50 center-align">
+        /r/subreddit
+      </div>
+      <div class="grid-25 right-align">
+        searchbox here
+      </div>
+    </div>
+  </header>
+  <div id="video-view">
+    <div id="video-list">
 
-        <form class="right">
-          <label for="sorting">sorting</label>
-          <select id="sorting">
-            <option value="hot">hot</option>
-            <option value="top:day">top today</option>
-            <option value="top:week">top week</option>
-            <option value="top:month">top month</option>
-            <option value="top:year">top year</option>
-          </select>
-          <input type="checkbox" id="auto" checked/>
-            <label for="auto">autoplay/advance</label>
-          <input type="checkbox" id="shuffle"/>
-            <label for="auto">shuffle</label>
-          <input type="checkbox" id="fill"/>
-            <label for="fill">fill screen</label>
-          <input type="checkbox" id="sfw" checked/>
-            <label for="sfw">sfw</label>
-        </form>
+    </div>
+    <div id="video-container" class="grid-container">
+      <div id="video-embed" class="grid-100 mobile-grid-100">
+
+      </div>
+      <div id="video-meta">
+        <div id="video-description" class="grid-70 mobile-grid-75">
+          <span id="video-sponsored-label" class="sponsored">SPONSORED </span>
+          <span id="video-title"></span> 
+        </div>
+        <div id="video-actions" class="grid-30 right-align">
+          COMMENTS | TWEET | SHARE
+        </div>
       </div>
     </div>
-    <div id="sidebar">
-      <div id="promo-channel"></div>
-      <div id="channel-list"></div>
-      <div id="add-channel">
-        <form id="add-channel-form" onSubmit="addChannel();return false;">
-          <input type="text" id="channel-name" value="subreddit" size="10"/>
-          <br/>
-          <input type="submit" id="channel-add" value="load"/>
-        </form>
-      </div>
-      <div id="about">
-        <a href="http://americancensorship.org" target="_blank">STOP CENSORSHIP</a>
-        <br/>
-        <br/><a href="http://reddit.com/r/reddit_tv" target="_blank" title="reddit.tv on reddit - bug reports, feature requests, channel suggestions">/r/reddit_tv</a>
-        <br/>
-        <br/><a href="https://github.com/octatone/reddit.tv" title="help improve reddit.tv" target="_blank">source</a>
-        <br/>
-        <br/><a href="mailto:marketing@reddit.com?subject=reddit.tv%20inquiry" title="advertise on reddit.tv" target="_blank">advertise</a>
-      </div>
-    </div>
-    <div id="video-display">
-      <div id="video-title"></div>
-      <div id="video-embed"></div>
-      <div id="video-source"></div>
-      <div id="video-nav">
-        <a id="prev-button" class="nav-button">&lt; PREV</a>
-        <a id="next-button" class="nav-button">NEXT &gt;</a>
-        <div id="vote-button"></div>
-      </div>
-      <div id="video-list"></div>
-    </div>
-    <div id="footer">keyboard shortcuts: ← ↑ ↓ → spacebar f c</div>
-    <div id="also-like">Enjoy reddit.tv?  You might also like <a href="http://radioreddit.com">radioreddit.com</a>!</div>
   </div>
-</div>
-<div id="fill-overlay">
-  <div id="fill-nav">
-    exit fill screen
+  <div id="channels">
+    <div
   </div>
-</div>
 </body>
 </html>

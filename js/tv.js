@@ -988,22 +988,22 @@ function resizePlayer() {
     win_height = $(window).height();
 
     // consoleLog('content_min size: ' + (Globals.content_minwidth+curr_player_width) + 'x' + (Globals.content_minheight+curr_player_height));
-    // consoleLog('vd_min size: ' + (Globals.vd_minwidth+curr_player_width) + 'x' + (Globals.vd_minheight+curr_player_height));
+    consoleLog('vd_min size: ' + (Globals.vd_minwidth+curr_player_width) + 'x' + (Globals.vd_minheight+curr_player_height));
 
     if(win_width < 853+Globals.content_minwidth || win_height < 505+Globals.content_minheight) {
         player_width  = 640;
         player_height = 385;
     }
-    else if(win_width < 1280+Globals.content_minwidth || win_height < 745+Globals.content_minheight) {
+    else if(win_width < 1000+Globals.content_minwidth || win_height < 745+Globals.content_minheight) {
         player_width  = 853;
         player_height = 505;
     }
     else {
-        player_width  = 1280;
-        player_height = 745;
+        player_width  = 1000;
+        player_height = 620;
     }
 
-    if(player_width == curr_player_width) { return; }  // nothing to do
+    if(player_width == curr_player_width && player_height == curr_player_height) { return; }  // nothing to do
     consoleLog('resizing player to '+player_width+'x'+player_height);
     player.width(player_width);
     player.height(player_height);
