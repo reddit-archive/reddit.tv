@@ -404,6 +404,24 @@ function loadChannel(channel, video_id) {
     }
 }
 
+function toggleVideoList(){
+    videoList = $('#video-list');
+    if(videoList.hasClass('bounceOutUp')) {
+        openVideoList();
+    }
+    else {
+        closeVideoList();
+    }
+}
+
+function openVideoList() {
+    videoList.addClass('bounceInDown').removeClass('bounceOutUp');
+}
+
+function closeVideoList() {
+    videoList.addClass('bounceOutUp').removeClass('bounceInDown');
+}
+
 function loadVideoList(chan) {
     var this_chan = chan, $list = $('<span></span>');
     for(var i in Globals.videos[this_chan].video) {
@@ -436,12 +454,14 @@ function loadVideoList(chan) {
         .stop(true, true)
         .html($list)
         .show()
-        .animate({ height: '88px', padding: '5px' }, 1000, function() {
+        .animate({ height: '88px', padding: '105px 5px 5px 5px' }, 1000, function() {
             $('img').lazyload({
                 effect : "fadeIn",
                 container: $("#video-list")
             });
         });
+
+    setTimeout('toggleVideoList()', 2000);
 }
 
 function loadPromoVideoList () {

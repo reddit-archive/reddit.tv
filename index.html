@@ -19,6 +19,7 @@
 <![endif]-->
 
 <link rel="stylesheet" href="css/layout.css" type="text/css" />
+<link rel="stylesheet" href="css/animate.css" type="text/css" />
 <link rel="alternate stylesheet" href="css/theme_dark.css" type="text/css" />
 <link rel="stylesheet" href="css/theme_light.css" type="text/css" id="theme" />
 
@@ -32,6 +33,35 @@
 <script src="js/tv.youtube.js" type="text/javascript"></script>
 <script src="js/tv.vimeo.js" type="text/javascript"></script>
 <script src="js/tv.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+  videoListMouse = false;
+  function videoListTimeout(){
+    if(videoListMouse == false) {
+      closeVideoList();
+    }
+  }
+  $(document).ready(function(){
+    $('header').mouseover(function(){
+      consoleLog('opening video list');
+      videoListMouse = true;
+      openVideoList();
+    });
+    $('#video-list').mouseover(function(){
+      consoleLog('opening video list');
+      videoListMouse = true;
+      openVideoList();
+    });
+    $('header').mouseout(function(){
+      videoListMouse = false;
+      setTimeout('videoListTimeout()', 1000);
+    });
+    $('#video-list').mouseout(function(){
+      videoListMouse = false;
+      setTimeout('videoListTimeout()', 1000);
+    });
+  });
+</script>
 
 <script type="text/javascript">
   if(window.location.host.match('reddit.tv')){
@@ -57,18 +87,16 @@
       <div id="logo" class="grid-25">
         <img src="img/logo.png" />
       </div>
-      <div class="grid-50 center-align">
+      <div id="now-playing-title" class="grid-50 center-align">
         /r/subreddit
       </div>
-      <div class="grid-25 right-align">
+      <div id="add-channel" class="grid-25 right-align">
         searchbox here
       </div>
     </div>
   </header>
   <div id="video-view">
-    <div id="video-list">
-
-    </div>
+    <div id="video-list" class="animated"></div>
     <div id="video-container" class="grid-container">
       <div id="video-embed" class="grid-100 mobile-grid-100">
 

@@ -67,8 +67,8 @@ body {
 }
 
 #video-list {
-    border: 2px solid lightgray;
-    background-color: #A2AEBA;
+    border-bottom:2px solid rgba(55,55,55,0.8);
+    background-color: rgba(33,33,33,0.8);
 }
 
 #video-list img {

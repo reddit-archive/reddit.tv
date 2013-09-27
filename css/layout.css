@@ -27,6 +27,16 @@ header .grid-container {
     padding-top:10px;
 }
 
+#now-playing-title {
+    padding-top: 25px;
+    padding-bottom: 0;
+}
+
+#add-channel {
+    padding-top: 25px;
+    padding-bottom: 0;
+}
+
 #video-list {
     background-color:rgba(.3,.3,.3,.5);
     border:none;
@@ -36,10 +46,8 @@ header .grid-container {
     z-index: 2;
     transition: top .5s;
     -webkit-transition: top .5s;
-}
-
-#video-list.hidden {
-    top:-37px;
+    padding-top: 105px;
+    margin-top: -100px;
 }
 
 #video-list img, #video-list .thumbnail {
@@ -76,6 +84,10 @@ header .grid-container {
 
 #video-meta {
     margin:5px 0;
+}
+
+#video-sponsored-label {
+    display: none;
 }
 
 #video-title, #video-title a {

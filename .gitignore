@@ -3,3 +3,4 @@
 *bak
 *.bak
 lib
+.DS_Store
