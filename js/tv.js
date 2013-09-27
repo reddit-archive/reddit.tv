@@ -414,8 +414,8 @@ function loadVideoList(chan) {
             this_video.title_quot  = String(this_video.title_unesc).replace(/\"/g,'&quot;');
         }
 
-        var $thumbnail = $('<img id="video-list-thumb-' + i + '"' + ' rel="' + i + '"' +
-                           ' title="' + this_video.title_quot + '"/>');
+        var $thumbnail = $('<div id="video-list-thumb-' + i + '" class="thumbnail"' + ' rel="' + i + '"' +
+                           ' title="' + this_video.title_quot + '"></div>');
 
 	// make nsfw thumbnails easily findable
         if (this_video.over_18) {
@@ -423,11 +423,11 @@ function loadVideoList(chan) {
         }
 
         $thumbnail
-            .attr('src', 'img/noimage.png')
-            .attr('data-original', getThumbnailUrl(this_chan, i))
-            .click( function () {
+             .click( function () {
                 loadVideo( Number( $(this).attr('rel') ));
             });
+        $thumbnail.css('background-image', 'url('+getThumbnailUrl(this_chan, i)+')');
+
 
         $list.append($thumbnail);
     }
@@ -990,18 +990,9 @@ function resizePlayer() {
     // consoleLog('content_min size: ' + (Globals.content_minwidth+curr_player_width) + 'x' + (Globals.content_minheight+curr_player_height));
     consoleLog('vd_min size: ' + (Globals.vd_minwidth+curr_player_width) + 'x' + (Globals.vd_minheight+curr_player_height));
 
-    if(win_width < 853+Globals.content_minwidth || win_height < 505+Globals.content_minheight) {
-        player_width  = 640;
-        player_height = 385;
-    }
-    else if(win_width < 1000+Globals.content_minwidth || win_height < 745+Globals.content_minheight) {
-        player_width  = 853;
-        player_height = 505;
-    }
-    else {
-        player_width  = 1000;
-        player_height = 620;
-    }
+    player_width = $('#video-embed').width();
+    player_height = curr_player_height/curr_player_width*player_width;
+    consoleLog('player_width: '+player_width+' player_height: '+player_height);
 
     if(player_width == curr_player_width && player_height == curr_player_height) { return; }  // nothing to do
     consoleLog('resizing player to '+player_width+'x'+player_height);

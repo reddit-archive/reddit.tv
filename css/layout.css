@@ -14,7 +14,9 @@ body {
 .right-align { text-align: right; }
 
 header {
+    position: relative;
     background-color: #CEE3FD;
+    z-index: 3;
 }
 
 header .grid-container {
@@ -32,23 +34,44 @@ header .grid-container {
     position: absolute;
     float: left;
     z-index: 2;
+    transition: top .5s;
+    -webkit-transition: top .5s;
 }
 
-#video-list img {
-    height:80%;
+#video-list.hidden {
+    top:-37px;
+}
+
+#video-list img, #video-list .thumbnail {
+    height:100%;
+    width:158px;
     margin-right: 10px;
     margin-bottom:20px;
+    background-size: 100%;
+    background-position: center center;
+    float: left;
+}
+
+#video-list .thumbnail.focus {
+    height:calc(100% - 12px);
+    width:146px;
+    background-size: calc(100% + 12px);
 }
 
 #video-view {
     background-color: #252525;
-    height:660px;
+    min-height:660px;
     overflow: hidden;
 }
 
 #video-view embed {
     width:100%;
+    height:620px;
     position: relative;
+}
+
+#video-description {
+    margin-bottom: 10px;
 }
 
 #video-meta {
