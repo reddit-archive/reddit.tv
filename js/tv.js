@@ -665,7 +665,7 @@ function loadVideoById(video_id) {
         if(last_req !== null){
             last_req.abort();
         }
-	
+
         Globals.cur_vid_req = $.ajax({
             url: "http://www.reddit.com/by_id/t3_"+video_id+".json",
             dataType: "jsonp",
@@ -998,8 +998,12 @@ function resizePlayer() {
         player = $('#vimeoplayer');
     }
     else {
-        consoleLog('unsupported player: '+sitename);
-        return;
+        player = $('#video-embed iframe').or('#video-embed object');
+
+        if (!player.length) {
+            consoleLog('unsupported player: '+sitename);
+            return;
+        }
     }
 
     curr_player_width = player.width();
@@ -1205,3 +1209,7 @@ function gaHashTrack(){
         _gaq.push(['_trackPageview',location.pathname + location.hash]);
     }
 }
+
+$.fn.or = function( fallbackSelector ) {
+    return this.length ? this : $( fallbackSelector || 'body' );
+};
