@@ -38,6 +38,7 @@ header .grid-container {
 }
 
 #video-list {
+    width: 100%;
     background-color:rgba(.3,.3,.3,.5);
     border:none;
     overflow-y: hidden;
@@ -48,6 +49,8 @@ header .grid-container {
     -webkit-transition: top .5s;
     padding-top: 105px;
     margin-top: -100px;
+    white-space: nowrap;
+    text-align: center;
 }
 
 #video-list img, #video-list .thumbnail {
@@ -57,13 +60,17 @@ header .grid-container {
     margin-bottom:20px;
     background-size: 100%;
     background-position: center center;
-    float: left;
+    display: inline-block;
 }
 
 #video-list .thumbnail.focus {
     height:calc(100% - 12px);
     width:146px;
     background-size: calc(100% + 12px);
+}
+
+.nsfw_thumb {
+    display: none;
 }
 
 #video-view {
