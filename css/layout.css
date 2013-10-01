@@ -33,8 +33,19 @@ header .grid-container {
 }
 
 #add-channel {
-    padding-top: 25px;
+    margin-top: 25px;
+    margin-right: 20px;
     padding-bottom: 0;
+    font-size: 15px;
+}
+
+#settings {
+    float: right;
+}
+
+#settings img {
+    margin-top: 25px;
+    width:25px;
 }
 
 #video-list {

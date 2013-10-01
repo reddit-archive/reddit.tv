@@ -227,6 +227,8 @@ $().ready(function(){
     }else{
         setInterval(checkAnchor, 100);
     }
+
+    videoList = $('#video-list');
 });
 
 /* Main Functions */
@@ -335,8 +337,11 @@ function loadChannel(channel, video_id) {
     $video_embed.addClass('loading');
     $video_embed.empty();
     
+    // TODO: Change to highlight the channel in the grid instead
     $('#channel-list>ul>li').removeClass('chan-selected');
     $('#channel-'+this_chan).addClass('chan-selected');
+
+    $('#now-playing-title').empty().append(Globals.channels[Globals.cur_chan].channel+" - "+Globals.channels[Globals.cur_chan].feed);
 
     
 
@@ -405,7 +410,6 @@ function loadChannel(channel, video_id) {
 }
 
 function toggleVideoList(){
-    videoList = $('#video-list');
     if(videoList.hasClass('bounceOutUp')) {
         openVideoList();
     }
@@ -415,11 +419,13 @@ function toggleVideoList(){
 }
 
 function openVideoList() {
-    videoList.addClass('bounceInDown').removeClass('bounceOutUp');
+    videoList.open = true;
+    videoList.addClass('slideInDown').removeClass('bounceOutUp');
 }
 
 function closeVideoList() {
-    videoList.addClass('bounceOutUp').removeClass('bounceInDown');
+    videoList.open = false;
+    videoList.addClass('bounceOutUp').removeClass('slideInDown');
 }
 
 function loadVideoList(chan) {
@@ -461,6 +467,7 @@ function loadVideoList(chan) {
             });
         });
 
+    videoList.open = true;
     setTimeout('toggleVideoList()', 2000);
 }
 
@@ -516,6 +523,11 @@ function loadVideo(video) {
         this_video = Globals.cur_video,
         selected_video = this_video,
         videos_size = Object.size(Globals.videos[this_chan].video)-1;
+
+    if(!videoList.open) {
+        openVideoList();
+        setTimeout('videoListTimeout()', 2000);
+    }
 
     if(Globals.shuffle){
         if(Globals.shuffled.length === 0){
