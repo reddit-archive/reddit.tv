@@ -92,7 +92,50 @@
       </div>
       <div class="grid-25 right-align">
         <input id="add-channel" value="searchbox here" />
-        <div id="settings"><img src="img/settings.svg" /></div>
+        <div id="settings">
+          <img src="img/settings.svg" />
+          <div id="options">
+            <form>
+              <label for="sorting">
+              <span>sorting</span>
+
+              <select id="sorting">
+                <option value="hot">hot</option>
+                <option value="top:day">top today</option>
+                <option value="top:week">top week</option>
+                <option value="top:month">top month</option>
+                <option value="top:year">top year</option>
+              </select>
+              </label>
+
+              <label for="auto">
+                <span>autoplay/advance</span>
+                <input type="checkbox" id="auto" checked/>
+              </label>                
+
+              <label for="shuffle">
+                <span>shuffle</span>
+                <input type="checkbox" id="shuffle"/>
+              </label>
+
+              
+              <label for="fill">
+                <span>fill screen</span>
+                <input type="checkbox" id="fill"/>
+              </label>
+
+              <label for="sfw">
+                <span>sfw</span>
+                <input type="checkbox" id="sfw" checked/>
+              </label>
+
+              <ul id="css" class="right">
+                      <li><a href="#" rel="light">light</a></li>
+                      <li><a href="#" rel="dark">dark</a></li>
+              </ul>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </header>

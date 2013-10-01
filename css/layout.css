@@ -21,6 +21,7 @@ body {
 header {
     position: relative;
     background-color: #CEE3FD;
+    border-bottom: 1px solid rgba(0,0,0,0.5);
     z-index: 3;
 }
 
@@ -147,4 +148,49 @@ header .grid-container {
 
 #video-actions {
     color:#5f99cf;
+}
+
+#settings {
+    position: relative;
+}
+
+#settings #options:before { /* Invisible hover area */
+    content: '';
+    height: 55px;
+    position: absolute;
+    top: -55px;
+    left: 0;
+    width: 200px;
+}
+
+#settings #options {
+    display: none;
+    position: absolute;
+    background: #CEE3FD;
+
+    width: 200px;
+    padding: 10px 0;
+    margin-left: -10px;
+ 
+    border: 1px solid rgba(0,0,0,0.5);
+    border-top-width: 0;
+    border-radius: 0 0 5px 5px;
+}
+
+#settings:hover #options {
+    display: block;
+}
+
+#options label {
+    display: block;
+    margin-bottom: 5px;
+    padding: 0 10px;
+}
+
+#options label:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+#options label span {
+    float: left;
 }
