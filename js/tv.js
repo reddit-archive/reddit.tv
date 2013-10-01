@@ -460,7 +460,7 @@ function loadVideoList(chan) {
         .stop(true, true)
         .html($list)
         .show()
-        .animate({ height: '88px', padding: '105px 5px 5px 5px' }, 1000, function() {
+        .animate({ height: '100px', padding: '5px' }, 1000, function() {
             $('img').lazyload({
                 effect : "fadeIn",
                 container: $("#video-list")
@@ -952,6 +952,12 @@ function createEmbed(url, type){
 }
 
 function prepEmbed(embed, type){
+    // Flash and z-index on Windows fix
+    if (!embed.match(/wmode/))
+        embed = embed
+            .replace(/<embed /, '<embed wmode="opaque" ')
+            .replace(/<\/object>/, '<param name="wmode" value="opaque" /></object>');
+
     switch(type){
     case 'youtube.com': case 'youtu.be':
         return youtube.prepEmbed(embed);
@@ -960,11 +966,9 @@ function prepEmbed(embed, type){
     case 'size':
         embed = embed.replace(/height\="(\d\w+)"/gi, 'height="480"');
         embed = embed.replace(/width\="(\d\w+)"/gi, 'width="640"');
-        return embed;
-    default:
-        return embed;
     }
     
+    return embed;
 }
 
 function addListeners (type) {

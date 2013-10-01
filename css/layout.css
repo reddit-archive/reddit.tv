@@ -5,6 +5,11 @@ body {
     text-align: left;
 }
 
+/* apply a natural box layout model to all elements */
+*, *:before, *:after {
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+
 .sponsored {
     color: #5f99cf;
 }
@@ -50,19 +55,43 @@ header .grid-container {
 
 #video-list {
     width: 100%;
-    background-color:rgba(.3,.3,.3,.5);
-    border:none;
-    overflow-y: hidden;
+    background-color:rgba(70,70,70,.7);
+    border: none !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
     position: absolute;
     float: left;
     z-index: 2;
     transition: top .5s;
     -webkit-transition: top .5s;
-    padding-top: 105px;
-    margin-top: -100px;
+    padding: 5px;
     white-space: nowrap;
     text-align: center;
 }
+
+#video-list::-webkit-scrollbar {
+      height: 5px;
+}
+
+#video-list::-webkit-scrollbar-track {
+    background-color: #b46868;
+    background-color: transparent;
+} /* the new scrollbar will have a flat appearance with the set background color */
+#video-list::-webkit-scrollbar-thumb {
+    /*background-color: rgba(0, 0, 0, 0.2);*/
+    background-color: rgba(206, 227, 248, 0.5);
+    width: 50px;
+    transition: background-color 0.3s;
+} /* this will style the thumb, ignoring the track */
+#video-list::-webkit-scrollbar-thumb:hover {
+    background-color: #5f99cf;
+}
+#video-list::-webkit-scrollbar-button {
+      display: none;
+} /* optionally, you can style the top and the bottom buttons (left and right for horizontal bars) */
+#video-list::-webkit-scrollbar-corner {
+      background-color: transparent;
+} /* if both the vertical and the horizontal bars appear, then perhaps the right bottom corner also needs to be styled */
 
 #video-list img, #video-list .thumbnail {
     height:100%;
@@ -75,13 +104,16 @@ header .grid-container {
 }
 
 #video-list .thumbnail.focus {
-    height:calc(100% - 12px);
-    width:146px;
+    height:100%;
     background-size: calc(100% + 12px);
 }
 
 .nsfw_thumb {
     display: none;
+}
+
+#video-container {
+    margin-top: 10px;
 }
 
 #video-view {
