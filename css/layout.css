@@ -103,6 +103,7 @@ header .grid-container {
     background-size: 100%;
     background-position: center center;
     display: inline-block;
+    cursor: pointer;
 }
 
 #video-list .thumbnail.focus {
@@ -121,6 +122,7 @@ header .grid-container {
 #video-view {
     background-color: #252525;
     min-height:660px;
+    margin-bottom: 30px;
     overflow: hidden;
 }
 
@@ -194,4 +196,35 @@ header .grid-container {
 
 #options label span {
     float: left;
+}
+
+#channels a.channel {
+    display: block;
+    color: #013f79;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+#channels .channel .thumbnail {
+    background: #5f99cf none center center no-repeat;
+    background-size: cover;
+    width: 100%;
+    height: 120px;
+}
+
+#channels .channel.loading {
+    background: none;
+}
+
+#channels .channel.loading .thumbnail {
+    background-image: url(../img/channel-loader.gif);
+    background-size: auto;
+}
+
+#channels .channel.focus .thumbnail {
+    background-size: calc(100% + 12px);
+    border: 6px solid #5f99cf;
 }

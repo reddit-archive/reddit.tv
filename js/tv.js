@@ -12,6 +12,7 @@ var Globals = {
 
     /* Channels Object */
     channels: [
+        {channel: 'Add Channel', type: 'new', feed: '/function/add_channel/'},
         {channel: 'All', type: 'search', feed: '/r/all/'},
         {channel: 'Videos', type: 'normal', feed: '/r/videos/'},
         {channel: 'Funny', type: 'search', feed: '/r/funny/'},
@@ -270,21 +271,27 @@ function loadTheme(id, save) {
 }
 
 function displayChannels() {
-    var $channel_list = $('#channel-list'), $list = $('<ul></ul>');
-    $channel_list.html($list);
+    var $channel_list = $('#channel-list'),
+        $list = $('<ul></ul>'),
+        $channel_base = $('#channels a.channel:first');
+
+    $channel_base.hide();
+    // $channel_list.html($list);
     for(var x in Globals.channels){
         displayChannel(x);
     }
 }
 
 function displayChannel(chan){
-    var title, display_title, class_str='', remove_str='';
+    var title, display_title, class_str='', remove_str='',
+        $channel_base = $('#channels a.channel:first'),
+        $channel = $channel_base.clone();
 
-    title = Globals.channels[chan].feed.split("/");
-    title = "/"+title[1]+"/"+title[2];
+    chan_title = Globals.channels[chan].feed.split("/");
+    chan_title = "/"+chan_title[1]+"/"+chan_title[2];
 
-    display_title = Globals.channels[chan].channel.length > 8 ?
-        Globals.channels[chan].channel.replace(/[aeiou]/gi,'').substr(0,7) :
+    display_title = Globals.channels[chan].channel.length > 20 ?
+        Globals.channels[chan].channel.replace(/[aeiou]/gi,'').substr(0,20) :
         Globals.channels[chan].channel;
 
     if(isUserChan(Globals.channels[chan].channel)){
@@ -292,15 +299,37 @@ function displayChannel(chan){
         remove_str = '<a id="remove-'+chan+'" class="remove-chan">-</a>';
     }
 
-    $('#channel-list>ul').append('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'>'+display_title+remove_str+'</li>');
-    $('#channel-'+chan).bind(
+    $channel
+        .show()
+        .appendTo('#channels')
+        .attr({
+            id: 'channel-' + chan,
+            href: '/#' + Globals.channels[chan].feed,
+            title: chan_title
+        })
+        // .find('.thumbnail')
+            /*.css({
+                'background-image': 'url(http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg)'
+            })*/
+        // .parent()
+        .find('.name')
+            .html(display_title);
+
+/*    <a class="grid-25 channel" href="/#/r/subreddit">
+      <div class="thumbnail"></div>
+      <span class="name">channel</span>
+    </a>*/
+
+    $('#channel>ul').append('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'><img src="http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg" />'+display_title+remove_str+'</li>');
+    // $('#channel-list>ul').append('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'><img src="http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg" />'+display_title+remove_str+'</li>');
+    /*$('#channel-'+chan).bind(
         'click',
         {channel: Globals.channels[chan].channel, feed: Globals.channels[chan].feed},
         function(event) {
             var parts = event.data.feed.split("/");
             window.location.hash = "/"+parts[1]+"/"+parts[2]+"/";
         }
-    );
+    );*/
     $('#remove-'+chan).bind(
         'click',
         {channel: chan},
@@ -344,7 +373,6 @@ function loadChannel(channel, video_id) {
     $('#now-playing-title').empty().append(Globals.channels[Globals.cur_chan].channel+" - "+Globals.channels[Globals.cur_chan].feed);
 
     
-
     if(Globals.videos[this_chan] === undefined){
         var feed = getFeedURI(channel);
         Globals.cur_chan_req = $.ajax({
