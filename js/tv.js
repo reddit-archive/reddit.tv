@@ -71,7 +71,26 @@ var Globals = {
     content_minwidth: 130,  // minimum width of #content w/o width of player
     content_minheight: 320, // minimum height of #content w/o height of player
     vd_minwidth: 30,        // minimum width of #video-display w/o width of player
-    vd_minheight: 213      // minimum height of #video-display w/o height of player
+    vd_minheight: 213,      // minimum height of #video-display w/o height of player
+
+    chan_thumbs: [ // temporary until database'd
+        '', // add
+        'http://i2.ytimg.com/vi/suly1mahTSc/hqdefault.jpg', // all
+        'http://i2.ytimg.com/vi/Rd_BRT6_TPk/hqdefault.jpg', // videos
+        'http://i2.ytimg.com/vi/NX0VpF1K2aY/hqdefault.jpg', // funny
+        'http://b.vimeocdn.com/ts/411/614/411614719_640.jpg', // tech
+        'http://cdn.escapistmagazine.com/media/global/images/library/deriv/29/29326.jpg', // gaming
+        'http://i2.ytimg.com/vi/wQN6arM6fj0/hqdefault.jpg', // aww
+        'http://i2.ytimg.com/vi/7lIZQqYlz_o/hqdefault.jpg', // wtf
+        'http://i2.ytimg.com/vi/CMPIxEWGs5g/hqdefault.jpg', // music
+        'http://i2.ytimg.com/vi/QhFsKCF56xU/hqdefault.jpg', // listen
+        'http://i2.ytimg.com/vi/PwKpD3iDICo/hqdefault.jpg', // til
+        'http://image.pbs.org/video-assets/pbs/america-reframed/98701/images/Mezzanine_200.jpg', // pbs
+        'http://images.ted.com/images/ted/6c958d2d15b9c44400e2b7d6b0bbc9e32805d554_389x292.jpg', // ted
+        'http://i2.ytimg.com/vi/suly1mahTSc/hqdefault.jpg', // politics
+        'http://i2.ytimg.com/vi/znMBG5DQn14/hqdefault.jpg', // atheism
+        'http://i2.ytimg.com/vi/9Ix4AdrhtYg/hqdefault.jpg', // sports
+    ]
 };
 
 /* MAIN (Document Ready) */
@@ -230,6 +249,16 @@ $().ready(function(){
     }
 
     videoList = $('#video-list');
+
+    // Channel thumbnail onClicks
+    $('#channels').on(
+        'click',
+        'a.channel',
+        function() {
+            $('#channels a.channel').removeClass('focus');
+            $(this).addClass('focus');
+        }
+    );
 });
 
 /* Main Functions */
@@ -307,11 +336,12 @@ function displayChannel(chan){
             href: '#' + Globals.channels[chan].feed,
             title: chan_title
         })
-        // .find('.thumbnail')
-            /*.css({
-                'background-image': 'url(http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg)'
-            })*/
-        // .parent()
+        .removeClass('loading') // temp
+        .find('.thumbnail')
+            .css({
+                'background-image': 'url(' + Globals.chan_thumbs[chan] + ')'
+            })
+        .parent()
         .find('.name')
             .html(display_title);
 
