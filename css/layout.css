@@ -173,7 +173,7 @@ header .grid-container {
 
     width: 200px;
     padding: 10px 0;
-    margin-left: -10px;
+    margin: 6px 0 0 -10px;
  
     border: 1px solid rgba(0,0,0,0.5);
     border-top-width: 0;
@@ -188,6 +188,7 @@ header .grid-container {
     display: block;
     margin-bottom: 5px;
     padding: 0 10px;
+    cursor: pointer;
 }
 
 #options label:hover {
@@ -227,4 +228,17 @@ header .grid-container {
 #channels .channel.focus .thumbnail {
     background-size: calc(100% + 12px);
     border: 6px solid #5f99cf;
+}
+
+
+/* Media queries */
+@media (max-width: 1330px) {
+    #settings {
+        position: static;
+    }
+
+    #settings #options {
+        right: 10px;
+    }
+
 }
