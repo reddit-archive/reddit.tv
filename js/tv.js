@@ -259,6 +259,29 @@ $().ready(function(){
             $(this).addClass('focus');
         }
     );
+
+    $('#video-list').on(
+        'mouseenter mouseleave',
+        '.thumbnail',
+        function(e) {
+            if (e.type == 'mouseenter') {
+                var toolTip = $('#vid-list-tooltip'),
+                    toolTipPos = 0,
+                    title = $(this).attr('title');
+
+                $(this).attr('title', '');
+                toolTip.show().html(title);
+                toolTipPos = $(this).offset().left + ($(this).width() / 2) - ($('#vid-list-tooltip').width() / 2);
+                toolTip.css({
+                        'z-index': 9001,
+                        'left': (toolTipPos < 0) ? 0 : toolTipPos
+                    });
+            } else if (e.type == 'mouseleave') {
+                $(this).attr('title', $('#vid-list-tooltip').html());
+                $('#vid-list-tooltip').hide();
+            }
+        }
+    );
 });
 
 /* Main Functions */
