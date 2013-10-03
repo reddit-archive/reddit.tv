@@ -304,7 +304,7 @@ function displayChannel(chan){
         .appendTo('#channels')
         .attr({
             id: 'channel-' + chan,
-            href: '/#' + Globals.channels[chan].feed,
+            href: '#' + Globals.channels[chan].feed,
             title: chan_title
         })
         // .find('.thumbnail')
@@ -315,7 +315,7 @@ function displayChannel(chan){
         .find('.name')
             .html(display_title);
 
-/*    <a class="grid-25 channel" href="/#/r/subreddit">
+/*    <a class="grid-25 channel" href="#/r/subreddit">
       <div class="thumbnail"></div>
       <span class="name">channel</span>
     </a>*/
