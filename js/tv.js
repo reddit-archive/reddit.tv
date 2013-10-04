@@ -260,11 +260,14 @@ $().ready(function(){
         }
     );
 
+    // VidList tooltips
     $('#video-list').on(
         'mouseenter mouseleave',
         '.thumbnail',
         function(e) {
             if (e.type == 'mouseenter') {
+                if ($('#video-list').hasClass('scrolling')) return; // Don't show tooltips while scrolling
+
                 var toolTip = $('#vid-list-tooltip'),
                     toolTipPos = 0,
                     title = $(this).attr('title');
@@ -548,6 +551,11 @@ function loadVideoList(chan) {
             });
         });
 
+    // Use jScrollPane-esque thing if not using Webkit
+    if (!$.browser.webkit) {
+        videoListScrollbar();
+    }
+
     videoList.open = true;
     setTimeout('toggleVideoList()', 2000);
 }
@@ -665,7 +673,20 @@ function loadVideo(video) {
         // scroll to thumbnail in video list and highlight it
         $('#video-list .focus').removeClass('focus');
         $('#video-list-thumb-' + selected_video).addClass('focus');
-        $('#video-list').stop(true,true).scrollTo('.focus', { duration:1000, offset:-280 });
+        $('#video-list:not(.scrollbar)').stop(true,true).scrollTo('.focus', { duration:1000, offset:-280 });
+        if ($('#video-list').hasClass('scrollbar')) { // Only do this for the jScrollPane-esque thing
+            var focusedLeft = $('#video-list .focus').position().left,
+                spanMargin  = parseInt($('#video-list > span').css('margin-left')),
+                scrollMargin = (spanMargin - focusedLeft < -280) ? Math.round(spanMargin - focusedLeft + 280) : 0;
+
+            if (Math.abs(scrollMargin) - 150 >= $('#video-list > span').width() - $(document).width())
+                scrollMargin = -Math.abs($('#video-list > span').width() - $(document).width());
+
+            $('#video-list > span').stop(true,true).animate({ marginLeft: scrollMargin + 'px'}, 1000, function() {
+                // To-do: reset handle position
+                // $('#video-list-scrollbar .ui-slider-handle')
+            });
+        }
 
         // enable/disable nav-buttons at end/beginning of playlist
         var $prevbutton = $('#prev-button'), $nextbutton = $('#next-button');
@@ -1298,6 +1319,30 @@ Object.size = function(obj) {
 
 function stripHTML (s) {
     return s.replace(/[&<>"'\/]/g, '');
+}
+
+function videoListScrollbar() {
+    var scrollPane = $('#video-list').addClass('scrollbar'),
+        scrollBar = $('<div id="video-list-scrollbar" />').appendTo(scrollPane),
+        scrollContent = $( "#video-list span:first" );
+
+    scrollbar = scrollBar.slider({
+        start: function() {
+            scrollPane.addClass('scrolling');
+        },
+        stop: function() {
+            scrollPane.removeClass('scrolling');
+        },
+        slide: function( event, ui ) {
+            if ( scrollContent.width() > scrollPane.width() ) {
+                scrollContent.css( "margin-left", Math.round(
+                    ui.value / 100 * ( scrollPane.width() - scrollContent.width() )
+                    ) + "px" );
+            } else {
+                scrollContent.css( "margin-left", 0 );
+            }
+        }
+    });
 }
 
 /* analytics */

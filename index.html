@@ -32,13 +32,13 @@
 
 <script type="text/javascript">
   videoListMouse = false;
-  function videoListTimeout(){
+  /*function videoListTimeout(){
     if(videoListMouse == false) {
       closeVideoList();
     }
-  }
+  }*/
   $(document).ready(function(){
-    $('header').mouseover(function(){
+    /*$('header').mouseover(function(){
       consoleLog('opening video list');
       videoListMouse = true;
       openVideoList();
@@ -55,7 +55,7 @@
     $('#video-list').mouseout(function(){
       videoListMouse = false;
       setTimeout('videoListTimeout()', 1000);
-    });
+    });*/
   });
 </script>
 
