@@ -41,18 +41,9 @@ header .grid-container {
 
 #add-channel {
     margin-top: 15px;
-    margin-right: 20px;
+    margin-right: 45px;
     padding-bottom: 0;
     font-size: 15px;
-}
-
-#settings {
-    float: right;
-}
-
-#settings img {
-    margin-top: 15px;
-    width:25px;
 }
 
 #video-list {
@@ -225,8 +216,19 @@ header .grid-container {
     color:#5f99cf;
 }
 
-#settings {
+#header-right {
     position: relative;
+}
+
+#settings {
+    position: absolute;
+    top: 0;
+    right: 10px;
+}
+
+#settings img {
+    margin-top: 15px;
+    width:25px;
 }
 
 #settings #options:before { /* Invisible hover area */
@@ -308,12 +310,9 @@ header .grid-container {
 
 /* Media queries */
 @media (max-width: 1330px) {
-    #settings {
-        position: static;
-    }
-
     #settings #options {
-        right: 10px;
+        position: absolute;
+        right: -10px;
     }
 
 }
