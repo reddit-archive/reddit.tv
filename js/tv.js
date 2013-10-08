@@ -194,6 +194,8 @@ $().ready(function(){
         loadChannel(Globals.channels[Globals.cur_chan].channel, null);
     });
     $(document).keydown(function (e) {
+        if (e.shiftKey || e.metaKey || e.ctrlKey || e.altKey) return true;
+
         if(!$(e.target).is('form>*')) {
             var keyCode = e.keyCode || e.which, arrow = {left: 37, up: 38, right: 39, down: 40 };
             switch (keyCode) {
