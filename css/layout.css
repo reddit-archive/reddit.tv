@@ -39,7 +39,7 @@ header .grid-container {
     padding-bottom: 0;
 }
 
-#add-channel {
+input.add-channel {
     margin-top: 15px;
     margin-right: 45px;
     padding-bottom: 0;
@@ -176,8 +176,11 @@ header .grid-container {
     margin-left: -11px;
 }
 
-#video-container {
+#video-container, #add-channel {
     margin-top: 10px;
+    height: 660px;
+    max-height: 660px;
+    overflow: hidden;
 }
 
 #video-view {
@@ -273,17 +276,53 @@ header .grid-container {
     float: left;
 }
 
-#channels a.channel {
+#add-channel {
+    display: none;
+    font-size: 20pt;
+    position: relative;
+}
+
+#add-channel .type {
+    height: 330px;
+    border: 1px solid #a00;
+    border-radius: 10px;
+    float: left;
+    text-align: center;
+    color: #fff;
+    background: black;
+    line-height: 330px;
+}
+
+#add-channel .type.selected {
+    background: gray;
+}
+
+#add-channel .channel-name {
+    width: 100%;
+    height: 50px;
+    margin-top: 20px;
+    font-size: 30pt;
+    border: 1px solid #000;
+}
+
+#channel-recs {
+    position: absolute;
+    bottom: 0;
+    width: calc(100% - 20px);
+}
+
+.channels a.channel {
     display: block;
     color: #013f79;
     font-weight: bold;
+    font-size: 16px;
     text-align: center;
     text-decoration: none;
     text-transform: uppercase;
     margin-bottom: 10px;
 }
 
-#channels .channel .thumbnail {
+.channels .channel .thumbnail {
     background: #5f99cf none center center no-repeat;
     background-size: calc(100% + 12px);
     border: 6px solid transparent;
@@ -294,16 +333,16 @@ header .grid-container {
     -webkit-transition: border 0.1s;
 }
 
-#channels .channel.loading {
+.channels .channel.loading {
     background: none;
 }
 
-#channels .channel.loading .thumbnail {
+.channels .channel.loading .thumbnail {
     background-image: url(../img/channel-loader.gif);
     background-size: auto;
 }
 
-#channels .channel.focus .thumbnail, #channels .channel:hover .thumbnail {
+.channels .channel.focus .thumbnail, .channels .channel:hover .thumbnail {
     border-color: #5f99cf;
 }
 

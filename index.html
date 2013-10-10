@@ -87,7 +87,7 @@
         /r/subreddit
       </div>
       <div id="header-right" class="grid-25 right-align">
-        <input id="add-channel" value="searchbox here" />
+        <input class="add-channel" value="searchbox here" />
         <div id="settings">
           <img src="img/settings.svg" />
           <div id="options">
@@ -147,11 +147,38 @@
         </div>
       </div>
     </div>
+    <div id="add-channel" class="grid-container">
+      <div class="grid-45 suffix-5 type subreddit selected">Add a subreddit</div>
+      <div class="grid-45 prefix-5 type domain">Add a site</div>
+      <form><input class="channel-name" type="text" /></form>
+
+      <div id="channel-recs" class="channels">
+        <div id="recs-header">Here are some channel suggestions...</div>
+
+        <a class="grid-25 channel" href="#">
+          <div class="thumbnail"></div>
+          <span class="name">Lorem</span>
+        </a>
+        <a class="grid-25 channel" href="#">
+          <div class="thumbnail"></div>
+          <span class="name">Ipsum</span>
+        </a>
+        <a class="grid-25 channel" href="#">
+          <div class="thumbnail"></div>
+          <span class="name">Dolor</span>
+        </a>
+        <a class="grid-25 channel" href="#">
+          <div class="thumbnail"></div>
+          <span class="name">Sit</span>
+        </a>
+      </div>
+
+    </div>
   </div>
-  <div id="channels" class="grid-container">
-    <a class="grid-25 channel loading" href="#/r/subreddit">
+  <div id="channels" class="channels grid-container">
+    <a id="add-channel-button" class="grid-25 channel" href="#add-channel">
       <div class="thumbnail"></div>
-      <span class="name"></span>
+      <span class="name">Add Channel</span>
     </a>
   </div>
 

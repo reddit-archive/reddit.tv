@@ -12,7 +12,6 @@ var Globals = {
 
     /* Channels Object */
     channels: [
-        {channel: 'Add Channel', type: 'new', feed: '/function/add_channel/'},
         {channel: 'All', type: 'search', feed: '/r/all/'},
         {channel: 'Videos', type: 'normal', feed: '/r/videos/'},
         {channel: 'Funny', type: 'search', feed: '/r/funny/'},
@@ -74,7 +73,6 @@ var Globals = {
     vd_minheight: 213,      // minimum height of #video-display w/o height of player
 
     chan_thumbs: [ // temporary until database'd
-        '', // add
         'http://i2.ytimg.com/vi/suly1mahTSc/hqdefault.jpg', // all
         'http://i2.ytimg.com/vi/Rd_BRT6_TPk/hqdefault.jpg', // videos
         'http://i2.ytimg.com/vi/NX0VpF1K2aY/hqdefault.jpg', // funny
@@ -196,7 +194,7 @@ $().ready(function(){
     $(document).keydown(function (e) {
         if (e.shiftKey || e.metaKey || e.ctrlKey || e.altKey) return true;
 
-        if(!$(e.target).is('form>*')) {
+        if(!$(e.target).is('form>*, input')) {
             var keyCode = e.keyCode || e.which, arrow = {left: 37, up: 38, right: 39, down: 40 };
             switch (keyCode) {
             case arrow.left:  case 72: // h
@@ -287,6 +285,15 @@ $().ready(function(){
             }
         }
     );
+
+    $('#add-channel-button').click(toggleAddChannel);
+
+    $('#add-channel form').on('submit', function() {
+        addChannel($('#add-channel .channel-name').val());
+
+        return false;
+    });
+    // end document.ready
 });
 
 /* Main Functions */
@@ -332,7 +339,7 @@ function displayChannels() {
         $list = $('<ul></ul>'),
         $channel_base = $('#channels a.channel:first');
 
-    $channel_base.hide();
+    // $channel_base.hide();
     // $channel_list.html($list);
     for(var x in Globals.channels){
         displayChannel(x);
@@ -341,8 +348,8 @@ function displayChannels() {
 
 function displayChannel(chan){
     var title, display_title, class_str='', remove_str='',
-        $channel_base = $('#channels a.channel:first'),
-        $channel = $channel_base.clone();
+        $channel_base = $('#add-channel-button'),
+        $channel = $channel_base.clone().removeAttr('id');
 
     chan_title = Globals.channels[chan].feed.split("/");
     chan_title = "/"+chan_title[1]+"/"+chan_title[2];
@@ -1171,6 +1178,7 @@ function addChannel(subreddit){
     }
     if(!getChan(subreddit)){
         var feed = "/r/"+subreddit+"/";
+        console.log(feed);
 
         var c_data = {'channel': subreddit, feed: feed};
         Globals.channels.push(c_data);
@@ -1232,6 +1240,15 @@ function checkAnchor(){
             var anchor = Globals.current_anchor.substring(1);
             var parts = anchor.split("/"); // #/r/videos/id
             parts = $.map(parts, stripHTML);
+
+            if (anchor == 'add-channel') {
+                toggleAddChannel();
+                return;
+            } else {
+                $('#add-channel').hide();
+                $('#video-container').show();
+            }
+
             if(parts[1] === 'promo'){
                 loadPromo(parts[2], parts[3], parts[4]);
             }else{
@@ -1345,6 +1362,19 @@ function videoListScrollbar() {
             }
         }
     });
+}
+
+function toggleAddChannel() {
+    /*$('#video-container').toggle();
+    $('#add-channel').toggle();*/
+    $('#video-container').hide();
+    $('#add-channel').show();
+    $('#add-channel .channel-name').focus();
+
+    window.document.location.hash = 'add-channel';
+    $(document).scrollTop(0);
+
+    return false;
 }
 
 /* analytics */
