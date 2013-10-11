@@ -153,27 +153,30 @@ $().ready(function(){
         loadTheme($(this).attr('rel'));
         return false;
     });
-    $('#auto').click(function() {
-        Globals.auto = ($('#auto').is(':checked')) ? true : false;
+    $('#settings .settings-auto').click(function() {
+        Globals.auto = ($(this).find('input').is(':checked')) ? true : false;
         $.jStorage.set('auto', Globals.auto);
     });
-    $('#shuffle').click(function() {
-        Globals.shuffle = ($('#shuffle').is(':checked')) ? true : false;
+    $('#settings .settings-shuffle').click(function() {
+        Globals.shuffle = ($(this).find('input').is(':checked')) ? true : false;
         Globals.shuffled = []; //reset
         $.jStorage.set('shuffle', Globals.shuffle);
+
+        if (Globals.shuffle)
+            shuffleChan(this_chan);
     });
-    $('#sfw').click(function() {
-        Globals.sfw = ($('#sfw').is(':checked')) ? true : false;
+    $('#settings .settings-sfw').click(function() {
+        Globals.sfw = ($(this).find('input').is(':checked')) ? true : false;
         if(!Globals.sfw){
             if(!confirm("Are you over 18?")){
-                $("#sfw").prop("checked", true);
+                $(this).removeClass('active').find('input').prop("checked", true);
                 Globals.sfw = true;
             }
         }
         $.jStorage.set('sfw', Globals.sfw);
         showHideNsfwThumbs(Globals.sfw, Globals.cur_chan);
     });
-    $('#fill').click(function() {
+    $('#settings .settings-fill').click(function() {
         fillScreen();
     });
     $('#next-button').click(function() {
@@ -185,12 +188,20 @@ $().ready(function(){
     $('#video-list').bind('mousewheel', function(event,delta){
         this.scrollLeft -= (delta * 30);
     });
-    $('#sorting').on('change', function () {
-
-        Globals.sorting = $('#sorting').val();
+    $('#sorting a').click(function() {
+        if ($(this).hasClass('active')) return false;
+        
+        $('#sorting').removeClass('open')
+            .find('a').removeClass('active');
+        $(this).addClass('active');
+        
+        Globals.sorting = $(this).attr('href').replace(/^.*#sort=/, '')
         Globals.videos = [];
         loadChannel(Globals.channels[Globals.cur_chan].channel, null);
+
+        return false;
     });
+
     $(document).keydown(function (e) {
         if (e.shiftKey || e.metaKey || e.ctrlKey || e.altKey) return true;
 
@@ -293,6 +304,22 @@ $().ready(function(){
 
         return false;
     });
+
+    $('#toggle-settings').click(function() {
+        consoleLog('toggling settings');
+        $('#settings').toggleClass('open');
+        return;
+
+        var div = $('#settings');
+        if (div.hasClass('open')) {
+            $('#settings').removeClass('open');
+            // $('#settings').fadeIn();
+        } else {
+            $('#settings *:not(input):hidden').fadeIn();
+            // $('#settings').addClass('open');
+        }
+    });
+
     // end document.ready
 });
 
@@ -310,12 +337,20 @@ function loadSettings() {
     }
     if(shuffle_cookie !== null && shuffle_cookie !== Globals.shuffle){
         Globals.shuffle = (shuffle_cookie === 'true') ? true : false;
-        $('#shuffle').attr('checked', Globals.shuffle);
     }
     if(sfw_cookie !== null && sfw_cookie !== Globals.sfw){
         Globals.sfw = (sfw_cookie === 'true') ? true : false;
         $('#sfw').attr('checked', Globals.sfw);
     }
+    $('#sorting a[href="#sort=' + Globals.sorting + '"]').addClass('active');
+
+    // Mark settings as active
+    var settingNames = ['auto', 'shuffle', 'sfw'];
+    settingNames.forEach(function(i) {
+        if (Globals[i])
+            $('#settings .settings-' + i).addClass('active').find('input').attr('checked', true);
+    });
+
     if(theme_cookie !== null && theme_cookie !== Globals.theme){
         Globals.theme = theme_cookie;
     }

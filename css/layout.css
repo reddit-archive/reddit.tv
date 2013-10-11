@@ -86,6 +86,7 @@ input.add-channel {
     width: 100px;
     height: 5px;
     background-color: rgba(206, 227, 248, 0.5);
+    outline: none;
 }
 
 #video-list-scrollbar .ui-slider-handle:hover, #video-list.scrolling #video-list-scrollbar .ui-slider-handle {
@@ -141,7 +142,7 @@ input.add-channel {
 
 #vid-list-tooltip {
     position: absolute;
-    top: 141px;
+    top: 146px;
     background: #CEE3FD;
     border: 1px solid #c2e1f5;
     padding: 8px;
@@ -224,14 +225,93 @@ input.add-channel {
     font-size: 13px;
 }
 
-#header-right {
+#header-right, #header {
     position: relative;
 }
 
 #settings {
+    font-family: 'Source Sans Pro';
     position: absolute;
     top: 0;
-    right: 10px;
+    left: 100%;
+    left: 90%;
+    right: 0px;
+    height: 50px;
+    padding-top: 8px;
+/*    -webkit-transition: background-color 0.3s ease-in-out;
+       -moz-transition: background-color 0.3s ease-in-out;
+        -ms-transition: background-color 0.3s ease-in-out;
+         -o-transition: background-color 0.3s ease-in-out;
+            transition: background-color 0.3s ease-in-out;*/
+}
+
+#settings.open {
+    /*width: 100%;*/
+    left: 200px;
+    background: #CEE3FD;
+}
+
+/*#settings:after {
+    content: '';
+    background: #CEE3FD;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 60px;
+    height: 100%;
+    -webkit-transition: right 0.5s;
+       -moz-transition: right 0.5s;
+        -ms-transition: right 0.5s;
+         -o-transition: right 0.5s;
+            transition: right 0.5s;
+}
+
+#settings.open:after {
+    comment-left: -100%;
+    right: 100%;
+}*/
+
+#settings .buttons {
+    margin-right: 20px;
+    float: right;
+}
+
+#settings label, #settings .btn-group .btn-group {
+    display: none;
+    /*opacity: 0;*/
+    -webkit-transition: opacity 0.3s ease-in-out;
+       -moz-transition: opacity 0.3s ease-in-out;
+        -ms-transition: opacity 0.3s ease-in-out;
+         -o-transition: opacity 0.3s ease-in-out;
+            transition: opacity 0.3s ease-in-out;
+}
+
+#settings.open label, #settings.open .btn-group .btn-group {
+    display: block;
+    opacity: 1;
+}
+
+#settings #sorting a.active {
+    background: #CEE3FD;
+    color: #000;
+    outline: 0;
+}
+
+#settings:not(.open) #toggle-settings {
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+#toggle-settings {
+    font-size: 20px;
+    line-height: 20px;
+    height: 34px;
+    background: #fff;
+    box-shadow: none;
+}
+
+#toggle-settings:hover {
+    color: #000;
 }
 
 #settings img {
@@ -239,47 +319,40 @@ input.add-channel {
     width:25px;
 }
 
-#settings #options:before { /* Invisible hover area */
-    content: '';
-    height: 55px;
-    position: absolute;
-    top: -55px;
-    left: 0;
-    width: 200px;
-}
-
 #settings #options {
-    display: none;
+    /*display: none;*/
     position: absolute;
     background: #CEE3FD;
+    height: 50px;
+    padding-top: 8px;
 
-    width: 200px;
+/*    width: 200px;
     padding: 10px 0;
-    margin: 6px 0 0 -10px;
+    margin: 6px 0 0 -10px;*/
  
-    border: 1px solid rgba(0,0,0,0.5);
+    /*border: 1px solid rgba(0,0,0,0.5);
     border-top-width: 0;
-    border-radius: 0 0 5px 5px;
+    border-radius: 0 0 5px 5px;*/
 }
 
 #settings:hover #options {
     display: block;
 }
 
-#options label {
+/*#options label {
     display: block;
     margin-bottom: 5px;
     padding: 0 10px;
     cursor: pointer;
-}
+}*/
 
-#options label:hover {
+/*#options label:hover {
     background: rgba(255,255,255,0.2);
-}
+}*/
 
-#options label span {
+/*#options label span {
     float: left;
-}
+}*/
 
 #add-channel {
     display: none;
@@ -365,4 +438,64 @@ input.add-channel {
         right: -10px;
     }
 
+}
+
+/* Icons */
+@font-face {
+    font-family: 'RedditIcons';
+    src:url('fonts/RedditIcons.eot');
+    src:url('fonts/RedditIcons.eot?#iefix') format('embedded-opentype'),
+        url('fonts/RedditIcons.woff') format('woff'),
+        url('fonts/RedditIcons.ttf') format('truetype'),
+        url('fonts/RedditIcons.svg#RedditIcons') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Use the following CSS code if you want to use data attributes for inserting your icons */
+[data-icon]:before {
+    font-family: 'RedditIcons';
+    content: attr(data-icon);
+    speak: none;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Use the following CSS code if you want to have a class per icon */
+/*
+Instead of a list of all class selectors,
+you can use the generic selector below, but it's slower:
+[class*="icon-"] {
+*/
+.icon-equalizer:before, .icon-shuffle:before, .icon-expand:before, .icon-next:before, .icon-menu:before, .icon-spam:before {
+    font-family: 'RedditIcons';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+}
+.icon-equalizer:before {
+    content: "\e000";
+}
+.icon-shuffle:before {
+    content: "\e002";
+}
+.icon-expand:before {
+    content: "\e003";
+}
+.icon-next:before {
+    content: "\e001";
+}
+.icon-menu:before {
+    content: "\e005";
+}
+.icon-spam:before {
+    content: "\e006";
 }

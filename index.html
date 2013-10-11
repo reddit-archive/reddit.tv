@@ -20,12 +20,14 @@
 
 <link rel="stylesheet" href="css/layout.css" type="text/css" />
 <link rel="stylesheet" href="css/animate.css" type="text/css" />
+<link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
 <link rel="alternate stylesheet" href="css/theme_dark.css" type="text/css" />
 <link rel="stylesheet" href="css/theme_light.css" type="text/css" id="theme" />
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic' rel='stylesheet' type='text/css'>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
 <script src="js/plugins.js" type="text/javascript"></script>
+<script src="js/bootstrap.min.js" type="text/javascript"></script>
 
 <script src="js/tv.youtube.js" type="text/javascript"></script>
 <script src="js/tv.vimeo.js" type="text/javascript"></script>
@@ -80,18 +82,51 @@
 </head>
 <body>
   <header>
-    <div class="grid-container">
+    <div id="header" class="grid-container">
       <div id="logo" class="grid-25">
         <img src="img/logo.png" />
       </div>
       <div id="now-playing-title" class="grid-50 center-align">
         /r/subreddit
       </div>
-      <div id="header-right" class="grid-25 right-align">
-        <input class="add-channel" value="searchbox here" />
-        <div id="settings">
-          <img src="img/settings.svg" />
-          <div id="options">
+
+      <div id="settings">
+        <div class="buttons btn-group" data-toggle="buttons">
+          <label class="btn btn-default icon-next settings-auto">
+            <input type="checkbox"> Auto Play/Advance
+          </label>
+          <label class="btn btn-default icon-shuffle settings-shuffle">
+            <input type="checkbox"> Shuffle
+          </label>
+          <label class="btn btn-default icon-spam settings-sfw">
+            <input type="checkbox"> SFW
+          </label>
+          <label class="btn btn-default icon-expand settings-fill">
+            <input type="checkbox"> Fill Screen
+          </label>
+
+          <div id="sorting" class="btn-group">
+            <button type="button" class="btn btn-default icon-menu" data-toggle="dropdown">
+              Sorting
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="#sort=hot">Hot</a></li>
+              <li><a href="#sort=top:day">Top Today</a></li>
+              <li><a href="#sort=top:week">Top Week</a></li>
+              <li><a href="#sort=top:month">Top Month</a></li>
+              <li><a href="#sort=top:year">Top Year</a></li>
+            </ul>
+          </div>
+
+          <button id="toggle-settings" type="button" class="btn btn-default icon-equalizer"></button>
+        </div>
+      </div>
+    </div> <!-- /#header -->
+<!--           <div id="options">
+              <img src="img/settings.svg" />
+            </div>
+
             <form>
               <label for="sorting">
               <span>sorting</span>
@@ -128,9 +163,7 @@
 
             </form>
           </div>
-        </div>
-      </div>
-    </div>
+        </div> -->
   </header>
   <div id="video-view">
     <div id="video-list" class="animated"></div>
