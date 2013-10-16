@@ -55,7 +55,7 @@ input.add-channel {
     overflow-y: hidden !important;
     position: absolute;
     float: left;
-    z-index: 2;
+    z-index: 9001;
     transition: top .5s;
     -webkit-transition: top .5s;
     padding: 5px;
@@ -178,11 +178,41 @@ input.add-channel {
     margin-left: -11px;
 }
 
-#video-container, #add-channel {
+#main-container {
     margin-top: 10px;
     height: 660px;
     max-height: 660px;
     overflow: hidden;
+    position: relative;
+}
+
+#video-container {
+    position: relative;
+}
+
+#video-container, #add-channel {
+    height: 660px;
+    max-height: 660px;
+    overflow: hidden;
+}
+
+#video-embed {
+    width: 1000px;
+    height: 625px;
+}
+
+#main-container.add-channel #video-embed {
+    z-index: 10;
+    position: absolute;
+    top: 0;
+    left: 10px;
+    padding: 0;
+    width: 490px;
+    height: 300px;
+}
+
+#main-container.add-channel #video-meta {
+    display: none;
 }
 
 #video-view {
@@ -238,38 +268,12 @@ input.add-channel {
     right: 0px;
     height: 50px;
     padding-top: 8px;
-/*    -webkit-transition: background-color 0.3s ease-in-out;
-       -moz-transition: background-color 0.3s ease-in-out;
-        -ms-transition: background-color 0.3s ease-in-out;
-         -o-transition: background-color 0.3s ease-in-out;
-            transition: background-color 0.3s ease-in-out;*/
 }
 
 #settings.open {
-    /*width: 100%;*/
     left: 200px;
     background: #CEE3FD;
 }
-
-/*#settings:after {
-    content: '';
-    background: #CEE3FD;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 60px;
-    height: 100%;
-    -webkit-transition: right 0.5s;
-       -moz-transition: right 0.5s;
-        -ms-transition: right 0.5s;
-         -o-transition: right 0.5s;
-            transition: right 0.5s;
-}
-
-#settings.open:after {
-    comment-left: -100%;
-    right: 100%;
-}*/
 
 #settings .buttons {
     margin-right: 20px;
@@ -337,44 +341,47 @@ input.add-channel {
 }
 
 #settings #options {
-    /*display: none;*/
     position: absolute;
     background: #CEE3FD;
     height: 50px;
     padding-top: 8px;
-
-/*    width: 200px;
-    padding: 10px 0;
-    margin: 6px 0 0 -10px;*/
- 
-    /*border: 1px solid rgba(0,0,0,0.5);
-    border-top-width: 0;
-    border-radius: 0 0 5px 5px;*/
 }
 
 #settings:hover #options {
     display: block;
 }
 
-/*#options label {
-    display: block;
-    margin-bottom: 5px;
-    padding: 0 10px;
-    cursor: pointer;
-}*/
-
-/*#options label:hover {
-    background: rgba(255,255,255,0.2);
-}*/
-
-/*#options label span {
-    float: left;
-}*/
-
 #add-channel {
     display: none;
-    font-size: 20pt;
-    position: relative;
+    color: #999;
+}
+
+#main-container.add-channel #add-channel {
+    display: block;
+}
+
+#main-container.add-channel #video-container {
+    position: absolute;
+}
+
+#video-return {
+    position: absolute;
+    z-index: 11;
+    top: 0;
+    left: 20px;
+    width: 480px;
+    height: 300px;
+}
+#add-channel h1 {
+    font-size: 20px;
+    text-transform: uppercase;
+    margin: 0 0 30px 0;
+}
+
+#add-channel h2 {
+    color: #3794b6;
+    font-size: 16px;
+    text-transform: uppercase;
 }
 
 #add-channel .type {
@@ -392,18 +399,69 @@ input.add-channel {
     background: gray;
 }
 
+#add-channel .input-group {
+    clear: both;
+    padding-top: 20px;
+}
+
+#add-channel input {
+    position: absolute;
+    bottom: 0;
+    outline: none;
+    box-shadow: none;
+}
+
+#add-channel .text {
+    height: 300px;
+    position: relative;
+}
+
+#add-channel .or {
+    float: right;
+    color: #999;
+    text-transform: uppercase;
+    margin-top: 0;
+}
 #add-channel .channel-name {
-    width: 100%;
     height: 50px;
-    margin-top: 20px;
-    font-size: 30pt;
-    border: 1px solid #000;
+    background: #383a3c;
+    color: #999;
+    border-radius: 5px;
+    width: calc(60% - 20px);
+    border: 1px solid #383a3c;
+    padding: 0 20px;
+    left: 10px;
+}
+#add-channel .channel-name:focus {
+    border: 1px solid #488dc8;
+}
+
+#add-channel .channel-submit {
+    float: left;
+    text-transform: uppercase;
+    text-align: center;
+    background: #488dc8;
+    color: #fff;
+    width: calc(40% - 15px);
+    right: 10px;   
+    height: 50px;
+    border: 0;
+    border-radius: 5px;
+}
+
+#add-channel .channel-submit:hover, #add-channel .channel-submit:active {
+    color: #000;
 }
 
 #channel-recs {
     position: absolute;
     bottom: 0;
     width: calc(100% - 20px);
+    height: 360px;
+}
+
+#channel-recs h2 {
+    padding-left: 10px;
 }
 
 .channels a.channel {

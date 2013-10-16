@@ -123,90 +123,86 @@
         </div>
       </div>
     </div> <!-- /#header -->
-<!--           <div id="options">
-              <img src="img/settings.svg" />
-            </div>
-
-            <form>
-              <label for="sorting">
-              <span>sorting</span>
-
-              <select id="sorting">
-                <option value="hot">hot</option>
-                <option value="top:day">top today</option>
-                <option value="top:week">top week</option>
-                <option value="top:month">top month</option>
-                <option value="top:year">top year</option>
-              </select>
-              </label>
-
-              <label for="auto">
-                <span>autoplay/advance</span>
-                <input type="checkbox" id="auto" checked/>
-              </label>                
-
-              <label for="shuffle">
-                <span>shuffle</span>
-                <input type="checkbox" id="shuffle"/>
-              </label>
-
-              
-              <label for="fill">
-                <span>fill screen</span>
-                <input type="checkbox" id="fill"/>
-              </label>
-
-              <label for="sfw">
-                <span>sfw</span>
-                <input type="checkbox" id="sfw" checked/>
-              </label>
-
-            </form>
-          </div>
-        </div> -->
   </header>
   <div id="video-view">
     <div id="video-list" class="animated"></div>
-    <div id="video-container" class="grid-container">
-      <div id="video-embed" class="grid-100 mobile-grid-100">
+    <div id="main-container" class="grid-container">
+      <div id="video-container">
+        <div id="video-embed" class="grid-100 mobile-grid-100">
 
-      </div>
-      <div id="video-meta">
-        <div id="video-description" class="grid-70 mobile-grid-75">
-          <span id="video-sponsored-label" class="sponsored">SPONSORED </span>
-          <span id="video-title"></span> 
         </div>
-        <div id="video-actions" class="grid-30 right-align">
-          COMMENTS | TWEET | SHARE
+        <div id="video-meta">
+          <div id="video-description" class="grid-70 mobile-grid-75">
+            <span id="video-sponsored-label" class="sponsored">SPONSORED </span>
+            <span id="video-title"></span> 
+          </div>
+          <div id="video-actions" class="grid-30 right-align">
+            COMMENTS | TWEET | SHARE
+          </div>
         </div>
       </div>
-    </div>
-    <div id="add-channel" class="grid-container">
-      <div class="grid-45 suffix-5 type subreddit selected">Add a subreddit</div>
-      <div class="grid-45 prefix-5 type domain">Add a site</div>
-      <form><input class="channel-name" type="text" /></form>
 
-      <div id="channel-recs" class="channels">
-        <div id="recs-header">Here are some channel suggestions...</div>
+      <div id="add-channel">
+        <div id="video-return"></div>
 
-        <a class="grid-25 channel" href="#">
-          <div class="thumbnail"></div>
-          <span class="name">Lorem</span>
-        </a>
-        <a class="grid-25 channel" href="#">
-          <div class="thumbnail"></div>
-          <span class="name">Ipsum</span>
-        </a>
-        <a class="grid-25 channel" href="#">
-          <div class="thumbnail"></div>
-          <span class="name">Dolor</span>
-        </a>
-        <a class="grid-25 channel" href="#">
-          <div class="thumbnail"></div>
-          <span class="name">Sit</span>
-        </a>
+        <div class="grid-50 prefix-50 text">
+          <h1>Add your own channel</h1>
+
+          <div style="float: left; width: 60%; padding-right: 20px">
+            <h2>Subreddit channel</h2>
+            <h1 class="or">or</h2>
+            You can make your own channel from a subreddit. <i>(e.g. jazz)</i>
+          </div>
+
+          <div style="float: left; width: 40%; padding-left: 10px;">
+            <h2>Site channel</h2>
+            Search for all the videos from a certain domain. <i>(e.g. ted.com)</i>
+          </div>
+
+          <form>
+           <input type="text" class="channel-name" placeholder="Subreddit or domain name" />
+           <input type="submit" class="channel-submit" value="Add channel" />
+          </form>
+        </div>
+
+        <div id="channel-recs" class="channels">
+          <h2>Recommended channels</h2>
+
+          <a class="grid-25 channel" href="#">
+            <div class="thumbnail"></div>
+            <span class="name">Lorem</span>
+          </a>
+          <a class="grid-25 channel" href="#">
+            <div class="thumbnail"></div>
+            <span class="name">Ipsum</span>
+          </a>
+          <a class="grid-25 channel" href="#">
+            <div class="thumbnail"></div>
+            <span class="name">Dolor</span>
+          </a>
+          <a class="grid-25 channel" href="#">
+            <div class="thumbnail"></div>
+            <span class="name">Sit</span>
+          </a>
+          <a class="grid-25 channel" href="#">
+            <div class="thumbnail"></div>
+            <span class="name">Lorem</span>
+          </a>
+          <a class="grid-25 channel" href="#">
+            <div class="thumbnail"></div>
+            <span class="name">Ipsum</span>
+          </a>
+          <a class="grid-25 channel" href="#">
+            <div class="thumbnail"></div>
+            <span class="name">Dolor</span>
+          </a>
+          <a class="grid-25 channel" href="#">
+            <div class="thumbnail"></div>
+            <span class="name">Sit</span>
+          </a>
+        </div>
+
       </div>
-
     </div>
   </div>
   <div id="channels" class="channels grid-container">

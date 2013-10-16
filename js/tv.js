@@ -155,6 +155,8 @@ $().ready(function(){
     });
     $('#settings .settings-auto').click(function() {
         Globals.auto = ($(this).find('input').is(':checked')) ? true : false;
+        // This isn't being set right, is needing 2 clicks
+        // alert(Globals.auto); 
         $.jStorage.set('auto', Globals.auto);
     });
     $('#settings .settings-shuffle').click(function() {
@@ -297,13 +299,9 @@ $().ready(function(){
         }
     );
 
-    $('#add-channel-button').click(toggleAddChannel);
+    $('#add-channel-button, #video-return').click(toggleAddChannel);
 
-    $('#add-channel form').on('submit', function() {
-        addChannel($('#add-channel .channel-name').val());
-
-        return false;
-    });
+    $('#add-channel form').on('submit', addChannelFromForm);
 
     $('#toggle-settings').click(function() {
         consoleLog('toggling settings');
@@ -333,14 +331,12 @@ function loadSettings() {
 
     if(auto_cookie !== null && auto_cookie !== Globals.auto){
         Globals.auto = (auto_cookie === 'true') ? true : false;
-        $('#auto').attr('checked', Globals.auto);
     }
     if(shuffle_cookie !== null && shuffle_cookie !== Globals.shuffle){
         Globals.shuffle = (shuffle_cookie === 'true') ? true : false;
     }
     if(sfw_cookie !== null && sfw_cookie !== Globals.sfw){
         Globals.sfw = (sfw_cookie === 'true') ? true : false;
-        $('#sfw').attr('checked', Globals.sfw);
     }
     $('#sorting a[href="#sort=' + Globals.sorting + '"]').addClass('active');
 
@@ -1110,8 +1106,8 @@ function prepEmbed(embed, type){
     case 'vimeo.com':
         return vimeo.prepEmbed(embed);
     case 'size':
-        embed = embed.replace(/height\="(\d\w+)"/gi, 'height="480"');
-        embed = embed.replace(/width\="(\d\w+)"/gi, 'width="640"');
+        embed = embed.replace(/height\="(\d\w+)"/gi, 'height="100%"');
+        embed = embed.replace(/width\="(\d\w+)"/gi, 'width="100%"');
     }
     
     return embed;
@@ -1173,6 +1169,11 @@ function resizePlayer() {
     win_width = $(window).width();
     win_height = $(window).height();
 
+    player_width = player_height = '100%';
+    player.width(player_width);
+    player.height(player_height);
+    consoleLog('resizing player to '+player_width+'x'+player_height);
+
     // consoleLog('content_min size: ' + (Globals.content_minwidth+curr_player_width) + 'x' + (Globals.content_minheight+curr_player_height));
     consoleLog('vd_min size: ' + (Globals.vd_minwidth+curr_player_width) + 'x' + (Globals.vd_minheight+curr_player_height));
 
@@ -1181,6 +1182,7 @@ function resizePlayer() {
     consoleLog('player_width: '+player_width+' player_height: '+player_height);
 
     if(player_width == curr_player_width && player_height == curr_player_height) { return; }  // nothing to do
+    player_width = player_height = '100%';
     consoleLog('resizing player to '+player_width+'x'+player_height);
     player.width(player_width);
     player.height(player_height);
@@ -1188,6 +1190,7 @@ function resizePlayer() {
     player_height = player.height();
 
     consoleLog('new player size: '+player_width+'x'+player_height);
+    return; // Let's not actually do this?
 
     $('#content').width(player_width + Globals.content_minwidth);
     $('#video-display').width(player_width + Globals.vd_minwidth);
@@ -1280,8 +1283,7 @@ function checkAnchor(){
                 toggleAddChannel();
                 return;
             } else {
-                $('#add-channel').hide();
-                $('#video-container').show();
+                $('#main-container').removeClass('add-channel');
             }
 
             if(parts[1] === 'promo'){
@@ -1400,14 +1402,55 @@ function videoListScrollbar() {
 }
 
 function toggleAddChannel() {
-    /*$('#video-container').toggle();
-    $('#add-channel').toggle();*/
-    $('#video-container').hide();
-    $('#add-channel').show();
-    $('#add-channel .channel-name').focus();
+    var vid  = $('#video-embed'),
+        vidW = vid.width(),
+        vidH = vid.height(),
+        container = $('#main-container');
 
-    window.document.location.hash = 'add-channel';
-    $(document).scrollTop(0);
+    console.log('vid w/h:', vidW, vidH);
+
+    if (!container.hasClass('add-channel')) {
+        vid
+            .animate({
+                width: '480px',
+                height: '300px'
+            }, 500);
+
+        $('#main-container').addClass('add-channel');
+        $('#video-container, #video-embed').width(vidW).height(vidH);
+
+        $('#add-channel .channel-name').focus();
+
+        // window.document.location.hash = 'add-channel';
+        // $(document).scrollTop(0);
+    } else {
+        $('#video-container').css({
+            'width': '100%'
+        });
+
+        vid
+            .animate({
+                width: '1000px',
+                height: '625px'
+            }, 500, function() {
+                $('#main-container').removeClass('add-channel');
+                $('#video-container').css({
+                    'width': '100%'
+                });
+                $('#video-container').animate({
+                    height: '100%'
+                }, 250);
+            });
+    }
+
+    return false;
+}
+
+function addChannelFromForm() {
+    var channel = $('#add-channel input.channel-name').val();
+
+    if (channel != '')
+        addChannel(channel);
 
     return false;
 }
