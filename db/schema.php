@@ -3,13 +3,6 @@
 
 include_once('config.php');
 
-$channel = R::dispense('channel');
-$channel->feed = 'derp';
-$channel->thumbnail_url = 'derp';
-
-//Store the bean
-$id = R::store($channel);
-
 /* 	Sponsored videos
 	Individual videos that appear between normal playing videos */
 $sponsored_video = R::dispense('sponsoredvideo');
