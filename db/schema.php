@@ -57,4 +57,16 @@ $sponsored_channel = R::dispense('sponsoredchannel');
 
 $sponsored_channel_id = R::store($sponsored_channel);
 
+
+/* 	Channels 
+	Statistics and meta information for normal Reddit.tv channels */
+$channel = R::dispense('channel');
+	$channel->title = null;										// string 'draft'|'ready'|'active'|'ended'
+	$channel->domain = null;									// string domain for channel
+	$channel->thumbnail_url = null;								// string thumbnail URL
+	$channel->view_count = null;								// integer total count of videos viewed
+	$channel->skip_count = null;								// integer total count of videos skipped
+
+$channel_id = R::store($channel);
+
 ?>
