@@ -1,10 +1,11 @@
 $(document).ready(function() {
 
-$('#adminTabs a:first').tab('show');
+$((document.location.hash != '') ? '#adminTabs a[href="' + document.location.hash + '"]' : '#adminTabs a:first').tab('show');
 
 $('#adminTabs a').click(function (e) {
   e.preventDefault();
   $(this).tab('show').blur();
+  document.location.hash = $(this).attr('href');
 });
 
 $('#embed-code-button').click(function() {
