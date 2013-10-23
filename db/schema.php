@@ -12,6 +12,7 @@ $sponsored_video = R::dispense('sponsoredvideo');
 	$sponsored_video->status = null;							// string 'draft'|'ready'|'active'|'ended'
 	$sponsored_video->video_url = null;							// string location of video
 	$sponsored_video->video_embed_code = null;					// string video embed code
+	$sponsored_video->thumbnail_url = null;						// string thumbnail URL
 	$sponsored_video->sponsor_name = null;						// string sponsor name
 	$sponsored_video->title = null;								// string title (optional)
 	$sponsored_video->view_count = null;						// integer number of times viewed
