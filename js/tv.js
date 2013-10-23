@@ -775,6 +775,12 @@ function loadVideo(video) {
         $('#video-title').html('<a href="' + redditlink + '" target="_blank"'
                                + ' title="' + Globals.videos[this_chan].video[selected_video].title_quot + '">'
                                + Globals.videos[this_chan].video[selected_video].title_unesc + '</a>');
+        $('#video-comments-link').attr("href", redditlink);
+        $('#video-tweet-link').attr("href", "https://twitter.com/intent/tweet?original_referer="
+                                + window.location + "&tweet=" 
+                                + Globals.videos[this_chan].video[selected_video].title_quot 
+                                + "&url="+redditlink);
+        $('#video-share-link').attr("href", redditlink);
         $video_embed.html(embed);
         $video_embed.removeClass('loading');
 
