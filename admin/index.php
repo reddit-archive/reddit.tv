@@ -73,8 +73,11 @@
               </div>
                   <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
             </div>
-            <div class="col-lg-3">
-              <div class="thumbnail" style="background-image: url(http://i2.ytimg.com/vi/U85CXYJg2lc/hqdefault.jpg);"></div>
+            <div class="col-lg-2">
+              <div id="video-thumbnail" class="thumbnail" style="xbackground-image: url(http://i2.ytimg.com/vi/U85CXYJg2lc/hqdefault.jpg);">
+                <span class="text">Video Thumbnail</span>
+                <input id="video-thumbnail-input" class="btn-default" type="file" title="Upload" />
+              </div>
             </div>
           </div>
 
@@ -104,6 +107,11 @@
                 </div>
               </div>
             </div>
+
+            <div class="col-lg-2 col-lg-offset-2">
+              <button type="submit" class="btn btn-primary btn-block">Add Video</button>
+            </div>
+
           </div>
         </form>
       </div>

@@ -57,12 +57,62 @@ div.adminTabs {
     text-align: right;
 }
 
-#videos .thumbnail {
+#video-thumbnail {
     position: absolute;
     background-size: 100% auto;
     background-position: center center;
     width: 150px;
     height: 84px;
+    text-align: center;
+    overflow: hidden;
+    color: #000;
+    transition: none;
+}
+
+#video-thumbnail .file-input-wrapper {
+    position: absolute;
+    bottom: 10px;
+    left: 25%;
+    width: 50%;
+}
+
+#video-thumbnail.prepped .file-input-wrapper {
+    opacity: 0;
+}
+
+#video-thumbnail.prepped:hover .file-input-wrapper, #video-thumbnail.drop .file-input-wrapper {
+    opacity: 1;
+}
+
+#video-thumbnail .file-input-name {
+    position: absolute;
+    top: 0;
+    left: -8px;
+    background: rgba(255,255,255,0.75);
+    width: 100%;
+    max-height: 20px;
+    overflow: hidden;
+}
+
+#video-thumbnail:not(.prepped), #video-thumbnail.drop {
+    border: 2px dashed #ccc;
+}
+
+#video-thumbnail.prepped .text, #video-thumbnail.error .file-input-name, #video-thumbnail.drop .file-input-name {
+    display: none;
+}
+
+#video-thumbnail.drop .text {
+    display: block;
+}
+
+#video-thumbnail.error .text {
+    color: #f00;
+}
+
+#video-thumbnail.drop {
+    background-image: url(img/drop-bg.png) !important;
+    background-size: auto;
 }
 
 /*!
