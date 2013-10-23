@@ -74,7 +74,7 @@
                   <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
             </div>
             <div class="col-lg-2">
-              <div id="video-thumbnail" class="thumbnail" style="xbackground-image: url(http://i2.ytimg.com/vi/U85CXYJg2lc/hqdefault.jpg);">
+              <div id="video-thumbnail" class="thumbnail">
                 <span class="text">Video Thumbnail</span>
                 <input id="video-thumbnail-input" class="btn-default" type="file" title="Upload" />
               </div>
@@ -114,12 +114,235 @@
 
           </div>
         </form>
+
+        <h2>Campaigns</h2>
+
+        <?php 
+          $sponsoredvideos = R::find('sponsoredvideo');
+
+          foreach($sponsoredvideos as $video):
+        ?>
+          <div class="well">
+            <div class="form-group row">
+              <div class="col-lg-5">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <b>Sponsor:</b> <?php echo $video->sponsor_name; ?>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <b>Length:</b> <?php echo $video->start_date; ?> - <?php echo $video->end_date; ?> 
+              </div>
+              <div class="col-lg-3">
+                <div class="thumbnail" style="background-image: url(<?php echo $video->thumbnail_url; ?>);"></div>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-lg-5">
+                <div class="input-group">
+                  <input type="text" class="form-control" id="inputVideoURL" placeholder="<?php echo $video->video_url; ?>" disabled="disabled" />
+                  <div class="input-group-btn">
+                    <button id="embed-code-button" type="button" class="btn btn-default dropdown-toggle">Embed Code&nbsp;&nbsp;&nbsp;<span class="caret"></span></button>
+                    <ul class="dropdown-menu pull-right embed-code">
+                      <li><textarea id="embed-code" class="form-control" rows="3"><?php echo $video->video_embed_code; ?></textarea></li>
+                    </ul>
+                  </div><!-- /btn-group -->
+                </div><!-- /input-group -->
+              </div>
+              <div class="col-lg-3">
+                <div class="input-group">
+                  <label class="input-group-addon">Status</label>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-success dropdown-toggle status-btn" data-toggle="dropdown">
+                      <span class="pull-left"><span>Ready</span></span> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                      <li><a href="#">Ready</a></li>
+                      <li><a href="#">Draft</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <?php endforeach; ?>
       </div>
+
       <div class="tab-pane" id="skins">
         <h1>Sponsored Skins</h1>
+
+        <form class="well form-horizontal" role="form">
+          <div class="form-group row">
+            <div class="col-lg-5">
+              <div class="row">
+                <div class="col-lg-12">
+                  <input type="text" class="form-control" id="inputTitle1" placeholder="Campaign Title" />
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="input-group">
+                <label class="input-group-addon" for="campaign-length">Length</label>
+                <input id="campaign-length" type="text" class="form-control" />
+              </div>
+                  <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
+            </div>
+            <div class="col-lg-3">
+              <div class="thumbnail" style="background-image: url(http://i2.ytimg.com/vi/U85CXYJg2lc/hqdefault.jpg);"></div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+
+            <div class="col-lg-5">
+              <div class="row">
+                <div class="col-lg-6">
+                  <input type="text" class="form-control" id="inputSponsor1" placeholder="Sponsor Name" />
+                </div>
+                <div class="col-lg-6">
+                  <div class="input-group">
+                    <label class="input-group-addon">Status</label>
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-success dropdown-toggle status-btn" data-toggle="dropdown">
+                        <span class="pull-left"><span>Ready</span></span> <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu pull-right" role="menu">
+                        <li><a href="#">Draft</a></li>
+                        <li><a href="#">Ready</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="input-group">
+                <label class="input-group-addon">Placement</label>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default dropdown-toggle status-btn" data-toggle="dropdown">
+                    <span class="pull-left"><span>Video Background</span></span> <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu pull-right" role="menu">
+                    <li><a href="#">Header Background</a></li>
+                    <li><a href="#">Video Background</a></li>
+                    <li><a href="#">Channel Background</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <h2>Campaigns</h2>
+        <?php 
+          $sponsoredskins = R::find('sponsoredskin');
+
+          foreach($sponsoredskins as $skin):
+        ?>
+          <div class="well">
+            <div class="form-group row">
+            <div class="col-lg-5">
+              <div class="row">
+                <div class="col-lg-12">
+                  <b>Title:</b> <?php echo $skin->title; ?>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="input-group">
+                <b>Length:</b> <?php echo $skin->start_date; ?> - <?php echo $skin->end_date; ?> 
+              </div>
+                  <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
+            </div>
+            <div class="col-lg-3">
+              <div class="thumbnail" style="background-image: url(<?php echo $skin->creative_url; ?> );"></div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+
+            <div class="col-lg-5">
+              <div class="row">
+                <div class="col-lg-6">
+                  <b>Sponsor:</b><?php echo $skin->sponsorname; ?>
+                </div>
+                <div class="col-lg-6">
+                  <div class="input-group">
+                    <label class="input-group-addon">Status</label>
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-success dropdown-toggle status-btn" data-toggle="dropdown">
+                        <span class="pull-left"><span><?php echo ucfirst($skin->status); ?></span></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="input-group">
+                <label class="input-group-addon">Placement</label>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default dropdown-toggle status-btn" data-toggle="dropdown">
+                    <span class="pull-left"><span><?php echo ucfirst($skin->position); ?></span></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        <?php endforeach; ?>
       </div>
       <div class="tab-pane" id="channels">
         <h1>Sponsored Channels</h1>
+
+        <form class="well form-horizontal" role="form">
+          <div class="form-group row">
+            <div class="col-lg-5">
+              <div class="row">
+                <div class="col-lg-12">
+                  <input type="text" class="form-control" id="inputTitle1" placeholder="Campaign Title" />
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="input-group">
+                <label class="input-group-addon" for="campaign-length">Length</label>
+                <input id="campaign-length" type="text" class="form-control" />
+              </div>
+                  <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
+            </div>
+            <div class="col-lg-3">
+              <div class="thumbnail" style="background-image: url(http://i2.ytimg.com/vi/U85CXYJg2lc/hqdefault.jpg);"></div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+
+            <div class="col-lg-5">
+              <div class="row">
+                <div class="col-lg-12">
+                  <input type="text" class="form-control" id="inputSponsor1" placeholder="Sponsor Name" />
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="input-group">
+                <label class="input-group-addon">Status</label>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-success dropdown-toggle status-btn" data-toggle="dropdown">
+                    <span class="pull-left"><span>Ready</span></span> <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu pull-right" role="menu">
+                    <li><a href="#">Ready</a></li>
+                    <li><a href="#">Draft</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
 

@@ -57,7 +57,7 @@ div.adminTabs {
     text-align: right;
 }
 
-#video-thumbnail {
+#video-thumbnail, .thumbnail {
     position: absolute;
     background-size: 100% auto;
     background-position: center center;
