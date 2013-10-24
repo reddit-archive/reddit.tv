@@ -153,22 +153,25 @@ $().ready(function(){
         loadTheme($(this).attr('rel'));
         return false;
     });
-    $('#settings .settings-auto').click(function() {
-        Globals.auto = ($(this).find('input').is(':checked')) ? true : false;
+    $('#settings .settings-auto input').change(function() {
+        Globals.auto = ($(this).is(':checked')) ? true : false;
         // This isn't being set right, is needing 2 clicks
         // alert(Globals.auto); 
         $.jStorage.set('auto', Globals.auto);
+        console.log($(this).is(':checked'))
+        console.log(Globals.auto)
+        console.log('settings auto clicked')
     });
-    $('#settings .settings-shuffle').click(function() {
-        Globals.shuffle = ($(this).find('input').is(':checked')) ? true : false;
+    $('#settings .settings-shuffle input').change(function() {
+        Globals.shuffle = ($(this).is(':checked')) ? true : false;
         Globals.shuffled = []; //reset
         $.jStorage.set('shuffle', Globals.shuffle);
 
         if (Globals.shuffle)
             shuffleChan(this_chan);
     });
-    $('#settings .settings-sfw').click(function() {
-        Globals.sfw = ($(this).find('input').is(':checked')) ? true : false;
+    $('#settings .settings-sfw input').change(function() {
+        Globals.sfw = ($(this).is(':checked')) ? true : false;
         if(!Globals.sfw){
             if(!confirm("Are you over 18?")){
                 $(this).removeClass('active').find('input').prop("checked", true);
@@ -655,7 +658,7 @@ function loadVideo(video) {
 
     if(!videoList.open) {
         openVideoList();
-        setTimeout('videoListTimeout()', 2000);
+        setTimeout('videoListCloseTimeout()', 2000);
     }
 
     if(Globals.shuffle){
