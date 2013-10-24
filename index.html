@@ -48,21 +48,27 @@
     }
   }
   $(document).ready(function(){
-    $('header').mouseover(function(){
-      // consoleLog('opening video list');
+    $('header').mouseenter(function(){
+      // consoleLog('enter header');
       videoListMouse = true;
       setTimeout('videoListOpenTimeout();', 500);
     });
-    $('#video-list').mouseover(function(){
-      // consoleLog('opening video list');
+    $('#video-list').mouseenter(function(){
+      // consoleLog('enter video list');
       videoListMouse = true;
       openVideoList();
     });
-    $('header').mouseout(function(){
+    $('#settings').mouseenter(function(){
+      // console.log('enter settings')
+      videoListMouse = false;
+    });
+    $('header').mouseleave(function(){
+      // console.log('exit header')
       videoListMouse = false;
       setTimeout('videoListCloseTimeout()', 1000);
     });
-    $('#video-list').mouseout(function(){
+    $('#video-list').mouseleave(function(){
+      // console.log('exit video list')
       videoListMouse = false;
       setTimeout('videoListCloseTimeout()', 1000);
     });
