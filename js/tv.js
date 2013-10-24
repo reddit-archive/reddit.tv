@@ -163,9 +163,6 @@ $().ready(function(){
         Globals.shuffle = ($(this).is(':checked')) ? true : false;
         Globals.shuffled = []; //reset
         $.jStorage.set('shuffle', Globals.shuffle);
-
-        if (Globals.shuffle)
-            shuffleChan(this_chan);
     });
     $('#settings .settings-sfw input').change(function() {
         Globals.sfw = ($(this).is(':checked')) ? true : false;
