@@ -182,7 +182,6 @@ input.add-channel {
     margin-top: 10px;
     height: 660px;
     max-height: 660px;
-    overflow: hidden;
     position: relative;
 }
 
@@ -193,7 +192,6 @@ input.add-channel {
 #video-container, #add-channel {
     height: 660px;
     max-height: 660px;
-    overflow: hidden;
 }
 
 #video-embed {
