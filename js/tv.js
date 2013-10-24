@@ -158,9 +158,6 @@ $().ready(function(){
         // This isn't being set right, is needing 2 clicks
         // alert(Globals.auto); 
         $.jStorage.set('auto', Globals.auto);
-        console.log($(this).is(':checked'))
-        console.log(Globals.auto)
-        console.log('settings auto clicked')
     });
     $('#settings .settings-shuffle input').change(function() {
         Globals.shuffle = ($(this).is(':checked')) ? true : false;
@@ -183,6 +180,9 @@ $().ready(function(){
     });
     $('#settings .settings-fill').click(function() {
         fillScreen();
+    });
+    $('#settings #hax a').click(function() {
+        window.open($(this).attr('href'));
     });
     $('#next-button').click(function() {
         loadVideo('next');
