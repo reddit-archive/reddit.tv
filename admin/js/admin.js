@@ -1,66 +1,102 @@
 $(document).ready(function() {
 
+// Section tabs
 $((document.location.hash != '') ? '#adminTabs a[href="' + document.location.hash + '"]' : '#adminTabs a:first').tab('show');
-
 $('#adminTabs a').click(function (e) {
   e.preventDefault();
   $(this).tab('show').blur();
   document.location.hash = $(this).attr('href');
 });
 
-$('#embed-code-button').click(function() {
-	var menu = $('.embed-code.dropdown-menu');
+// Dropdown embed code textareas that stay open
+$('.btn-embed-code').click(function() {
+	var menu = $(this).next('.embed-code.dropdown-menu');
 
 	menu.toggle();
 });
 
+// Date range dropdown
 $('#campaign-length').daterangepicker({
-	ranges: {
+	/*ranges: {
 		'Today': [moment(), moment()],
 		'Until Tomorrow': [moment(), moment().add('days', 1)],
 		'This Week': [moment(), moment().add('days', 6)],
 		'This Month': [moment().startOf('month'), moment().endOf('month')],
 		'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
-	},
+	},*/
 	startDate: moment(),
 	endDate: moment().add('days', 7),
-	showDropdowns: true
+	showDropdowns: true,
+	timePicker: true,
+	timePickerIncrement: 30,
+	timePicker12Hour: true
 },
 function(start, end) {
-	// $('#campaign-length').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+	alert(start.format('YYYY-MM-DD HH:mm:ss'))
+	$('#video_start_date').val(start.format('YYYY-MM-DD HH:mm:ss'));
+	$('#video_end_date').val(end.format('YYYY-MM-DD HH:mm:ss'));
 });
 
+// Bootstrap style file inputs
 $('input[type=file]').bootstrapFileInput();
 
-$('#video-thumbnail-input').localResize({
-	dropTarget   : $('#video-thumbnail'),
-	loadCallback : function(src) {
-		$('#video-thumbnail')
-			.removeClass('error')
-			.addClass('prepped')
-			.css({
-				'background-image' : 'url(' + src + ')'
-			});
-	},
-	errorCallback : function() {
-		$('#video-thumbnail')
-			.removeClass('prepped')
-			.addClass('error')
-			.css({
-				'background-image': ''
-			})
-			.find('.text')
-				.text('Not an image!');
+// Bootstrap style select inputs
+$('.selectpicker').selectpicker();
 
-		$('#video-thumbnail-input').replaceWith($(this).clone(true));
-	}
+// Change Status color on dropdown click
+$(document).on('click', '.bootstrap-select .dropdown-menu li a', function() {
+	var btn = $(this).parents('.bootstrap-select').find('button.btn:first');
+	btn.removeClass()
+		.addClass('btn dropdown-toggle btn-' + $(this).attr('class'));
+});
+
+// Status colors for non-forms
+var statusColors = {
+	'ready' : 'success',
+	'draft' : 'primary'
+};
+$('div.status-btn').each(function() {
+	var statusColor = statusColors[$(this).data('status')];
+	if (!statusColor) statusColor = 'default';
+
+	$(this).addClass('btn-' + statusColor);
+});
+
+
+
+// Image upload local thumbnails
+$.each([ 'video', 'skin', 'channel' ], function( index, value ) {
+	$('#' + value + '-thumbnail-input').localResize({
+		dropTarget   : $('#' + value + '-thumbnail'),
+		loadCallback : function(src) {
+			console.log(this);
+			this.dropTarget
+				.removeClass('error')
+				.addClass('prepped')
+				.css({
+					'background-image' : 'url(' + src + ')'
+				});
+		},
+		errorCallback : function() {
+			this.dropTarget
+				.removeClass('prepped')
+				.addClass('error')
+				.css({
+					'background-image': ''
+				})
+				.find('.text')
+					.text('Not an image!');
+
+			this.input.replaceWith($(this).clone(true));
+		}
+	});
 });
 
 //end document.ready
 });
 
 
-// LocalResize plugin for
+// LocalResize plugin for image uploads, hand made <3
 (function($){
 	var LocalResize = function(element, options) {
 		var elem = $(element),
@@ -70,7 +106,7 @@ $('#video-thumbnail-input').localResize({
 		var settings = $.extend({
 			maxWidth     : 0,
 			maxHeight    : 0,
-			input        : null,
+			input        : elem,
 			dropTarget  : false,
 			errorCallback : false,
 			loadCallback : function() {}
