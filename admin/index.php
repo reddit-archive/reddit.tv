@@ -1,5 +1,7 @@
 <?php
   include_once('../db/config.php');
+  include_once('functions.php');
+  ajaxFunc();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -57,53 +59,62 @@
       <div class="tab-pane active" id="videos">
         <h1>Sponsored Videos</h1>
 
-        <form class="well form-horizontal" role="form">
+        <form action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
+          <input type="hidden" name="function" value="videoAdd" />
           <div class="form-group row">
             <div class="col-lg-5">
               <div class="row">
                 <div class="col-lg-12">
-                  <input type="text" class="form-control" id="inputSponsor1" placeholder="Sponsor Name" />
+                  <input type="text" class="form-control" name="sponsor_name" id="inputSponsor1" placeholder="Sponsor Name" />
                 </div>
               </div>
             </div>
             <div class="col-lg-3">
               <div class="input-group">
+                <input type="hidden" name="start_date" id="video_start_date" value="" />
+                <input type="hidden" name="end_date" id="video_end_date" value="" />
                 <label class="input-group-addon" for="campaign-length">Length</label>
                 <input id="campaign-length" type="text" class="form-control" />
               </div>
                   <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
             </div>
-            <div class="col-lg-3">
-              <div class="thumbnail" style="background-image: url(http://i2.ytimg.com/vi/U85CXYJg2lc/hqdefault.jpg);"></div>
+            <div class="col-lg-2">
+              <div id="video-thumbnail" class="upload thumbnail">
+                <span class="text">Video Thumbnail</span>
+                <input id="video-thumbnail-input" class="btn-default" type="file" title="Upload" />
+              </div>
             </div>
           </div>
 
           <div class="form-group row">
             <div class="col-lg-5">
               <div class="input-group">
-                <input type="text" class="form-control" id="inputVideoURL" placeholder="URL" />
+                <input type="text" class="form-control" name="video_url" id="inputVideoURL" placeholder="URL" />
                 <div class="input-group-btn">
-                  <button id="embed-code-button" type="button" class="btn btn-default dropdown-toggle">Embed Code&nbsp;&nbsp;&nbsp;<span class="caret"></span></button>
+                  <button type="button" class="btn-embed-code btn btn-default dropdown-toggle">Embed Code&nbsp;&nbsp;&nbsp;<span class="caret"></span></button>
                   <ul class="dropdown-menu pull-right embed-code">
-                    <li><textarea id="embed-code" class="form-control" rows="3"></textarea></li>
+                    <li><textarea name="video_embed_code" id="embed-code" class="form-control" rows="3"></textarea></li>
                   </ul>
                 </div><!-- /btn-group -->
               </div><!-- /input-group -->
             </div>
+
             <div class="col-lg-3">
               <div class="input-group">
                 <label class="input-group-addon">Status</label>
                 <div class="btn-group">
-                  <button type="button" class="btn btn-success dropdown-toggle status-btn" data-toggle="dropdown">
-                    <span class="pull-left"><span>Ready</span></span> <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                    <li><a href="#">Ready</a></li>
-                    <li><a href="#">Draft</a></li>
-                  </ul>
+                  <select name="status" class="selectpicker" data-style="btn-success">
+                    <option value="ready" class="success">Ready</option>
+                    <option value="draft" class="primary">Draft</option>
+                  </select>
                 </div>
               </div>
             </div>
+
+            <div class="col-lg-2 col-lg-offset-2">
+              <button type="submit" class="btn btn-primary btn-block">Add Video</button>
+            </div>
+
           </div>
         </form>
 
@@ -134,29 +145,31 @@
             <div class="form-group row">
               <div class="col-lg-5">
                 <div class="input-group">
-                  <input type="text" class="form-control" id="inputVideoURL" placeholder="<?php echo $video->video_url; ?>" disabled="disabled" />
+                  <input type="text" class="form-control" name="video_url" value="<?php echo $video->video_url; ?>" disabled="disabled" />
                   <div class="input-group-btn">
-                    <button id="embed-code-button" type="button" class="btn btn-default dropdown-toggle">Embed Code&nbsp;&nbsp;&nbsp;<span class="caret"></span></button>
+                    <button type="button" class="btn-embed-code btn btn-default dropdown-toggle">Embed Code&nbsp;&nbsp;&nbsp;<span class="caret"></span></button>
                     <ul class="dropdown-menu pull-right embed-code">
-                      <li><textarea id="embed-code" class="form-control" rows="3"><?php echo $video->video_embed_code; ?></textarea></li>
+                      <li><textarea class="form-control" rows="3"><?php echo htmlentities($video->video_embed_code); ?></textarea></li>
                     </ul>
                   </div><!-- /btn-group -->
                 </div><!-- /input-group -->
               </div>
+
               <div class="col-lg-3">
                 <div class="input-group">
                   <label class="input-group-addon">Status</label>
                   <div class="btn-group">
-                    <button type="button" class="btn btn-success dropdown-toggle status-btn" data-toggle="dropdown">
-                      <span class="pull-left"><span>Ready</span></span> <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu pull-right" role="menu">
-                      <li><a href="#">Ready</a></li>
-                      <li><a href="#">Draft</a></li>
-                    </ul>
+                    <div class="btn status-btn" data-status="<?php echo $video->status; ?>">
+                      <span class="pull-left"><?php echo ucfirst($video->status); ?></span>
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <div class="col-lg-2 col-lg-offset-2">
+                <button  class="btn btn-default btn-block">Edit</button>
+              </div>
+
             </div>
           </div>
         <?php endforeach; ?>
@@ -181,8 +194,11 @@
               </div>
                   <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
             </div>
-            <div class="col-lg-3">
-              <div class="thumbnail" style="background-image: url(http://i2.ytimg.com/vi/U85CXYJg2lc/hqdefault.jpg);"></div>
+            <div class="col-lg-2">
+              <div id="skin-thumbnail" class="upload thumbnail">
+                <span class="text">Skin Image</span>
+                <input id="skin-thumbnail-input" class="btn-default" type="file" title="Upload" />
+              </div>
             </div>
           </div>
 
@@ -193,37 +209,39 @@
                 <div class="col-lg-6">
                   <input type="text" class="form-control" id="inputSponsor1" placeholder="Sponsor Name" />
                 </div>
+
                 <div class="col-lg-6">
                   <div class="input-group">
                     <label class="input-group-addon">Status</label>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-success dropdown-toggle status-btn" data-toggle="dropdown">
-                        <span class="pull-left"><span>Ready</span></span> <span class="caret"></span>
-                      </button>
-                      <ul class="dropdown-menu pull-right" role="menu">
-                        <li><a href="#">Draft</a></li>
-                        <li><a href="#">Ready</a></li>
-                      </ul>
+                      <select name="status" class="selectpicker" data-style="btn-success">
+                        <option value="ready" class="success">Ready</option>
+                        <option value="draft" class="primary">Draft</option>
+                      </select>
                     </div>
                   </div>
+
                 </div>
               </div>
             </div>
+
             <div class="col-lg-3">
               <div class="input-group">
                 <label class="input-group-addon">Placement</label>
                 <div class="btn-group">
-                  <button type="button" class="btn btn-default dropdown-toggle status-btn" data-toggle="dropdown">
-                    <span class="pull-left"><span>Video Background</span></span> <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                    <li><a href="#">Header Background</a></li>
-                    <li><a href="#">Video Background</a></li>
-                    <li><a href="#">Channel Background</a></li>
-                  </ul>
+                  <select name="position" class="selectpicker placement">
+                    <option value="geader">Header Background</option>
+                    <option value="video" selected="selected">Video Background</option>
+                    <option value="channel">Channel Background</option>
+                  </select>
                 </div>
               </div>
             </div>
+
+            <div class="col-lg-2 col-lg-offset-2">
+              <button type="submit" class="btn btn-primary btn-block">Add Skin</button>
+            </div>
+
           </div>
         </form>
 
@@ -264,9 +282,9 @@
                   <div class="input-group">
                     <label class="input-group-addon">Status</label>
                     <div class="btn-group">
-                      <button type="button" class="btn btn-success dropdown-toggle status-btn" data-toggle="dropdown">
-                        <span class="pull-left"><span><?php echo ucfirst($skin->status); ?></span></span>
-                      </button>
+                      <div class="btn status-btn" data-status="<?php echo $skin->status; ?>">
+                        <span class="pull-left"><?php echo ucfirst($skin->status); ?></span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -305,8 +323,11 @@
               </div>
                   <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
             </div>
-            <div class="col-lg-3">
-              <div class="thumbnail" style="background-image: url(http://i2.ytimg.com/vi/U85CXYJg2lc/hqdefault.jpg);"></div>
+            <div class="col-lg-2">
+              <div id="channel-thumbnail" class="upload thumbnail">
+                <span class="text">Channel Thumbnail</span>
+                <input id="channel-thumbnail-input" class="btn-default" type="file" title="Upload" />
+              </div>
             </div>
           </div>
 
