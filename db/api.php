@@ -27,7 +27,8 @@ function getChannelThumbnail($feed){
 
 	$uri = "http://reddit.com".$feed.'.json?limit=100';
 	$uri = "http://www.reddit.com".$feed."/search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A1382227035..%29&restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
-	$channel_info = json_decode(file($uri)[0]);
+	$file = file($uri);
+	$channel_info = json_decode($file[0]);
 	$x = 0;
 
 	while(!isVideo($channel_info->data->children[$x]->data->domain)){ 
@@ -43,7 +44,7 @@ function getChannelThumbnail($feed){
 }
 
 function isVideo($video_domain) {
-	$domains = [
+	$domains = Array(
         '5min.com', 'abcnews.go.com', 'animal.discovery.com', 'animoto.com', 'atom.com',
         'bambuser.com', 'bigthink.com', 'blip.tv', 'break.com',
         'cbsnews.com', 'cnbc.com', 'cnn.com', 'colbertnation.com', 'collegehumor.com',
@@ -63,7 +64,7 @@ function isVideo($video_domain) {
         'video.nationalgeographic.com', 'video.pbs.org', 'video.yahoo.com', 'vids.myspace.com', 'vimeo.com',
         'wordpress.tv', 'worldstarhiphop.com', 'xtranormal.com',
         'youtube.com', 'youtu.be', 'zapiks.com'
-        ];
+        );
     return in_array($video_domain, $domains);
 }
 
