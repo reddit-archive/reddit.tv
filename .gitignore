@@ -4,4 +4,4 @@
 *.bak
 lib
 .DS_Store
-database.s3db
+db/database.s3db
