@@ -378,62 +378,71 @@ function displayChannels() {
 }
 
 function displayChannel(chan){
-    var title, display_title, class_str='', remove_str='',
-        $channel_base = $('#add-channel-button'),
-        $channel = $channel_base.clone().removeAttr('id');
-
     chan_feed = Globals.channels[chan].feed;
-    chan_title = chan_feed.split("/");
-    chan_title = "/"+chan_title[1]+"/"+chan_title[2];
+    url = window.location.origin+window.location.pathname+"db/api.php?action=channel_thumbnail&feed="+chan_feed;
+    console.log(url)
+    $.ajax({
+        url: url,
+        dataType: "json",
+        success: function(data) {
+            var title, display_title, class_str='', remove_str='',
+                $channel_base = $('#add-channel-button'),
+                $channel = $channel_base.clone().removeAttr('id');
 
-    display_title = Globals.channels[chan].channel.length > 20 ?
-        Globals.channels[chan].channel.replace(/[aeiou]/gi,'').substr(0,20) :
-        Globals.channels[chan].channel;
+            data = data[0];
+            chan_feed = data.feed;
+            chan_title = chan_feed.split("/");
+            chan_title = "/"+chan_title[1]+"/"+chan_title[2];
 
-    if(isUserChan(Globals.channels[chan].channel)){
-        class_str = 'class="user-chan"';
-        remove_str = '<a id="remove-'+chan+'" class="remove-chan">-</a>';
-    }
+            chan = 0
+            for(chan=0; chan<Globals.channels.length; chan++){
+                console.log(Globals.channels[chan].feed)
+                if(Globals.channels[chan].feed == data.feed)
+                    break;
+            }
+            console.log(chan);
 
-    $channel
-        .show()
-        .insertAfter('#add-channel-button')
-        .attr({
-            id: 'channel-' + chan,
-            href: '#' + Globals.channels[chan].feed,
-            title: chan_title
-        })
-        .removeClass('loading') // temp
-        .find('.thumbnail')
-            .css({
-                'background-image': 'url(' + Globals.chan_thumbs[chan] + ')'
-            })
-        .parent()
-        .find('.name')
-            .html(display_title);
+            display_title = Globals.channels[chan].channel.length > 20 ?
+                Globals.channels[chan].channel.replace(/[aeiou]/gi,'').substr(0,20) :
+                Globals.channels[chan].channel;
 
-/*    <a class="grid-25 channel" href="#/r/subreddit">
-      <div class="thumbnail"></div>
-      <span class="name">channel</span>
-    </a>*/
+            if(isUserChan(Globals.channels[chan].channel)){
+                class_str = 'class="user-chan"';
+                remove_str = '<a id="remove-'+chan+'" class="remove-chan">-</a>';
+            }
 
-    $('#channel>ul').prepend('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'><img src="http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg" />'+display_title+remove_str+'</li>');
-    // $('#channel-list>ul').append('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'><img src="http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg" />'+display_title+remove_str+'</li>');
-    /*$('#channel-'+chan).bind(
-        'click',
-        {channel: Globals.channels[chan].channel, feed: Globals.channels[chan].feed},
-        function(event) {
-            var parts = event.data.feed.split("/");
-            window.location.hash = "/"+parts[1]+"/"+parts[2]+"/";
+            $channel
+                .show()
+                .insertAfter('#add-channel-button')
+                .attr({
+                    id: 'channel-' + chan,
+                    href: '#' + Globals.channels[chan].feed,
+                    title: chan_title
+                })
+                .removeClass('loading') // temp
+                .find('.thumbnail')
+                    .css({
+                        'background-image': 'url(' + data.thumbnail_url + ')'
+                    })
+                .parent()
+                .find('.name')
+                    .html(display_title);
+
+            $('#channel>ul').prepend('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'><img src="http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg" />'+display_title+remove_str+'</li>');
+
+            $('#remove-'+chan).bind(
+                'click',
+                {channel: chan},
+                function(event) {
+                    removeChan(event.data.channel);
+                }
+            );
+        },
+        error: function(jXHR, textStatus, errorThrown) {
+            console.log('[ERROR] '+textStatus);
+            console.log('[ERROR] '+errorThrown);
         }
-    );*/
-    $('#remove-'+chan).bind(
-        'click',
-        {channel: chan},
-        function(event) {
-            removeChan(event.data.channel);
-        }
-    );
+    });
 }
 
 function loadChannel(channel, video_id) {
