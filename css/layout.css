@@ -419,6 +419,7 @@ input.add-channel {
     color: #999;
     text-transform: uppercase;
     margin-top: 0;
+    margin-left: 10px;
 }
 #add-channel .channel-name {
     height: 50px;
