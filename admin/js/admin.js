@@ -59,11 +59,7 @@ $('.campaign-length').daterangepicker({
 	timePickerIncrement: 30,
 	timePicker12Hour: true
 },
-function(start, end) {
-	var type = $(this.element).attr('id').replace(/-length/, '');
-	$('#' + type + '_start_date').val(start.format('YYYY-MM-DD HH:mm:ss'));
-	$('#' + type + '_end_date').val(end.format('YYYY-MM-DD HH:mm:ss'));
-});
+dateRangeCallback);
 
 // Set start/end dates to default dates
 $('#video_start_date').val(moment().startOf('hour').format('YYYY-MM-DD HH:mm:ss'));
@@ -77,10 +73,12 @@ $('input[type=file]').bootstrapFileInput();
 $('.selectpicker').selectpicker();
 
 // Change Status color on dropdown click
-$(document).on('click', '.bootstrap-select .dropdown-menu li a', function() {
-	var btn = $(this).parents('.bootstrap-select').find('button.btn:first');
+$('.selectpicker').on('change', function() {
+	var btn      = $(this).siblings('.bootstrap-select').find('button.btn:first'),
+	    btnClass = $(this).find('option[value="' + $(this).val() + '"]').attr('class') || 'default';
+
 	btn.removeClass()
-		.addClass('btn dropdown-toggle btn-' + $(this).attr('class'));
+		.addClass('btn dropdown-toggle btn-' + btnClass);
 });
 
 // Status colors for non-forms
@@ -138,8 +136,82 @@ $.each([ 'video', 'skin', 'channel' ], function( index, value ) {
 	});
 });
 
+// Edit buttons
+$('.btn-edit').on('click', function() {
+	var pane = $(this).parents('.tab-pane'),
+	    form = pane.find('form'),
+	    item = $(this).parents('.item'),
+	    id   = item.data('id'),
+	    type = pane.attr('id');
+
+	if (!id) return;
+
+	$.ajax({
+		data : {
+			'ajax'   : 1,
+			'action' : 'get',
+			'type'   : type,
+			'id'     : id
+		},
+		url: window.location.href.replace(/#.*$/, ''),
+		dataType: "json",
+		success: function(data) {
+			$('<input />')
+				.attr({
+					type  : 'hidden',
+					name  : 'edit',
+					value : data.id
+				})
+				.appendTo(form);
+
+			$.each(data, function( index, value ) {
+				console.log(index, value);
+				var input = form.find('*[name="db_' + index + '"]');
+				input.val(value);
+				if (input.hasClass('selectpicker')) input.selectpicker('val', value);
+			});
+
+			if (data.image_url != '') {
+				form.find('.upload.thumbnail')
+					.removeClass('error')
+					.addClass('prepped')
+					.css('background-image', 'url(../' + data.image_url + ')');
+			}
+
+			$('.item').removeClass('edit');
+			item.addClass('edit');
+			form.addClass('edit')
+			var submitBtn = form.find('button[type="submit"]'),
+			    select    = form.find('.selectpicker');
+			
+			submitBtn.text(submitBtn.text().replace(/Add/i, 'Edit'));
+
+			dateRangeCallback(
+				moment($('#' + type + '_start_date').val()),
+				moment($('#' + type + '_end_date').val()),
+				form.find('.campaign-length')
+			);
+		},
+		error: function(jXHR, textStatus, errorThrown) {
+			console.log('[ERROR] '+textStatus);
+			console.log('[ERROR] '+errorThrown);
+		}
+	});
+
+	console.log(ajax);
+});
+
 //end document.ready
 });
+
+function dateRangeCallback(start, end, ele) {
+	if (this.element) ele = $(this.element);
+	var type = ele.attr('id').replace(/-length/, '');
+	$('#' + type + '_start_date').val(start.format('YYYY-MM-DD HH:mm:ss'));
+	$('#' + type + '_end_date').val(end.format('YYYY-MM-DD HH:mm:ss'));
+
+	ele.val(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
+}
 
 function generateEmbed(id) {
 	var code = '<object type="application/x-shockwave-flash" width="100%" height="100%" data="http://www.youtube.com/v/#ID#?hd=1&amp;showsearch=0&amp;version=3&amp;modestbranding=1">' +
