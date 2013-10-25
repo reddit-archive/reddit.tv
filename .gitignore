@@ -5,4 +5,4 @@
 lib
 !admin/lib/
 .DS_Store
-db/database.s3db
+database.s3db

@@ -8,7 +8,7 @@ if($_GET['action'] == 'channel_thumbnail'){
 	//Reload the bean
 	$channel = R::findOne('channel', ' feed = ?', array($feed));
 
-	if(empty($channel)){
+	if(empty($channel) || !empty($_GET['debug'])){
 		$channel = R::dispense('channel');
 		$channel->feed = $feed;
 		$channel->thumbnail_url = getChannelThumbnail($feed);
@@ -28,13 +28,18 @@ function getChannelThumbnail($feed){
 	$uri = "http://www.reddit.com".$feed."/search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A1382227035..%29&restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
 	$file = file($uri);
 	$channel_info = json_decode($file[0]);
-	$x = 0;
 
-	while(!isVideo($channel_info->data->children[$x]->data->domain)){ 
+	$entries = $channel_info->data->children;
+
+	for($x=0; $x<count($entries); $x++){
+		if(isVideo($entries[$x]->data->domain)){ 
+			if(!empty($entries[$x]->data->media->oembed->thumbnail_url)){
+				$thumbnail_url = $entries[$x]->data->media->oembed->thumbnail_url;
+				break;
+			}
+		}
 		$x++;
 	}
-
-	$thumbnail_url = $channel_info->data->children[$x]->data->media->oembed->thumbnail_url;
 
     return $thumbnail_url;
 }
