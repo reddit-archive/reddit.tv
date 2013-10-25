@@ -19,7 +19,9 @@ if($_GET['action'] == 'channel_thumbnail'){
 
 
 	echo json_encode(R::exportAll($channel));
-	return;
+	die();
+} else if ($_GET['action'] == 'youtube_thumbnail') {
+	getYoutubeThumbnail($_GET['id'], isset($_GET['base64']));
 }
 
 function getChannelThumbnail($feed){
@@ -42,6 +44,28 @@ function getChannelThumbnail($feed){
 	}
 
     return $thumbnail_url;
+}
+
+function getYoutubeThumbnail($id, $base64=false) {
+	$url = 'http://img.youtube.com/vi/' . $id . '/hqdefault.jpg';
+	$imginfo = getimagesize($url);
+	if ($base64) {
+		ob_start();
+		readfile($url);
+		$img = ob_get_contents();
+		ob_end_clean();
+		$dataUri = 'data:' . $imginfo['mime'] . ';base64,' . base64_encode($img);
+		$arr = Array(
+				'url' => $url,
+				'image' => $dataUri
+			);
+
+		echo json_encode($arr);
+		die();
+	} else {
+		header('Content-type: ' . $imginfo['mime']);
+		readfile($url);
+	}
 }
 
 function isVideo($video_domain) {

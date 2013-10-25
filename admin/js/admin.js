@@ -96,7 +96,20 @@ $('div.status-btn').each(function() {
 	$(this).addClass('btn-' + statusColor);
 });
 
+// Youtube embed code generation
+$('input[name="db_video_url"]').on('keyup change', function() {
+	var url = $(this).val(),
+	    ta  = $(this).parent().find('.embed-code textarea'),
+	    youtube;
 
+	youtube = url.match(/^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?(?:.*?&(?:amp;)?)?v=|\.be\/)([\w‌​\-]+)(?:&(?:amp;)?[\w\?=]*)?/i);
+	if (!youtube) return;
+
+	youtubeThumb(youtube[1], $(this).parents('form').find('.thumbnail'));
+
+	if (ta.val() != '') return;
+	ta.val(generateEmbed(youtube[1]));
+});
 
 // Image upload local thumbnails
 $.each([ 'video', 'skin', 'channel' ], function( index, value ) {
@@ -128,6 +141,36 @@ $.each([ 'video', 'skin', 'channel' ], function( index, value ) {
 //end document.ready
 });
 
+function generateEmbed(id) {
+	var code = '<object type="application/x-shockwave-flash" width="100%" height="100%" data="http://www.youtube.com/v/#ID#?hd=1&amp;showsearch=0&amp;version=3&amp;modestbranding=1">' +
+        '<param name="movie" value="http://www.youtube.com/v/#ID#?hd=1&amp;showsearch=0&amp;version=3&amp;modestbranding=1" />' +
+        '<param name="allowFullScreen" value="true" />' +
+        '<param name="allowscriptaccess" value="always" />' +
+        '</object>';
+
+    return code.replace(/#ID#/g, id);
+}
+
+function youtubeThumb(id, ele) {
+	if (ele.css('background-image') != 'none') return;
+
+	$.ajax({
+		url: '../db/api.php?action=youtube_thumbnail&base64=1&id=' + id,
+		dataType: "json",
+		success: function(data) {
+			ele
+				.removeClass('error')
+				.addClass('prepped')
+				.css('background-image', 'url(' + data.image + ')');
+
+			ele.find('input[name="b64_image"]').val(data.image);
+		},
+		error: function(jXHR, textStatus, errorThrown) {
+			console.log('[ERROR] '+textStatus);
+			console.log('[ERROR] '+errorThrown);
+		}
+	});
+}
 
 // LocalResize plugin for image uploads, hand made <3
 (function($){

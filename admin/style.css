@@ -41,9 +41,9 @@ div.adminTabs {
 }
 
 .embed-code textarea, .embed-code textarea:focus {
-    border: none;
-    outline: none;
-    box-shadow: none;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 #videos .input-group-addon {
