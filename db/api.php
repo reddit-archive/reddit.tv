@@ -18,23 +18,19 @@ if($_GET['action'] == 'channel_thumbnail'){
 	}
 
 
-	echo $channel->thumbnail_url;
+	echo json_encode(R::exportAll($channel));
 	return;
 }
 
 function getChannelThumbnail($feed){
 	$thumbnail_url = null;
 
-	$uri = "http://reddit.com".$feed.'.json?limit=100';
 	$uri = "http://www.reddit.com".$feed."/search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A1382227035..%29&restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
 	$file = file($uri);
 	$channel_info = json_decode($file[0]);
 	$x = 0;
 
 	while(!isVideo($channel_info->data->children[$x]->data->domain)){ 
-		echo isVideo($channel_info->data->children[$x]->data->domain);
-		echo var_export($channel_info->data->children[$x]->data->domain, true);
-		echo "\n";
 		$x++;
 	}
 
