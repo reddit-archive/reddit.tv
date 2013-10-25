@@ -353,7 +353,7 @@ function loadSettings() {
     if(channels_cookie !== null && channels_cookie !== Globals.user_channels){
         Globals.user_channels = channels_cookie;
         for(var x in Globals.user_channels){
-            Globals.channels.push(Globals.user_channels[x]);
+            Globals.channels.unshift(Globals.user_channels[x]);
         }
     }
 }
@@ -372,7 +372,7 @@ function displayChannels() {
 
     // $channel_base.hide();
     // $channel_list.html($list);
-    for(var x in Globals.channels){
+    for(var x in Globals.channels.reverse()){
         displayChannel(x);
     }
 }
@@ -382,7 +382,8 @@ function displayChannel(chan){
         $channel_base = $('#add-channel-button'),
         $channel = $channel_base.clone().removeAttr('id');
 
-    chan_title = Globals.channels[chan].feed.split("/");
+    chan_feed = Globals.channels[chan].feed;
+    chan_title = chan_feed.split("/");
     chan_title = "/"+chan_title[1]+"/"+chan_title[2];
 
     display_title = Globals.channels[chan].channel.length > 20 ?
@@ -396,7 +397,7 @@ function displayChannel(chan){
 
     $channel
         .show()
-        .appendTo('#channels')
+        .insertAfter('#add-channel-button')
         .attr({
             id: 'channel-' + chan,
             href: '#' + Globals.channels[chan].feed,
@@ -416,7 +417,7 @@ function displayChannel(chan){
       <span class="name">channel</span>
     </a>*/
 
-    $('#channel>ul').append('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'><img src="http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg" />'+display_title+remove_str+'</li>');
+    $('#channel>ul').prepend('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'><img src="http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg" />'+display_title+remove_str+'</li>');
     // $('#channel-list>ul').append('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'><img src="http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg" />'+display_title+remove_str+'</li>');
     /*$('#channel-'+chan).bind(
         'click',
@@ -1225,12 +1226,13 @@ function addChannel(subreddit){
         console.log(feed);
 
         var c_data = {'channel': subreddit, feed: feed};
-        Globals.channels.push(c_data);
-        Globals.user_channels.push(c_data);
+        Globals.channels.unshift(c_data);
+        Globals.user_channels.unshift(c_data);
         
         $.jStorage.set('user_channels', Globals.user_channels);
 
-        var x = Globals.channels.length - 1;
+        // var x = Globals.channels.length - 1;
+        var x = 0;
         displayChannel(x);
 
         if(click){

@@ -7,6 +7,7 @@ include_once('config.php');
 	Individual videos that appear between normal playing videos */
 $sponsored_video = R::dispense('sponsoredvideo');
 	$sponsored_video->created_on = '0000-00-00 00:00:00';		// datetime created in database
+	$sponsored_video->updated_on = '0000-00-00 00:00:00';		// datetime updated in database
 	$sponsored_video->start_date = '0000-00-00 00:00:00';		// datetime campaign begins
 	$sponsored_video->end_date = '0000-00-00 00:00:00';			// datetime campaign ends
 	$sponsored_video->status = null;							// string 'draft'|'ready'|'active'|'ended'
@@ -27,6 +28,7 @@ $sponsored_video_id = R::store($sponsored_video);
 	Images that can replace UI areas on the site */
 $sponsored_skin = R::dispense('sponsoredskin');
 	$sponsored_skin->created_on = '0000-00-00 00:00:00';		// datetime created in database
+	$sponsored_skin->updated_on = '0000-00-00 00:00:00';		// datetime updated in database
 	$sponsored_skin->start_date = '0000-00-00 00:00:00';		// datetime campaign begins
 	$sponsored_skin->end_date = '0000-00-00 00:00:00';			// datetime campaign ends
 	$sponsored_skin->status = null;								// string 'draft'|'ready'|'active'|'ended'
@@ -45,6 +47,7 @@ $sponsored_skin_id = R::store($sponsored_skin);
 	Channels of videos to be shown on the site */
 $sponsored_channel = R::dispense('sponsoredchannel');
 	$sponsored_channel->created_on = '0000-00-00 00:00:00';		// datetime created in database
+	$sponsored_channel->updated_on = '0000-00-00 00:00:00';		// datetime updated in database
 	$sponsored_channel->start_date = '0000-00-00 00:00:00';		// datetime campaign begins
 	$sponsored_channel->end_date = '0000-00-00 00:00:00';		// datetime campaign ends
 	$sponsored_channel->status = null;							// string 'draft'|'ready'|'active'|'ended'
@@ -62,8 +65,10 @@ $sponsored_channel_id = R::store($sponsored_channel);
 /* 	Channels 
 	Statistics and meta information for normal Reddit.tv channels */
 $channel = R::dispense('channel');
-	$channel->title = null;										// string 'draft'|'ready'|'active'|'ended'
-	$channel->domain = null;									// string domain for channel
+	$channel->created_on = '0000-00-00 00:00:00';				// datetime created in database
+	$channel->updated_on = '0000-00-00 00:00:00';				// datetime updated in database
+	$channel->title = null;										// string title of channel
+	$channel->feed = null;										// string feed for channel
 	$channel->thumbnail_url = null;								// string thumbnail URL
 	$channel->view_count = null;								// integer total count of videos viewed
 	$channel->skip_count = null;								// integer total count of videos skipped
