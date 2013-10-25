@@ -3,28 +3,34 @@
 require_once('lib/class.upload.php');
 
 function ajaxFunc() {
-	if (!$_POST['function']) return;
+	if (!isset($_POST['type'])) return;
 
 	$funcs = Array(
-		'videoAdd'
+		'video',
+		'skins',
+		'channels',
 	);
 
-	if (!in_array($_POST['function'], $funcs)) {
-		die($_POST['function']);
-		return;
-	}
+	if (!in_array($_POST['type'], $funcs)) return;
 
-	if (function_exists($_POST['function']))
-		$_POST['function']();
+	addEdit($_POST['type']);
 }
 
-function videoAdd() {
-	$video = R::dispense('sponsoredvideo');
+function addEdit($type) {
+	$db_names = Array(
+			'video' => 'sponsoredvideo',
+			'skins' => 'sponsoredskin',
+			'channels' => 'sponsoredchannel',
+		);
+
+	$db_name = $db_names[$type];
+
+	$db = R::dispense($db_name);
 
 	foreach ($_POST as $key => $val) {
 		if (substr($key, 0, 3) != 'db_') continue;
 
-		$video->{substr($key, 3)} = $val;
+		$db->{substr($key, 3)} = $val;
 	}
 
 	$filename = pickFilename(Array(
@@ -32,14 +38,21 @@ function videoAdd() {
 		$_POST['db_title'],
 	));
 
-	$image = imageUpload($filename, 150);
-	if ($image) $video->thumbnail_url = UPLOAD_URL . $image;
+	$max_width = 0;
+	if ($type == 'video') $max_width = 150;
 
-	$video->created_on = R::isoDateTime();
+	$image = imageUpload($filename, $max_width);
+	if ($image) $db->image_url = UPLOAD_URL . $image;
 
-	$id = R::store($video);
+	if (!isset($_POST['edit'])) {
+		$db->created_on = R::isoDateTime();
+	} else {
+		$db->updated_on = R::isoDateTime();
+	}
 
-	jsonForAjax($video->export());
+	$id = R::store($db);
+
+	jsonForAjax($db->export());
 }
 
 function jsonForAjax($arr) {
@@ -65,7 +78,16 @@ function statusCodeToText($code, $start_date) {
 }
 
 function imageUpload($filename, $max_width = 0, $max_height = 0) {
-	$img = new Upload($_FILES['image']);
+	$file = $_FILES['image'];
+	if ($_FILES['image']['size'] === 0 && $_POST['b64_image'] != '') {
+		$file = tempnam('', '');
+		$handle = fopen($file, "w");
+		$b64 = preg_replace("/^data:.*?;base64,/", '', $_POST['b64_image']);
+		fwrite($handle, base64_decode($b64));
+		fclose($handle);
+	}
+
+	$img = new Upload($file);
 	if (!$img->uploaded) return;
 
 	// save uploaded image with a new name

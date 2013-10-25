@@ -3,9 +3,18 @@ $(document).ready(function() {
 // Section tabs
 $((document.location.hash != '') ? '#adminTabs a[href="' + document.location.hash + '"]' : '#adminTabs a:first').tab('show');
 $('#adminTabs a').click(function (e) {
-  e.preventDefault();
-  $(this).tab('show').blur();
-  document.location.hash = $(this).attr('href');
+	$(this).tab('show').blur();
+
+	if (history.pushState) { 
+		history.pushState({}, '', $(this).attr('href'));
+		// provide a fallback
+	} else { 
+		scrollV = document.body.scrollTop;
+		scrollH = document.body.scrollLeft;
+		location.hash = href;
+		document.body.scrollTop = scrollV;
+		document.body.scrollLeft = scrollH;
+	}
 });
 
 // Dropdown embed code textareas that stay open
@@ -35,7 +44,7 @@ $('form input').on('change keyup', function() {
 });
 
 // Date range dropdown
-$('#campaign-length').daterangepicker({
+$('.campaign-length').daterangepicker({
 	/*ranges: {
 		'Today': [moment(), moment()],
 		'Until Tomorrow': [moment(), moment().add('days', 1)],
@@ -51,8 +60,9 @@ $('#campaign-length').daterangepicker({
 	timePicker12Hour: true
 },
 function(start, end) {
-	$('#video_start_date').val(start.format('YYYY-MM-DD HH:mm:ss'));
-	$('#video_end_date').val(end.format('YYYY-MM-DD HH:mm:ss'));
+	var type = $(this.element).attr('id').replace(/-length/, '');
+	$('#' + type + '_start_date').val(start.format('YYYY-MM-DD HH:mm:ss'));
+	$('#' + type + '_end_date').val(end.format('YYYY-MM-DD HH:mm:ss'));
 });
 
 // Set start/end dates to default dates
@@ -93,7 +103,6 @@ $.each([ 'video', 'skin', 'channel' ], function( index, value ) {
 	$('#' + value + '-thumbnail-input').localResize({
 		dropTarget   : $('#' + value + '-thumbnail'),
 		loadCallback : function(src) {
-			console.log(this);
 			this.dropTarget
 				.removeClass('error')
 				.addClass('prepped')
@@ -111,7 +120,7 @@ $.each([ 'video', 'skin', 'channel' ], function( index, value ) {
 				.find('.text')
 					.text('Not an image!');
 
-			this.input.replaceWith($(this).clone(true));
+			this.input.replaceWith($(this).val('').clone(true));
 		}
 	});
 });
@@ -152,6 +161,10 @@ $.each([ 'video', 'skin', 'channel' ], function( index, value ) {
 			//	Create our FileReader and run the results through the render function.
 			reader = new FileReader();
 			reader.onload = function(e){
+				if (!settings.input.prop('files').length) {
+					settings.dropTarget.find('input[type="hidden"]').val(e.target.result);
+				}
+
 				renderImg(e.target.result);
 			};
 			reader.readAsDataURL(src);
@@ -202,6 +215,10 @@ $.each([ 'video', 'skin', 'channel' ], function( index, value ) {
 				}
 
 				settings.dropTarget.removeClass('drop');
+
+ 				settings.input
+					.replaceWith(settings.input.val('').clone(true))
+ 					.prop('files', e.originalEvent.dataTransfer.files);
 
 				var file = e.originalEvent.dataTransfer.files[0],
 				    name = settings.dropTarget.find('.file-input-name');

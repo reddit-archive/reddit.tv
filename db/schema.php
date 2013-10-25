@@ -13,7 +13,7 @@ $sponsored_video = R::dispense('sponsoredvideo');
 	$sponsored_video->status = 0;							    // integer 0 = 'draft' | 1 = 'ready' / 'active' | 2 = 'ended' | 3 = 'deleted'
 	$sponsored_video->video_url = null;							// string location of video
 	$sponsored_video->video_embed_code = null;					// string video embed code
-	$sponsored_video->thumbnail_url = null;						// string thumbnail URL
+	$sponsored_video->image_url = null;						    // string thumbnail URL
 	$sponsored_video->sponsor_name = null;						// string sponsor name
 	$sponsored_video->title = null;								// string title (optional)
 	$sponsored_video->view_count = null;						// integer number of times viewed
@@ -33,7 +33,7 @@ $sponsored_skin = R::dispense('sponsoredskin');
 	$sponsored_skin->end_date = '0000-00-00 00:00:00';			// datetime campaign ends
 	$sponsored_skin->status = 0;							    // integer 0 = 'draft' | 1 = 'ready' / 'active' | 2 = 'ended' | 3 = 'deleted'
 	$sponsored_skin->position = null;							// string location of placement TODO: name placements ''
-	$sponsored_skin->creative_url = null;						// string image URL for creative
+	$sponsored_skin->image_url = null;						    // string image URL for creative
 	$sponsored_skin->sponsor_name = null;						// string sponsor name
 	$sponsored_skin->title = null;								// string title (optional)
 	$sponsored_skin->view_count = null;							// integer number of times viewed
@@ -51,6 +51,7 @@ $sponsored_channel = R::dispense('sponsoredchannel');
 	$sponsored_channel->start_date = '0000-00-00 00:00:00';		// datetime campaign begins
 	$sponsored_channel->end_date = '0000-00-00 00:00:00';		// datetime campaign ends
 	$sponsored_channel->status = 0;							    // integer 0 = 'draft' | 1 = 'ready' / 'active' | 2 = 'ended' | 3 = 'deleted'
+	$sponsored_channel->image_url = null;					    // string image URL for creative
 	$sponsored_channel->sponsor_name = null;					// string sponsor name
 	$sponsored_channel->title = null;							// string title (optional)
 	$sponsored_channel->autoplay = null;						// boolean autoplay videos
@@ -81,7 +82,7 @@ $tables = Array(
 	'sponsoredvideo',
 	'sponsoredskin',
 	'sponsoredchannel',
-	'channel',
+	// 'channel',
 );
 
 foreach ($tables as $table) {

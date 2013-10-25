@@ -56,11 +56,13 @@
 
   <div class="container">
     <div id='content' class="tab-content">
+
+      <!-- Videos Pane -->
       <div class="tab-pane active" id="videos">
         <h1>Sponsored Videos</h1>
 
         <form action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
-          <input type="hidden" name="function" value="videoAdd" />
+          <input type="hidden" name="type" value="video" />
           <div class="form-group row">
             <div class="col-lg-5">
               <div class="row">
@@ -74,10 +76,10 @@
             </div>
             <div class="col-lg-3">
               <div class="input-group">
-                <label class="input-group-addon" for="campaign-length">Length</label>
+                <label class="input-group-addon" for="video-length">Length</label>
                 <input type="hidden" name="db_start_date" id="video_start_date" value="" />
                 <input type="hidden" name="db_end_date" id="video_end_date" value="" />
-                <input id="campaign-length" type="text" class="form-control" />
+                <input id="video-length" type="text" class="form-control campaign-length" />
               </div>
                   <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
             </div>
@@ -85,6 +87,7 @@
               <div id="video-thumbnail" class="upload thumbnail">
                 <span class="text">Video Thumbnail</span>
                 <input id="video-thumbnail-input" class="btn-default" type="file" name="image" title="Upload" />
+                <input type="hidden" name="b64_image" />
               </div>
             </div>
           </div>
@@ -92,7 +95,7 @@
           <div class="form-group row">
             <div class="col-lg-3">
               <div class="input-group">
-                <input type="url" class="form-control" name="db_video_url" id="inputVideoURL" placeholder="URL"  required />
+                <input type="url" class="form-control" name="db_video_url" placeholder="URL" required />
                 <div class="input-group-btn">
                   <button type="button" class="btn-embed-code btn btn-default dropdown-toggle" title="Embed Code"><span class="caret"></span></button>
                   <ul class="dropdown-menu pull-right embed-code">
@@ -155,7 +158,7 @@
                 <b>Length:</b> <?php echo $video->start_date; ?> - <?php echo $video->end_date; ?> 
               </div>
               <div class="col-lg-3">
-                <div class="thumbnail" style="background-image: url(../<?php echo $video->thumbnail_url; ?>);"></div>
+                <div class="thumbnail" style="background-image: url(../<?php echo $video->image_url; ?>);"></div>
               </div>
             </div>
 
@@ -192,29 +195,33 @@
         <?php endforeach; ?>
       </div>
 
+      <!-- Skins Pane -->
       <div class="tab-pane" id="skins">
         <h1>Sponsored Skins</h1>
 
-        <form class="well form-horizontal" role="form">
+        <form action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
+          <input type="hidden" name="type" value="skins" />
           <div class="form-group row">
             <div class="col-lg-5">
               <div class="row">
                 <div class="col-lg-12">
-                  <input type="text" class="form-control" id="inputTitle1" placeholder="Campaign Title" />
+                  <input type="text" class="form-control" name="db_title" placeholder="Campaign Title" />
                 </div>
               </div>
             </div>
             <div class="col-lg-3">
               <div class="input-group">
-                <label class="input-group-addon" for="campaign-length">Length</label>
-                <input id="campaign-length" type="text" class="form-control" />
+                <label class="input-group-addon" for="skins-length">Length</label>
+                <input type="hidden" name="db_start_date" id="skins_start_date" value="" />
+                <input type="hidden" name="db_end_date" id="skins_end_date" value="" />
+                <input id="skins-length" type="text" class="form-control campaign-length" />
               </div>
-                  <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
             </div>
             <div class="col-lg-2">
               <div id="skin-thumbnail" class="upload thumbnail">
                 <span class="text">Skin Image</span>
-                <input id="skin-thumbnail-input" class="btn-default" type="file" title="Upload" />
+                <input id="skin-thumbnail-input" class="btn-default" type="file" name="image" title="Upload" />
+                <input type="hidden" name="b64_image" />
               </div>
             </div>
           </div>
@@ -224,16 +231,16 @@
             <div class="col-lg-5">
               <div class="row">
                 <div class="col-lg-6">
-                  <input type="text" class="form-control" id="inputSponsor1" placeholder="Sponsor Name" />
+                  <input type="text" class="form-control" name="db_sponsor_name" placeholder="Sponsor Name" />
                 </div>
 
                 <div class="col-lg-6">
                   <div class="input-group">
                     <label class="input-group-addon">Status</label>
                     <div class="btn-group">
-                      <select name="status" class="selectpicker" data-style="btn-success">
-                        <option value="0" class="success">Ready</option>
-                        <option value="1" class="primary">Draft</option>
+                      <select name="db_status" class="selectpicker" data-style="btn-success">
+                        <option value="1" class="success">Ready</option>
+                        <option value="0" class="primary">Draft</option>
                       </select>
                     </div>
                   </div>
@@ -246,8 +253,8 @@
               <div class="input-group">
                 <label class="input-group-addon">Placement</label>
                 <div class="btn-group">
-                  <select name="position" class="selectpicker placement">
-                    <option value="geader">Header Background</option>
+                  <select name="db_position" class="selectpicker placement">
+                    <option value="header">Header Background</option>
                     <option value="video" selected="selected">Video Background</option>
                     <option value="channel">Channel Background</option>
                   </select>
@@ -256,7 +263,7 @@
             </div>
 
             <div class="col-lg-2 col-lg-offset-2">
-              <button type="submit" name="add" class="btn btn-primary btn-block">Add Video</button>
+              <button type="submit" name="add" class="btn btn-primary btn-block">Add Skin</button>
             </div>
 
           </div>
@@ -264,9 +271,16 @@
 
         <h2>Campaigns</h2>
         <?php 
-          $sponsoredskins = R::find('sponsoredskin');
+          $sponsoredskins = R::find('sponsoredskin', '
+              WHERE status != :deleted
+              ORDER BY status, start_date
+            ', array(
+              ':deleted' => 3
+              )
+          );
 
           foreach($sponsoredskins as $skin):
+            $status_code = statusCodeToText($skin->status, $skin->start_date);
         ?>
           <div class="well">
             <div class="form-group row">
@@ -281,10 +295,9 @@
               <div class="input-group">
                 <b>Length:</b> <?php echo $skin->start_date; ?> - <?php echo $skin->end_date; ?> 
               </div>
-                  <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
             </div>
             <div class="col-lg-3">
-              <div class="thumbnail" style="background-image: url(<?php echo $skin->creative_url; ?> );"></div>
+              <div class="thumbnail" style="background-image: url(../<?php echo $skin->image_url; ?> );"></div>
             </div>
           </div>
 
@@ -293,34 +306,44 @@
             <div class="col-lg-5">
               <div class="row">
                 <div class="col-lg-6">
-                  <b>Sponsor:</b><?php echo $skin->sponsorname; ?>
+                  <b>Sponsor:</b> <?php echo $skin->sponsor_name; ?>
                 </div>
+
                 <div class="col-lg-6">
                   <div class="input-group">
                     <label class="input-group-addon">Status</label>
                     <div class="btn-group">
-                      <div class="btn status-btn" data-status="<?php echo $skin->status; ?>">
-                        <span class="pull-left"><?php echo ucfirst($skin->status); ?></span>
+                      <div class="btn status-btn" data-status="<?php echo $status_code; ?>">
+                        <span class="pull-left"><?php echo $status_code; ?></span>
                       </div>
                     </div>
                   </div>
                 </div>
+
               </div>
             </div>
+
             <div class="col-lg-3">
               <div class="input-group">
                 <label class="input-group-addon">Placement</label>
                 <div class="btn-group">
-                  <button type="button" class="btn btn-default dropdown-toggle status-btn" data-toggle="dropdown">
-                    <span class="pull-left"><span><?php echo ucfirst($skin->position); ?></span></span>
-                  </button>
+                  <div class="btn status-btn">
+                    <span class="pull-left"><?php echo ucfirst($skin->position); ?> Background</span>
+                  </div>
                 </div>
               </div>
             </div>
+
+            <div class="col-lg-2 col-lg-offset-2">
+              <button  class="btn btn-default btn-block">Edit</button>
+            </div>
+
           </div>
-          </div>
+        </div>
         <?php endforeach; ?>
       </div>
+
+      <!-- Channels Pane -->
       <div class="tab-pane" id="channels">
         <h1>Sponsored Channels</h1>
 
@@ -335,15 +358,17 @@
             </div>
             <div class="col-lg-3">
               <div class="input-group">
-                <label class="input-group-addon" for="campaign-length">Length</label>
-                <input id="campaign-length" type="text" class="form-control" />
+                <label class="input-group-addon" for="channels-length">Length</label>
+                <input type="hidden" name="db_start_date" id="channels_start_date" value="" />
+                <input type="hidden" name="db_end_date" id="channels_end_date" value="" />
+                <input id="channels-length" type="text" class="form-control campaign-length" />
               </div>
-                  <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
             </div>
             <div class="col-lg-2">
               <div id="channel-thumbnail" class="upload thumbnail">
                 <span class="text">Channel Thumbnail</span>
-                <input id="channel-thumbnail-input" class="btn-default" type="file" title="Upload" />
+                <input id="channel-thumbnail-input" class="btn-default" type="file" name="image" title="Upload" />
+                <input type="hidden" name="b64_image" />
               </div>
             </div>
           </div>
@@ -353,7 +378,7 @@
             <div class="col-lg-5">
               <div class="row">
                 <div class="col-lg-12">
-                  <input type="text" class="form-control" id="inputSponsor1" placeholder="Sponsor Name" />
+                  <input type="text" class="form-control" name="db_sponsor_name" placeholder="Sponsor Name" />
                 </div>
               </div>
             </div>
@@ -361,17 +386,40 @@
               <div class="input-group">
                 <label class="input-group-addon">Status</label>
                 <div class="btn-group">
-                  <button type="button" class="btn btn-success dropdown-toggle status-btn" data-toggle="dropdown">
-                    <span class="pull-left"><span>Ready</span></span> <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                    <li><a href="#">Ready</a></li>
-                    <li><a href="#">Draft</a></li>
-                  </ul>
+                  <select name="db_status" class="selectpicker" data-style="btn-success">
+                    <option value="1" class="success">Ready</option>
+                    <option value="0" class="primary">Draft</option>
+                  </select>
                 </div>
               </div>
+
             </div>
+
+            <div class="col-lg-2 col-lg-offset-2">
+              <button type="submit" name="add" class="btn btn-primary btn-block">Add Channel</button>
+            </div>
+
           </div>
+
+          <div class="form-group row">
+            <div class="col-lg-5">
+              <div class="input-group">
+                <input type="url" class="form-control" name="db_video_url" placeholder="URL" required />
+                <div class="input-group-btn">
+                  <button type="button" class="btn-embed-code btn btn-default dropdown-toggle">Embed Code&nbsp;&nbsp;&nbsp;<span class="caret"></span></button>
+                  <ul class="dropdown-menu pull-right embed-code">
+                    <li><textarea name="db_video_embed_code" class="form-control" rows="3"></textarea></li>
+                  </ul>
+                </div><!-- /btn-group -->
+              </div><!-- /input-group -->
+            </div>
+
+            <div class="col-lg-1">
+              <button type="button" class="btn btn-default">Add Another Video</button>
+            </div>
+
+          </div>
+
         </form>
       </div>
     </div>
