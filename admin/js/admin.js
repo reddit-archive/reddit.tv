@@ -161,9 +161,7 @@ $.each([ 'video', 'skin', 'channel' ], function( index, value ) {
 			//	Create our FileReader and run the results through the render function.
 			reader = new FileReader();
 			reader.onload = function(e){
-				if (!settings.input.prop('files').length) {
-					settings.dropTarget.find('input[type="hidden"]').val(e.target.result);
-				}
+				settings.dropTarget.find('input[type="hidden"]').val(e.target.result);
 
 				renderImg(e.target.result);
 			};
@@ -217,8 +215,7 @@ $.each([ 'video', 'skin', 'channel' ], function( index, value ) {
 				settings.dropTarget.removeClass('drop');
 
  				settings.input
-					.replaceWith(settings.input.val('').clone(true))
- 					.prop('files', e.originalEvent.dataTransfer.files);
+					.replaceWith(settings.input.val('').clone(true));
 
 				var file = e.originalEvent.dataTransfer.files[0],
 				    name = settings.dropTarget.find('.file-input-name');
