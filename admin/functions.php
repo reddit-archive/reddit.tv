@@ -3,7 +3,7 @@
 require_once('lib/class.upload.php');
 
 function ajaxFunc() {
-	if (!$_POST['function']) return;
+	if (!isset($_POST['function'])) return;
 
 	$funcs = Array(
 		'videoAdd'
@@ -66,6 +66,7 @@ function statusCodeToText($code, $start_date) {
 
 function imageUpload($filename, $max_width = 0, $max_height = 0) {
 	$img = new Upload($_FILES['image']);
+	var_dump($img);
 	if (!$img->uploaded) return;
 
 	// save uploaded image with a new name
