@@ -3,5 +3,6 @@
 *bak
 *.bak
 lib
+!admin/lib/
 .DS_Store
-database.s3db
+db/database.s3db

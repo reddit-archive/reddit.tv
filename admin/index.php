@@ -64,16 +64,19 @@
           <div class="form-group row">
             <div class="col-lg-5">
               <div class="row">
-                <div class="col-lg-12">
-                  <input type="text" class="form-control" name="sponsor_name" id="inputSponsor1" placeholder="Sponsor Name" />
+                <div class="col-lg-6">
+                  <input type="text" class="form-control" name="db_sponsor_name" id="inputSponsor1" placeholder="Sponsor Name" required />
+                </div>
+                <div class="col-lg-6">
+                  <input type="text" class="form-control" name="db_title" placeholder="Video Title (Optional)" />
                 </div>
               </div>
             </div>
             <div class="col-lg-3">
               <div class="input-group">
-                <input type="hidden" name="start_date" id="video_start_date" value="" />
-                <input type="hidden" name="end_date" id="video_end_date" value="" />
                 <label class="input-group-addon" for="campaign-length">Length</label>
+                <input type="hidden" name="db_start_date" id="video_start_date" value="" />
+                <input type="hidden" name="db_end_date" id="video_end_date" value="" />
                 <input id="campaign-length" type="text" class="form-control" />
               </div>
                   <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
@@ -81,31 +84,38 @@
             <div class="col-lg-2">
               <div id="video-thumbnail" class="upload thumbnail">
                 <span class="text">Video Thumbnail</span>
-                <input id="video-thumbnail-input" class="btn-default" type="file" title="Upload" />
+                <input id="video-thumbnail-input" class="btn-default" type="file" name="image" title="Upload" />
               </div>
             </div>
           </div>
 
           <div class="form-group row">
-            <div class="col-lg-5">
+            <div class="col-lg-3">
               <div class="input-group">
-                <input type="text" class="form-control" name="video_url" id="inputVideoURL" placeholder="URL" />
+                <input type="url" class="form-control" name="db_video_url" id="inputVideoURL" placeholder="URL"  required />
                 <div class="input-group-btn">
-                  <button type="button" class="btn-embed-code btn btn-default dropdown-toggle">Embed Code&nbsp;&nbsp;&nbsp;<span class="caret"></span></button>
+                  <button type="button" class="btn-embed-code btn btn-default dropdown-toggle" title="Embed Code"><span class="caret"></span></button>
                   <ul class="dropdown-menu pull-right embed-code">
-                    <li><textarea name="video_embed_code" id="embed-code" class="form-control" rows="3"></textarea></li>
+                    <li><textarea name="db_video_embed_code" class="form-control" rows="3"></textarea></li>
                   </ul>
                 </div><!-- /btn-group -->
               </div><!-- /input-group -->
             </div>
 
+              <div class="col-lg-2">
+                <div class="input-group">
+                  <label class="input-group-addon" for="view_target">View Target</label>
+                  <input type="text" pattern="[0-9]*" class="form-control" id="view_target" name="db_view_target" placeholder="0" />
+                </div>
+              </div>
+
             <div class="col-lg-3">
               <div class="input-group">
                 <label class="input-group-addon">Status</label>
                 <div class="btn-group">
-                  <select name="status" class="selectpicker" data-style="btn-success">
-                    <option value="ready" class="success">Ready</option>
-                    <option value="draft" class="primary">Draft</option>
+                  <select name="db_status" class="selectpicker" data-style="btn-success">
+                    <option value="1" class="success">Ready</option>
+                    <option value="0" class="primary">Draft</option>
                   </select>
                 </div>
               </div>
@@ -121,9 +131,16 @@
         <h2>Campaigns</h2>
 
         <?php 
-          $sponsoredvideos = R::find('sponsoredvideo');
+          $sponsoredvideos = R::find('sponsoredvideo', '
+              WHERE status != :deleted
+              ORDER BY status, start_date
+            ', array(
+              ':deleted' => 3
+              )
+          );
 
           foreach($sponsoredvideos as $video):
+            $status_code = statusCodeToText($video->status, $video->start_date);
         ?>
           <div class="well">
             <div class="form-group row">
@@ -138,7 +155,7 @@
                 <b>Length:</b> <?php echo $video->start_date; ?> - <?php echo $video->end_date; ?> 
               </div>
               <div class="col-lg-3">
-                <div class="thumbnail" style="background-image: url(<?php echo $video->thumbnail_url; ?>);"></div>
+                <div class="thumbnail" style="background-image: url(../<?php echo $video->thumbnail_url; ?>);"></div>
               </div>
             </div>
 
@@ -159,8 +176,8 @@
                 <div class="input-group">
                   <label class="input-group-addon">Status</label>
                   <div class="btn-group">
-                    <div class="btn status-btn" data-status="<?php echo $video->status; ?>">
-                      <span class="pull-left"><?php echo ucfirst($video->status); ?></span>
+                    <div class="btn status-btn" data-status="<?php echo $status_code; ?>">
+                      <span class="pull-left"><?php echo $status_code; ?></span>
                     </div>
                   </div>
                 </div>
@@ -215,8 +232,8 @@
                     <label class="input-group-addon">Status</label>
                     <div class="btn-group">
                       <select name="status" class="selectpicker" data-style="btn-success">
-                        <option value="ready" class="success">Ready</option>
-                        <option value="draft" class="primary">Draft</option>
+                        <option value="0" class="success">Ready</option>
+                        <option value="1" class="primary">Draft</option>
                       </select>
                     </div>
                   </div>
@@ -239,7 +256,7 @@
             </div>
 
             <div class="col-lg-2 col-lg-offset-2">
-              <button type="submit" class="btn btn-primary btn-block">Add Skin</button>
+              <button type="submit" name="add" class="btn btn-primary btn-block">Add Video</button>
             </div>
 
           </div>

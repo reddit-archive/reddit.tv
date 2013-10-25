@@ -13,6 +13,25 @@ $('.btn-embed-code').click(function() {
 	var menu = $(this).next('.embed-code.dropdown-menu');
 
 	menu.toggle();
+	$('form .btn-embed-code').tooltip('hide');
+});
+
+$('form .btn-embed-code').tooltip({
+	placement: 'bottom',
+	container: 'body'
+});
+
+$('form input').on('change keyup', function() {
+	$(this).parent().toggleClass('has-error', $(this).is(':invalid'));
+	var form = $(this).parents('form'),
+	    formInvalid = form.is(':invalid'),
+	    submitBtn = form.find('button[type="submit"]');
+
+	if (formInvalid) {
+		submitBtn.attr('disabled', 'disabled');
+	} else {
+		submitBtn.removeAttr('disabled');
+	}
 });
 
 // Date range dropdown
@@ -25,17 +44,21 @@ $('#campaign-length').daterangepicker({
 		'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
 	},*/
 	startDate: moment(),
-	endDate: moment().add('days', 7),
+	endDate: moment().add('month', 1),
 	showDropdowns: true,
 	timePicker: true,
 	timePickerIncrement: 30,
 	timePicker12Hour: true
 },
 function(start, end) {
-	alert(start.format('YYYY-MM-DD HH:mm:ss'))
 	$('#video_start_date').val(start.format('YYYY-MM-DD HH:mm:ss'));
 	$('#video_end_date').val(end.format('YYYY-MM-DD HH:mm:ss'));
 });
+
+// Set start/end dates to default dates
+$('#video_start_date').val(moment().startOf('hour').format('YYYY-MM-DD HH:mm:ss'));
+$('#video_end_date').val(moment().startOf('hour').add('month', 1).format('YYYY-MM-DD HH:mm:ss'));
+
 
 // Bootstrap style file inputs
 $('input[type=file]').bootstrapFileInput();
@@ -52,8 +75,9 @@ $(document).on('click', '.bootstrap-select .dropdown-menu li a', function() {
 
 // Status colors for non-forms
 var statusColors = {
+	'draft' : 'primary',
 	'ready' : 'success',
-	'draft' : 'primary'
+	'active' : 'success',
 };
 $('div.status-btn').each(function() {
 	var statusColor = statusColors[$(this).data('status')];
