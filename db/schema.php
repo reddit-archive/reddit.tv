@@ -10,7 +10,7 @@ $sponsored_video = R::dispense('sponsoredvideo');
 	$sponsored_video->updated_on = '0000-00-00 00:00:00';		// datetime updated in database
 	$sponsored_video->start_date = '0000-00-00 00:00:00';		// datetime campaign begins
 	$sponsored_video->end_date = '0000-00-00 00:00:00';			// datetime campaign ends
-	$sponsored_video->status = null;							// string 'draft'|'ready'|'active'|'ended'
+	$sponsored_video->status = 0;							    // integer 0 = 'draft' | 1 = 'ready' / 'active' | 2 = 'ended' | 3 = 'deleted'
 	$sponsored_video->video_url = null;							// string location of video
 	$sponsored_video->video_embed_code = null;					// string video embed code
 	$sponsored_video->thumbnail_url = null;						// string thumbnail URL
@@ -31,7 +31,7 @@ $sponsored_skin = R::dispense('sponsoredskin');
 	$sponsored_skin->updated_on = '0000-00-00 00:00:00';		// datetime updated in database
 	$sponsored_skin->start_date = '0000-00-00 00:00:00';		// datetime campaign begins
 	$sponsored_skin->end_date = '0000-00-00 00:00:00';			// datetime campaign ends
-	$sponsored_skin->status = null;								// string 'draft'|'ready'|'active'|'ended'
+	$sponsored_skin->status = 0;							    // integer 0 = 'draft' | 1 = 'ready' / 'active' | 2 = 'ended' | 3 = 'deleted'
 	$sponsored_skin->position = null;							// string location of placement TODO: name placements ''
 	$sponsored_skin->creative_url = null;						// string image URL for creative
 	$sponsored_skin->sponsor_name = null;						// string sponsor name
@@ -50,7 +50,7 @@ $sponsored_channel = R::dispense('sponsoredchannel');
 	$sponsored_channel->updated_on = '0000-00-00 00:00:00';		// datetime updated in database
 	$sponsored_channel->start_date = '0000-00-00 00:00:00';		// datetime campaign begins
 	$sponsored_channel->end_date = '0000-00-00 00:00:00';		// datetime campaign ends
-	$sponsored_channel->status = null;							// string 'draft'|'ready'|'active'|'ended'
+	$sponsored_channel->status = 0;							    // integer 0 = 'draft' | 1 = 'ready' / 'active' | 2 = 'ended' | 3 = 'deleted'
 	$sponsored_channel->sponsor_name = null;					// string sponsor name
 	$sponsored_channel->title = null;							// string title (optional)
 	$sponsored_channel->autoplay = null;						// boolean autoplay videos
