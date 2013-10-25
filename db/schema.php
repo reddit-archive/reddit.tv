@@ -75,4 +75,18 @@ $channel = R::dispense('channel');
 
 $channel_id = R::store($channel);
 
+
+// Wipe all tables from null data
+$tables = Array(
+	'sponsoredvideo',
+	'sponsoredskin',
+	'sponsoredchannel',
+	'channel',
+);
+
+foreach ($tables as $table) {
+	$sql = 'DELETE FROM ' . $table;
+	R::exec($sql);
+}
+
 ?>

@@ -40,7 +40,7 @@ div.adminTabs {
     width: 100%;
 }
 
-.embed-code textarea {
+.embed-code textarea, .embed-code textarea:focus {
     border: none;
     outline: none;
     box-shadow: none;
@@ -54,6 +54,7 @@ div.adminTabs {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     text-align: right;
+    text-transform: capitalize;
 }
 
 #videos .bootstrap-select, #videos div.status-btn {
