@@ -1,5 +1,9 @@
 <?php
 
+define('BASE_PATH', dirname(realpath(__FILE__)) . '/../');
+define('UPLOAD_PATH', dirname(realpath(__FILE__)) . '/../uploads/');
+define('UPLOAD_URL', 'uploads/');
+
 //Example Script, saves Hello World to the database.
 
 //First, we need to include redbean

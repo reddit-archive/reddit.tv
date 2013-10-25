@@ -84,7 +84,7 @@
             <div class="col-lg-2">
               <div id="video-thumbnail" class="upload thumbnail">
                 <span class="text">Video Thumbnail</span>
-                <input id="video-thumbnail-input" class="btn-default" type="file" title="Upload" />
+                <input id="video-thumbnail-input" class="btn-default" type="file" name="image" title="Upload" />
               </div>
             </div>
           </div>
@@ -155,7 +155,7 @@
                 <b>Length:</b> <?php echo $video->start_date; ?> - <?php echo $video->end_date; ?> 
               </div>
               <div class="col-lg-3">
-                <div class="thumbnail" style="background-image: url(<?php echo $video->thumbnail_url; ?>);"></div>
+                <div class="thumbnail" style="background-image: url(../<?php echo $video->thumbnail_url; ?>);"></div>
               </div>
             </div>
 
