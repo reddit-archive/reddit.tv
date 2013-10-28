@@ -57,7 +57,7 @@ function addEdit($type) {
 
 function jsonForAjax($arr) {
 	// Only return JSON for AJAX POSTs
-	if ($_POST['ajax']) {
+	if (isset($_POST['ajax'])) {
 		echo json_encode($arr);
 		die();
 	}
