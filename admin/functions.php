@@ -2,30 +2,41 @@
 
 require_once('lib/class.upload.php');
 
+$db_name = '';
+
 function ajaxFunc() {
-	if (!isset($_POST['type'])) return;
+	global $db_name;
 
-	$funcs = Array(
-		'video',
-		'skins',
-		'channels',
-	);
+	if (!isset($_REQUEST['type'])) return;
 
-	if (!in_array($_POST['type'], $funcs)) return;
-
-	addEdit($_POST['type']);
-}
-
-function addEdit($type) {
 	$db_names = Array(
-			'video' => 'sponsoredvideo',
+			'videos' => 'sponsoredvideo',
 			'skins' => 'sponsoredskin',
 			'channels' => 'sponsoredchannel',
 		);
 
-	$db_name = $db_names[$type];
+	$db_name = $db_names[$_REQUEST['type']];
 
-	$db = R::dispense($db_name);
+	$funcs = Array(
+		'videos',
+		'skins',
+		'channels',
+	);
+
+	if (!in_array($_REQUEST['type'], $funcs)) return;
+
+	if ($_REQUEST['action'] == 'get') {
+		jsonQuery();
+	} else {
+		addEdit();
+	}
+}
+
+function addEdit() {
+	global $db_name;
+	$edit = isset($_POST['edit']);
+
+	$db = ($edit) ? R::load($db_name, (int)$_POST['edit']) : R::dispense($db_name);
 
 	foreach ($_POST as $key => $val) {
 		if (substr($key, 0, 3) != 'db_') continue;
@@ -39,12 +50,12 @@ function addEdit($type) {
 	));
 
 	$max_width = 0;
-	if ($type == 'video') $max_width = 150;
+	if ($type == 'videos') $max_width = 150;
 
 	$image = imageUpload($filename, $max_width);
 	if ($image) $db->image_url = UPLOAD_URL . $image;
 
-	if (!isset($_POST['edit'])) {
+	if (!$edit) {
 		$db->created_on = R::isoDateTime();
 	} else {
 		$db->updated_on = R::isoDateTime();
@@ -53,6 +64,21 @@ function addEdit($type) {
 	$id = R::store($db);
 
 	jsonForAjax($db->export());
+}
+
+function jsonQuery() {
+	global $db_name;
+
+	if (!isset($_REQUEST['id'])) jsonError('ID missing');
+	$item = R::load($db_name, (int)$_REQUEST['id']);
+
+	if (!$item->id) jsonError('Unable to find item.');
+
+	jsonForAjax($item->export());
+}
+
+function jsonError($error) {
+	jsonForAjax(Array('error' => $error));
 }
 
 function jsonForAjax($arr) {

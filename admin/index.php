@@ -145,7 +145,7 @@
           foreach($sponsoredvideos as $video):
             $status_code = statusCodeToText($video->status, $video->start_date);
         ?>
-          <div class="well">
+          <div class="well item" data-id="<?php echo $video->id; ?>">
             <div class="form-group row">
               <div class="col-lg-5">
                 <div class="row">
@@ -187,7 +187,7 @@
               </div>
 
               <div class="col-lg-2 col-lg-offset-2">
-                <button  class="btn btn-default btn-block">Edit</button>
+                <button  class="btn btn-default btn-block btn-edit">Edit</button>
               </div>
 
             </div>
@@ -282,7 +282,7 @@
           foreach($sponsoredskins as $skin):
             $status_code = statusCodeToText($skin->status, $skin->start_date);
         ?>
-          <div class="well">
+          <div class="well item" data-id="<?php echo $skin->id; ?>">
             <div class="form-group row">
             <div class="col-lg-5">
               <div class="row">
@@ -335,7 +335,7 @@
             </div>
 
             <div class="col-lg-2 col-lg-offset-2">
-              <button  class="btn btn-default btn-block">Edit</button>
+              <button class="btn btn-default btn-block btn-edit">Edit</button>
             </div>
 
           </div>
