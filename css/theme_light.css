@@ -149,5 +149,5 @@ a.nav-button:hover {
 }
 
 .loading {
-    background-image: url('../img/loading_light.gif');
+    /*background-image: url('../img/loading_light.gif');*/
 }

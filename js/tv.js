@@ -419,7 +419,7 @@ function displayChannel(chan){
                     href: '#' + Globals.channels[chan].feed,
                     title: chan_title
                 })
-                .removeClass('loading') // temp
+                // .removeClass('loading') // temp
                 .find('.thumbnail')
                     .css({
                         'background-image': 'url(' + data.thumbnail_url + ')'
@@ -469,7 +469,8 @@ function loadChannel(channel, video_id) {
     title = "/"+title[1]+"/"+title[2];
 
     $video_title.html('Loading '+title+' ...');
-    $video_embed.addClass('loading');
+    // $video_embed.addClass('loading');
+    $('body').addClass('video-loading');
     $video_embed.empty();
     
     // TODO: Change to highlight the channel in the grid instead
@@ -516,11 +517,12 @@ function loadChannel(channel, video_id) {
                         Globals.cur_video = 0;
                         loadVideo('first');
                     }
-                    $video_embed.removeClass('loading');
+                    // $video_embed.removeClass('loading');
                 }else{
-                    $video_embed.removeClass('loading');
+                    // $video_embed.removeClass('loading');
                     alert('No videos found in '+Globals.channels[this_chan].channel);
                 }
+                $('body').removeClass('video-loading');
             },
             error: function(jXHR, textStatus, errorThrown) {
                 if(textStatus !== 'abort'){
@@ -775,7 +777,8 @@ function loadVideo(video) {
         var $video_embed = $('#video-embed');
 
         $video_embed.empty();
-        $video_embed.addClass('loading');
+        // $video_embed.addClass('loading');
+        $('body').addClass('video-loading');
         
         var embed = $.unescapifyHTML(Globals.videos[this_chan].video[selected_video].media_embed.content);
         embed = prepEmbed(embed, Globals.videos[this_chan].video[selected_video].domain);
@@ -792,7 +795,8 @@ function loadVideo(video) {
                                 + "&url="+redditlink);
         $('#video-share-link').attr("href", redditlink);
         $video_embed.html(embed);
-        $video_embed.removeClass('loading');
+        // $video_embed.removeClass('loading');
+        $('body').removeClass('video-loading');
 
         addListeners(Globals.videos[this_chan].video[selected_video].domain);
 
@@ -901,11 +905,13 @@ function loadPromo(type, id, desc){
 
         var $video_embed = $('#video-embed');
         $video_embed.empty();
-        $video_embed.addClass('loading');
+        // $video_embed.addClass('loading');
+        $('body').addClass('video-loading');
 
         $('#video-title').text(unescape(desc));
         $video_embed.html(embed);
-        $video_embed.removeClass('loading');
+        // $video_embed.removeClass('loading');
+        $('body').removeClass('video-loading');
 
         addListeners(domain);
 
