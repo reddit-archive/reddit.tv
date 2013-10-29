@@ -83,7 +83,7 @@ function jsonError($error) {
 
 function jsonForAjax($arr) {
 	// Only return JSON for AJAX POSTs
-	if ($_REQUEST['ajax']) {
+	if (isset($_POST['ajax'])) {
 		echo json_encode($arr);
 		die();
 	}

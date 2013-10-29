@@ -547,6 +547,10 @@ body.video-loading #loading {
     -webkit-transition: border 0.1s;
 }
 
+#add-channel-button .thumbnail {
+    background-image:url(../img/addChannel.jpg);
+}
+
 .channels .channel.loading {
     background: none;
 }
