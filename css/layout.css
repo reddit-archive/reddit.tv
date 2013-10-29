@@ -189,7 +189,7 @@ input.add-channel {
     display: none;
     position: absolute;
     z-index: 10001;
-    background: #cee3fe;
+    background: #252525;
     top: 0;
     left: 20px;
     width: 980px;
@@ -200,12 +200,31 @@ body.video-loading #loading {
     display: block;
 }
 
+#loading .text {
+    position: absolute;
+    width: 100%;
+    top: 505px;
+    text-align: center;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 60px;
+    line-height: 60px;
+    text-shadow: -1px -1px 0 #252525, -2px -2px 0 #252525, 1px -1px 0 #252525, 2px -2px 0 #252525, 1px 1px 0 #252525, 2px 2px 0 #252525, -1px 1px 0 #252525, -2px 2px 0 #252525;
+}
+
+#loading .what {
+    text-transform: none;
+    font-size: 40px;
+}
+
+
 #loading .tv {
     position: relative;
     width: 490px;
     height: 560px;
     margin: 0 auto;
     margin-top: 50px;
+    text-align: center;
 }
 
 #loading .tv:before {
@@ -229,10 +248,58 @@ body.video-loading #loading {
     height: 244px;
     background: rgba(255, 255, 255, 1) url(../img/static-bg.png);
 
-    animation: animatedBackground 5s linear infinite;
+    -webkit-animation: tvstatic 5s linear infinite;
+       -moz-animation: tvstatic 5s linear infinite;
+         -o-animation: tvstatic 5s linear infinite;
+            animation: tvstatic 5s linear infinite;
 }
 
-@keyframes animatedBackground {
+@-webkit-keyframes tvstatic {
+    0% {
+        background-color: rgba(255, 255, 255, 1);
+        background-position: 0 0;
+    }
+    50% {
+        background-color: rgba(255, 255, 255, 0.5);
+        background-position: 0 -100%;
+    }
+    100% {
+        background-color: rgba(255, 255, 255, 1);
+        background-position: 0 -200%;
+    }
+}
+
+@-moz-keyframes tvstatic {
+    0% {
+        background-color: rgba(255, 255, 255, 1);
+        background-position: 0 0;
+    }
+    50% {
+        background-color: rgba(255, 255, 255, 0.5);
+        background-position: 0 -100%;
+    }
+    100% {
+        background-color: rgba(255, 255, 255, 1);
+        background-position: 0 -200%;
+    }
+}
+
+@-o-keyframes tvstatic {
+    0% {
+        background-color: rgba(255, 255, 255, 1);
+        background-position: 0 0;
+    }
+    50% {
+        background-color: rgba(255, 255, 255, 0.5);
+        background-position: 0 -100%;
+    }
+    100% {
+        background-color: rgba(255, 255, 255, 1);
+        background-position: 0 -200%;
+    }
+}
+
+@keyframes tvstatic {
     0% {
         background-color: rgba(255, 255, 255, 1);
         background-position: 0 0;

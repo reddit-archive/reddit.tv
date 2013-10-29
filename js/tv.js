@@ -471,6 +471,7 @@ function loadChannel(channel, video_id) {
     $video_title.html('Loading '+title+' ...');
     // $video_embed.addClass('loading');
     $('body').addClass('video-loading');
+    $('#loading .what').html(title);
     $video_embed.empty();
     
     // TODO: Change to highlight the channel in the grid instead
@@ -779,6 +780,7 @@ function loadVideo(video) {
         $video_embed.empty();
         // $video_embed.addClass('loading');
         $('body').addClass('video-loading');
+        $('#loading .what').html('');
         
         var embed = $.unescapifyHTML(Globals.videos[this_chan].video[selected_video].media_embed.content);
         embed = prepEmbed(embed, Globals.videos[this_chan].video[selected_video].domain);
@@ -907,6 +909,7 @@ function loadPromo(type, id, desc){
         $video_embed.empty();
         // $video_embed.addClass('loading');
         $('body').addClass('video-loading');
+        $('#loading .what').html('');
 
         $('#video-title').text(unescape(desc));
         $video_embed.html(embed);
