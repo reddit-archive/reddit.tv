@@ -288,16 +288,82 @@ $('#default-vid-delete').droppable({
 	accept: '#default-channels li',
 	hoverClass: 'hover',
 	drop: function( event, ui ) {
-		// if ($('#channel-vidlist li').length == 2) return; // Last item and placeholder
-		$(ui.draggable).remove();
+		$(ui.draggable).fadeOut('fast', function() { $(this).remove(); });
 	}
 });
 
-$('#add-default-channel').click(function() {
-	var input = $('#default-channels input[type="text"]'),
-		val   = input.val();
+$('#default-channel-input')
+	.on('keydown', function(e) {
+		if (e.keyCode == 13) {
+			$('#add-default-channel').click();
+			return false;
+		}
+	})
+	.on('keyup', function() {
+		var btn   = $('#add-default-channel'),
+		    input = $('#default-channel-input');
+		if ( input.val() == '' || !input.is(':valid') ) {
+			btn.attr('disabled', 'disabled');
+		} else {
+			if ( !$('#default-channels').hasClass('loading') ) btn.removeAttr('disabled');
+		}
+	});
 
-	alert(val);
+$('#add-default-channel').click(function() {
+	var btn   = $('#add-default-channel'),
+	    input = $('#default-channel-input'),
+		feed  = input.val().replace(/\/$/, '');
+
+	if ( $('#default-channels li[data-feed="' + feed + '"]').length ) return; // Channel already exists
+
+	$('#default-channels').addClass('loading');
+	btn.attr('disabled', 'disabled');
+	console.log('http://www.reddit.com' + feed + '.json?limit=1');
+
+	// Get the channel name
+	$.ajax({
+		url: 'http://www.reddit.com' + feed + '.json?limit=1',
+		dataType: 'jsonp',
+		jsonp: 'jsonp',
+		success: function(data) {
+			$('#default-channels').removeClass('loading');
+			input.val('');
+
+			channelLi = $('<li class="channel col-lg-3" data-feed="' + feed + '"><div class="thumbnail"></div><span class="name">' + feed + '</span></li>');
+			channelLi.prependTo('#default-channels ul');
+
+			var name = data.data.children[0].data.subreddit;
+			if (name) channelLi.find('.name').text(name);
+
+			$.ajax({
+				url: window.location.origin + window.location.pathname.replace(/admin\/?$/, '') + 'db/api.php',
+				data: {
+				    'action' : 'channel_thumbnail',
+				    'feed'   : feed
+				},
+				dataType: 'json',
+				success: function(data) {
+					var thumb = data[0].thumbnail_url;
+				    if (!thumb) return;
+
+				    channelLi.find('.thumbnail')
+				    	.css({
+				    		'background-image' : 'url(' + thumb + ')'
+				    	});
+				},
+				error: function(jXHR, textStatus, errorThrown) {
+				    console.log('[ERROR] '+textStatus);
+				    console.log('[ERROR] '+errorThrown);
+				}
+			});
+
+		},
+		error: function() {
+			alert('error!');
+			$('#default-channels').removeClass('loading');
+			btn.removeAttr('disabled');
+		}
+	});
 	// if ()
 
 	return false;

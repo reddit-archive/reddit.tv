@@ -250,6 +250,7 @@ div.show-videos ol.videos {
 
 #default-channels #default-vid-delete {
   opacity: 0;
+  float: right;
 }
 
 #default-channels.dragging #default-vid-delete {
@@ -268,8 +269,13 @@ div.show-videos ol.videos {
   background-color: #d9534f;
   border-color: #d43f3a;
 }
-#default-channels div.delete.channel.hover .thumbnail {
 
+#default-channels.loading #add-default-channel {
+  color: rgba(0,0,0,0);
+  background-image: url(img/small-loader.gif);
+  background-repeat: no-repeat;
+  background-position: center center;
+}
 
 /*!
  * Stylesheet for the Date Range Picker, for use with Bootstrap 3.x

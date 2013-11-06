@@ -544,9 +544,9 @@
           <div class="form-group row control-group">
             <div class="col-lg-6">
               <div class="input-group">
-                <input type="text" class="form-control" placeholder="&quot;/r/subreddit&quot; or &quot;/domain/site.com&quot;" />
+                <input id="default-channel-input" type="text" class="form-control" placeholder="&quot;/r/subreddit&quot; or &quot;/domain/site.com&quot;" pattern="^/(r|domain)/[\w.]+$" />
                 <div class="input-group-btn">
-                  <div id="add-default-channel" class="btn btn-default">Add Channel</div>
+                  <div id="add-default-channel" class="btn btn-default" disabled="disabled">Add Channel</div>
                 </div><!-- /btn-group -->
               </div><!-- /input-group -->
             </div>
@@ -557,32 +557,7 @@
           </div>
 
           <div class="channels clearfix">
-            <ul class="list-unstyled">
-              <li class="channel col-lg-3">
-                  <div class="thumbnail"></div>
-                  <span class="name">lol</span>
-              </li>
-
-              <li class="channel col-lg-3">
-                  <div class="thumbnail"></div>
-                  <span class="name">ok</span>
-              </li>
-
-              <li class="channel col-lg-3">
-                  <div class="thumbnail"></div>
-                  <span class="name">sup</span>
-              </li>
-
-              <li class="channel col-lg-3">
-                  <div class="thumbnail"></div>
-                  <span class="name">hayyy</span>
-              </li>
-
-              <li class="channel col-lg-3">
-                  <div class="thumbnail"></div>
-                  <span class="name">dang</span>
-              </li>
-            </ul>
+            <ul class="list-unstyled"></ul>
 
             <div id="default-vid-delete" class="delete channel col-lg-3">
                 <div class="thumbnail"></div>
