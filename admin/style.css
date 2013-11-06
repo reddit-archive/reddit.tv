@@ -84,7 +84,7 @@ form.edit, .item.edit {
     width: 140px;
 }
 
-#video-thumbnail, .thumbnail {
+#video-thumbnail, .vid-thumbnail {
     position: absolute;
     background-size: 100% auto;
     background-position: center center;
@@ -171,19 +171,22 @@ li.video-input {
   margin-top: 10px;
 }
 
-#channel-vidlist #channel-vid-delete {
+#channel-vidlist #channel-vid-delete, #default-channels #default-vid-delete {
   opacity: 0;
+
+  -webkit-transition: all 0.2s ease-out;
+     -moz-transition: all 0.2s ease-out;
+       -o-transition: all 0.2s ease-out;
+          transition: all 0.2s ease-out;
+}
+
+#channel-vidlist #channel-vid-delete {
   position: absolute;
   width: calc(100% - 30px);
   padding: 0 10px;
   height: 35px;
   line-height: 35px;
   margin-top: 10px;
-
-  -webkit-transition: all 0.2s ease-out;
-     -moz-transition: all 0.2s ease-out;
-       -o-transition: all 0.2s ease-out;
-          transition: all 0.2s ease-out;
 }
 
 #channel-vidlist.dragging #channel-vid-delete {
@@ -213,6 +216,60 @@ ol.videos {
 div.show-videos ol.videos {
   display: block;
 }
+
+#default-channels .channels {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1040px;
+}
+
+#default-channels ul {
+  margin: 0;
+}
+#default-channels .ui-sortable-helper {
+  /*padding: 0;*/
+  /*width: calc(25% - 30px);*/
+  /*background: #f5f5f5;
+  -webkit-box-shadow: 0px 0px 10px 0px #f5f5f5;
+          box-shadow: 0px 0px 10px 0px #f5f5f5;*/
+}
+
+#default-channels .thumbnail {
+  position: relative;
+  padding: 0 !important;
+}
+
+#default-channels li.channel {
+  cursor: move;
+  min-height: 156px;
+}
+
+#default-channels div.delete.channel {
+  color: #d9534f;
+}
+
+#default-channels #default-vid-delete {
+  opacity: 0;
+}
+
+#default-channels.dragging #default-vid-delete {
+  opacity: 1;
+}
+
+#default-channels #default-vid-delete .thumbnail {
+  background-color: #f2dede;
+  border-color: #eed3d7;
+}
+
+#default-channels #default-vid-delete.hover {
+  color: #d43f3a;
+}
+#default-channels #default-vid-delete.hover .thumbnail {
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+#default-channels div.delete.channel.hover .thumbnail {
+
 
 /*!
  * Stylesheet for the Date Range Picker, for use with Bootstrap 3.x

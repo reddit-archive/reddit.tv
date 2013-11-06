@@ -272,6 +272,37 @@ $('button.btn-show-videos').click(function() {
 	}
 });
 
+$( '#default-channels ul' ).sortable({
+	containment: '#default-channels',
+	placeholder: 'channel col-lg-3',
+	connectWith: '#default-vid-delete',
+	start: function() {
+		$('#default-channels').addClass('dragging');
+	},
+	stop: function() {
+		$('#default-channels').removeClass('dragging');
+	}
+});
+
+$('#default-vid-delete').droppable({
+	accept: '#default-channels li',
+	hoverClass: 'hover',
+	drop: function( event, ui ) {
+		// if ($('#channel-vidlist li').length == 2) return; // Last item and placeholder
+		$(ui.draggable).remove();
+	}
+});
+
+$('#add-default-channel').click(function() {
+	var input = $('#default-channels input[type="text"]'),
+		val   = input.val();
+
+	alert(val);
+	// if ()
+
+	return false;
+})
+
 //end document.ready
 });
 

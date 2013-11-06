@@ -49,6 +49,7 @@
             <li class="active"><a href="#videos" data-toggle="tab">Videos</a></li>
             <li><a href="#skins" data-toggle="tab">Skins</a></li>
             <li><a href="#channels" data-toggle="tab">Channels</a></li>
+            <li><a href="#admin-settings" data-toggle="tab">Settings</a></li>
           </ul>
         </div>
       </div>
@@ -85,7 +86,7 @@
                   <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
             </div>
             <div class="col-lg-2">
-              <div id="video-thumbnail" class="upload thumbnail">
+              <div id="video-thumbnail" class="upload vid-thumbnail">
                 <span class="text">Video Thumbnail</span>
                 <input id="video-thumbnail-input" class="btn-default" type="file" name="image" title="Upload" />
                 <input type="hidden" name="b64_image" />
@@ -159,7 +160,7 @@
                 <b>Length:</b> <?php echo $video->start_date; ?> - <?php echo $video->end_date; ?> 
               </div>
               <div class="col-lg-3">
-                <div class="thumbnail" style="background-image: url(../<?php echo $video->image_url; ?>);"></div>
+                <div class="vid-thumbnail" style="background-image: url(../<?php echo $video->image_url; ?>);"></div>
               </div>
             </div>
 
@@ -219,7 +220,7 @@
               </div>
             </div>
             <div class="col-lg-2">
-              <div id="skin-thumbnail" class="upload thumbnail">
+              <div id="skin-thumbnail" class="upload vid-thumbnail">
                 <span class="text">Skin Image</span>
                 <input id="skin-thumbnail-input" class="btn-default" type="file" name="image" title="Upload" />
                 <input type="hidden" name="b64_image" />
@@ -298,7 +299,7 @@
               </div>
             </div>
             <div class="col-lg-3">
-              <div class="thumbnail" style="background-image: url(../<?php echo $skin->image_url; ?> );"></div>
+              <div class="vid-thumbnail" style="background-image: url(../<?php echo $skin->image_url; ?> );"></div>
             </div>
           </div>
 
@@ -367,7 +368,7 @@
               </div>
             </div>
             <div class="col-lg-2">
-              <div id="channel-thumbnail" class="upload thumbnail">
+              <div id="channel-thumbnail" class="upload vid-thumbnail">
                 <span class="text">Channel Thumbnail</span>
                 <input id="channel-thumbnail-input" class="btn-default" type="file" name="image" title="Upload" />
                 <input type="hidden" name="b64_image" />
@@ -467,7 +468,7 @@
               </div>
             </div>
             <div class="col-lg-3">
-              <div class="thumbnail" style="background-image: url(../<?php echo $channel->image_url; ?> );"></div>
+              <div class="vid-thumbnail" style="background-image: url(../<?php echo $channel->image_url; ?> );"></div>
             </div>
           </div>
 
@@ -531,10 +532,68 @@
 
         </div>
         <?php endforeach; ?>
+      </div> <!-- Channels -->
 
-      </div>
+      <!-- Settings Pane -->
+      <div class="tab-pane active" id="admin-settings">
+        <h1>Settings</h1>
+        <hr />
+        <h3>Default Channels</h3>
+        <form id="default-channels" action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
+          <input type="hidden" name="type" value="default-channels" />
+          <div class="form-group row control-group">
+            <div class="col-lg-6">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="&quot;/r/subreddit&quot; or &quot;/domain/site.com&quot;" />
+                <div class="input-group-btn">
+                  <div id="add-default-channel" class="btn btn-default">Add Channel</div>
+                </div><!-- /btn-group -->
+              </div><!-- /input-group -->
+            </div>
+
+            <div class="col-lg-2">
+              <button type="submit" class="btn btn-primary btn-block">Save</button>
+            </div>
+          </div>
+
+          <div class="channels clearfix">
+            <ul class="list-unstyled">
+              <li class="channel col-lg-3">
+                  <div class="thumbnail"></div>
+                  <span class="name">lol</span>
+              </li>
+
+              <li class="channel col-lg-3">
+                  <div class="thumbnail"></div>
+                  <span class="name">ok</span>
+              </li>
+
+              <li class="channel col-lg-3">
+                  <div class="thumbnail"></div>
+                  <span class="name">sup</span>
+              </li>
+
+              <li class="channel col-lg-3">
+                  <div class="thumbnail"></div>
+                  <span class="name">hayyy</span>
+              </li>
+
+              <li class="channel col-lg-3">
+                  <div class="thumbnail"></div>
+                  <span class="name">dang</span>
+              </li>
+            </ul>
+
+            <div id="default-vid-delete" class="delete channel col-lg-3">
+                <div class="thumbnail"></div>
+                <span class="name">Drag here to delete</span>
+            </div>
+          </div>
+
+        </form>
+      </div> <!-- Settings -->
+
     </div>
-
   </div><!-- /.container -->
 </body>
 </html>

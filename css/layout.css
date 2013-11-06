@@ -592,7 +592,7 @@ body.video-loading #loading {
     padding-left: 10px;
 }
 
-.channels a.channel {
+.channels a.channel, .channels li.channel, .channels div.channel {
     display: block;
     color: #013f79;
     font-weight: bold;
