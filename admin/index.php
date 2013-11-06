@@ -423,14 +423,13 @@
             </div>
 
             <div class="col-lg-2">
-              <label>
-                <div class="input-group">
-                  <span class="input-group-addon">
-                    <input type="checkbox" name="db_autoplay" value="1" />
-                  </span>
-                  <div class="form-control">Autoplay</div>
-                </div><!-- /input-group -->
-              </label>
+              <div class="input-group">
+                <span class="input-group-addon">
+                  <input type="hidden" name="db_autoplay" value="0" class="skip" />
+                  <input type="checkbox" name="db_autoplay" id="channel-autoplay" value="1" />
+                </span>
+                <label for="channel-autoplay" class="form-control">Autoplay</label>
+              </div><!-- /input-group -->
             </div>
 
           </div>

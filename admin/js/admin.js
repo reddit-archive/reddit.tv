@@ -167,9 +167,15 @@ $('.btn-edit').on('click', function() {
 			$.each(data, function( index, value ) {
 				// console.log(index, value);
 				var input = form.find('*[name="db_' + index + '"]');
+
+				if (input.hasClass('skip')) return;
+				if (input.is(':checkbox')) {
+					input.prop('checked', (parseInt(value) == 1));
+					return;
+				}
+
 				input.val(value);
 				if (input.hasClass('selectpicker')) input.selectpicker('val', value);
-				if (input.is(':checkbox')) input.prop('checked', (parseInt(value) == 1));
 			});
 
 			if (data.image_url != '') {
