@@ -76,8 +76,12 @@ form.edit, .item.edit {
     width: 165px;
 }
 
-#channels .bootstrap-select, #channels div.status-btn {
+#channels .bootstrap-select {
     width: 190px;
+}
+
+#channels div.status-btn {
+    width: 140px;
 }
 
 #video-thumbnail, .thumbnail {
@@ -136,6 +140,78 @@ form.edit, .item.edit {
 .upload.thumbnail.drop {
     background-image: url(img/drop-bg.png) !important;
     background-size: auto;
+}
+
+#channel-vidlist {
+  margin-bottom: 0px;
+  padding-bottom: 0;
+  -webkit-transition: all 0.2s ease-out;
+     -moz-transition: all 0.2s ease-out;
+       -o-transition: all 0.2s ease-out;
+          transition: all 0.2s ease-out;
+}
+
+#channel-vidlist.dragging {
+  margin-bottom: 35px;
+  margin-top: -15px;
+  padding-top: 15px;
+}
+
+#channel-vidlist ul {
+  list-style: none;
+  padding: 5px 0 0 0;
+}
+
+li.video-input {
+  margin: 7px 0;
+  min-height: 34px;
+}
+
+#add-channel-vid {
+  margin-top: 10px;
+}
+
+#channel-vidlist #channel-vid-delete {
+  opacity: 0;
+  position: absolute;
+  width: calc(100% - 30px);
+  padding: 0 10px;
+  height: 35px;
+  line-height: 35px;
+  margin-top: 10px;
+
+  -webkit-transition: all 0.2s ease-out;
+     -moz-transition: all 0.2s ease-out;
+       -o-transition: all 0.2s ease-out;
+          transition: all 0.2s ease-out;
+}
+
+#channel-vidlist.dragging #channel-vid-delete {
+  opacity: 1;
+}
+
+#channel-vidlist .ui-sortable-helper {
+  -webkit-transform: scale(0.95);
+     -moz-transform: scale(0.95);
+      -ms-transform: scale(0.95);
+       -o-transform: scale(0.95);
+          transform: scale(0.95);
+}
+
+#channel-vid-delete.hover {
+  background: #f00;
+}
+
+button.btn-show-videos {
+  float: none;
+}
+
+ol.videos {
+  display: none;
+}
+
+div.show-videos ol.videos {
+  display: block;
 }
 
 /*!

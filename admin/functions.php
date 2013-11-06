@@ -35,6 +35,7 @@ function ajaxFunc() {
 function addEdit() {
 	global $db_name;
 	$edit = isset($_POST['edit']);
+	$type = $_REQUEST['type'];
 
 	$db = ($edit) ? R::load($db_name, (int)$_POST['edit']) : R::dispense($db_name);
 
@@ -54,6 +55,8 @@ function addEdit() {
 
 	$image = imageUpload($filename, $max_width);
 	if ($image) $db->image_url = UPLOAD_URL . $image;
+
+	if ($type == 'channels') $db->video_list = json_encode($_REQUEST['video_urls']);
 
 	if (!$edit) {
 		$db->created_on = R::isoDateTime();
@@ -82,8 +85,8 @@ function jsonError($error) {
 }
 
 function jsonForAjax($arr) {
-	// Only return JSON for AJAX POSTs
-	if (isset($_POST['ajax'])) {
+	// Only return JSON for AJAX requests
+	if (isset($_REQUEST['ajax'])) {
 		echo json_encode($arr);
 		die();
 	}

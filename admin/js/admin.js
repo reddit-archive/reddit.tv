@@ -62,8 +62,8 @@ $('.campaign-length').daterangepicker({
 dateRangeCallback);
 
 // Set start/end dates to default dates
-$('#video_start_date').val(moment().startOf('hour').format('YYYY-MM-DD HH:mm:ss'));
-$('#video_end_date').val(moment().startOf('hour').add('month', 1).format('YYYY-MM-DD HH:mm:ss'));
+$('input[id$="_start_date"]').val(moment().startOf('hour').format('YYYY-MM-DD HH:mm:ss'));
+$('input[id$="_end_date"]').val(moment().startOf('hour').add('month', 1).format('YYYY-MM-DD HH:mm:ss'));
 
 
 // Bootstrap style file inputs
@@ -165,10 +165,11 @@ $('.btn-edit').on('click', function() {
 				.appendTo(form);
 
 			$.each(data, function( index, value ) {
-				console.log(index, value);
+				// console.log(index, value);
 				var input = form.find('*[name="db_' + index + '"]');
 				input.val(value);
 				if (input.hasClass('selectpicker')) input.selectpicker('val', value);
+				if (input.is(':checkbox')) input.prop('checked', (parseInt(value) == 1));
 			});
 
 			if (data.image_url != '') {
@@ -176,6 +177,21 @@ $('.btn-edit').on('click', function() {
 					.removeClass('error')
 					.addClass('prepped')
 					.css('background-image', 'url(../' + data.image_url + ')');
+			}
+
+			if (data.video_list) {
+				var video_list = JSON.parse(data.video_list);
+				if ( $.isArray(video_list) ) {
+					var dupe = $('#channel-vidlist li.video-input:first').clone(true);
+					$('#channel-vidlist li.video-input').remove();
+
+					$.each(video_list, function(i, value){
+						var clone = dupe.clone(true);
+						
+						clone.find('input').val(value);
+						clone.appendTo('#channel-vidlist ul');
+					});
+				}
 			}
 
 			$('.item').removeClass('edit');
@@ -198,7 +214,56 @@ $('.btn-edit').on('click', function() {
 		}
 	});
 
-	console.log(ajax);
+	// console.log(ajax);
+});
+
+$('#add-channel-vid').click(function() {
+	var vidList = $('#channel-vidlist ul'),
+	    input   = vidList.find('li.video-input:first'),
+	    dupe    = input.clone(true);
+
+	    dupe
+	    	.find('input')
+	    	.val('');
+
+	    vidList.append(dupe);
+
+	    $('#channel-vidlist ul').sortable('refresh');
+});
+
+$( '#channel-vidlist ul' ).sortable({
+	containment: '#channel-vidlist > div',
+	placeholder: 'video-input',
+	connectWith: '#channel-vid-delete',
+	start: function() {
+		$('#channel-vidlist').addClass('dragging');
+	},
+	stop: function() {
+		$('#channel-vidlist').removeClass('dragging');
+	}
+});
+
+$('#channel-vid-delete').droppable({
+	accept: '#channel-vidlist li',
+	hoverClass: 'hover',
+	drop: function( event, ui ) {
+		if ($('#channel-vidlist li').length == 2) return; // Last item and placeholder
+		$(ui.draggable).remove();
+	}
+});
+
+$('button.btn-show-videos').click(function() {
+	var par = $(this).parent(),
+	    def = 'btn-default',
+	    pri = 'btn-primary';
+
+	if ( par.hasClass('show-videos') ) {
+		par.removeClass('show-videos');
+		$(this).removeClass(pri).addClass(def);
+	} else {
+		par.addClass('show-videos');
+		$(this).removeClass(def).addClass(pri);
+	}
 });
 
 //end document.ready

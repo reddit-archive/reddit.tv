@@ -31,6 +31,7 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
+<script src="js/jquery-ui.min.js" type="text/javascript"></script>
 <script src="js/plugins.js" type="text/javascript"></script>
 <script src="js/admin.js" type="text/javascript"></script>
 </head>
@@ -347,12 +348,13 @@
       <div class="tab-pane" id="channels">
         <h1>Sponsored Channels</h1>
 
-        <form class="well form-horizontal" role="form">
+        <form action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
+          <input type="hidden" name="type" value="channels" />
           <div class="form-group row">
             <div class="col-lg-5">
               <div class="row">
                 <div class="col-lg-12">
-                  <input type="text" class="form-control" id="inputTitle1" placeholder="Campaign Title" />
+                  <input type="text" class="form-control" name="db_title" placeholder="Campaign Title" />
                 </div>
               </div>
             </div>
@@ -401,26 +403,136 @@
 
           </div>
 
-          <div class="form-group row">
+          <div id="channel-vidlist" class="form-group row">
             <div class="col-lg-5">
-              <div class="input-group">
-                <input type="url" class="form-control" name="db_video_url" placeholder="URL" required />
-                <div class="input-group-btn">
-                  <button type="button" class="btn-embed-code btn btn-default dropdown-toggle">Embed Code&nbsp;&nbsp;&nbsp;<span class="caret"></span></button>
-                  <ul class="dropdown-menu pull-right embed-code">
-                    <li><textarea name="db_video_embed_code" class="form-control" rows="3"></textarea></li>
-                  </ul>
-                </div><!-- /btn-group -->
-              </div><!-- /input-group -->
+              <ul class="unstyled">
+                <li class="video-input">
+                  <div class="input-group">
+                    <input type="url" class="form-control" name="video_urls[]" placeholder="Video URL" required />
+                    <div class="input-group-btn">
+                      <div class="btn btn-default">&equiv;</div>
+                    </div><!-- /btn-group -->
+                  </div><!-- /input-group -->
+                </li>
+              </ul>
+              <div id="channel-vid-delete" class="alert alert-danger">Drop here to delete.</div>
             </div>
 
-            <div class="col-lg-1">
-              <button type="button" class="btn btn-default">Add Another Video</button>
+            <div class="col-lg-3">
+              <button id="add-channel-vid" type="button" class="btn btn-default">Add Another Video</button>
+            </div>
+
+            <div class="col-lg-2">
+              <label>
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <input type="checkbox" name="db_autoplay" value="1" />
+                  </span>
+                  <div class="form-control">Autoplay</div>
+                </div><!-- /input-group -->
+              </label>
             </div>
 
           </div>
 
         </form>
+
+
+        <h2>Campaigns</h2>
+        <?php 
+          $sponsoredchannels = R::find('sponsoredchannel', '
+              WHERE status != :deleted
+              ORDER BY status, start_date
+            ', array(
+              ':deleted' => 3
+              )
+          );
+
+          foreach($sponsoredchannels as $channel):
+            $status_code = statusCodeToText($channel->status, $channel->start_date);
+            $video_list = json_decode($channel->video_list);
+            if (!$video_list) $video_list = Array();
+        ?>
+          <div class="well item" data-id="<?php echo $channel->id; ?>">
+            <div class="form-group row">
+            <div class="col-lg-5">
+              <div class="row">
+                <div class="col-lg-12">
+                  <b>Title:</b> <?php echo $channel->title; ?>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="input-group">
+                <b>Length:</b> <?php echo $channel->start_date; ?> - <?php echo $channel->end_date; ?> 
+              </div>
+            </div>
+            <div class="col-lg-3">
+              <div class="thumbnail" style="background-image: url(../<?php echo $channel->image_url; ?> );"></div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+
+            <div class="col-lg-5">
+              <div class="row">
+                <div class="col-lg-6">
+                  <b>Sponsor:</b> <?php echo $channel->sponsor_name; ?>
+                </div>
+
+                <div class="col-lg-6">
+                  <div class="input-group">
+                    <label class="input-group-addon">Status</label>
+                    <div class="btn-group">
+                      <div class="btn status-btn" data-status="<?php echo $status_code; ?>">
+                        <span class="pull-left"><?php echo $status_code; ?></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-lg-3">
+              <div class="input-group">
+                <label class="input-group-addon">Autoplay</label>
+                <div class="btn-group">
+                  <div class="btn status-btn">
+                    <span class="pull-left"><?php echo ($channel->autoplay) ? 'On' : 'Off'; ?></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-2 col-lg-offset-2">
+              <button class="btn btn-default btn-block btn-edit">Edit</button>
+            </div>
+
+          </div>
+
+          <div class="form-group row">
+            <div class="col-lg-5">
+              <button class="btn btn-default col-lg-4 btn-show-videos">
+                <span class="badge pull-right"><?php echo count($video_list); ?></span>
+                  Videos
+              </button>
+
+              <ol class="videos">
+              <?php foreach ($video_list as $video_url) : ?>
+                <li>
+                  <a href="<?php echo $video_url; ?>" target="_blank"><?php echo $video_url; ?></a>
+                </li>
+              <?php endforeach; ?>
+                  
+              </ol>
+
+            </div>
+          </div>
+
+        </div>
+        <?php endforeach; ?>
+
       </div>
     </div>
 
