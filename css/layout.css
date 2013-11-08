@@ -588,6 +588,27 @@ body.video-loading #loading {
     color: #000;
 }
 
+#add-channel .subreddit {
+    float: left;
+    width: 60%;
+    padding-right: 20px;
+}
+
+#add-channel .site {
+    float: left;
+    width: 40%;
+    padding-left: 10px;
+}
+
+#add-channel .subreddit h2, #add-channel .site h2 {
+    border-bottom: 1px solid transparent;
+}
+
+#add-channel.subreddit .subreddit h2, #add-channel.site .site h2 {
+    border-bottom: 1px dashed #5f99cf;
+}
+
+
 #channel-recs {
     position: absolute;
     bottom: 0;
@@ -611,7 +632,7 @@ body.video-loading #loading {
 }
 
 .channels .channel .thumbnail {
-    background: #5f99cf none center center no-repeat;
+    background: #5f99cf url(../img/channel-tv-loader.gif) center center no-repeat;
     background-size: calc(100% + 12px);
     border: 6px solid transparent;
     width: 100%;

@@ -318,6 +318,19 @@ $().ready(function(){
         }
     });
 
+    $('#add-channel input.channel-name').on('keyup', function() {
+        var addChan = $('#add-channel'),
+            val     = $(this).val();
+
+        addChan.removeClass('subreddit site');
+        
+        if ( val.match(/\w\.\w/) ) {
+            addChan.addClass('site');
+        } else if (val != '') {
+            addChan.addClass('subreddit');
+        }
+    });
+
     // end document.ready
 });
 
@@ -1323,12 +1336,12 @@ function checkAnchor(){
             var parts = anchor.split("/"); // #/r/videos/id
             parts = $.map(parts, stripHTML);
 
-            if (anchor == 'add-channel') {
+            /*if (anchor == 'add-channel') {
                 toggleAddChannel();
                 return;
             } else {
                 $('#main-container').removeClass('add-channel');
-            }
+            }*/
 
             if(parts[1] === 'promo'){
                 loadPromo(parts[2], parts[3], parts[4]);
@@ -1445,11 +1458,12 @@ function videoListScrollbar() {
     });
 }
 
-function toggleAddChannel() {
+function toggleAddChannel(instant) {
     var vid  = $('#video-embed'),
         vidW = vid.width(),
         vidH = vid.height(),
-        container = $('#main-container');
+        container = $('#main-container'),
+        speed = (instant === true) ? 10 : 500;
 
     console.log('vid w/h:', vidW, vidH);
 
@@ -1458,7 +1472,7 @@ function toggleAddChannel() {
             .animate({
                 width: '480px',
                 height: '300px'
-            }, 500);
+            }, speed);
 
         $('#main-container').addClass('add-channel');
         $('#video-container, #video-embed').width(vidW).height(vidH);
@@ -1476,14 +1490,11 @@ function toggleAddChannel() {
             .animate({
                 width: '1000px',
                 height: '625px'
-            }, 500, function() {
+            }, speed, function() {
                 $('#main-container').removeClass('add-channel');
                 $('#video-container').css({
                     'width': '100%'
                 });
-                $('#video-container').animate({
-                    height: '100%'
-                }, 250);
             });
     }
 
@@ -1500,9 +1511,11 @@ function addChannelFromForm() {
 }
 
 function loadingAnimation(text, background) {
-    if (!text) text = '';
+    if ( $('#main-container').hasClass('add-channel') )
+        toggleAddChannel(true);
 
     $('body').addClass('video-loading');
+    if (!text) text = '';
     $('#loading .what').html(text);
     if (background) $('#loading .tv .image').css({ 'background-image' : 'url(' + background + ')' });
 }

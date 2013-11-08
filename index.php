@@ -126,13 +126,13 @@
         <div class="grid-50 prefix-50 text">
           <h1>Add your own channel</h1>
 
-          <div style="float: left; width: 60%; padding-right: 20px">
+          <div class="subreddit">
             <h2>Subreddit channel</h2>
             <h1 class="or">or</h2>
             You can make your own channel from a subreddit. <i>(e.g. jazz)</i>
           </div>
 
-          <div style="float: left; width: 40%; padding-left: 10px;">
+          <div class="site">
             <h2>Site channel</h2>
             Search for all the videos from a certain domain. <i>(e.g. ted.com)</i>
           </div>
