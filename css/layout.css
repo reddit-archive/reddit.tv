@@ -237,15 +237,22 @@ body.video-loading #loading {
     background: url(../img/loading-tv.png);
 }
 
-#loading .tv:after {
-    content: '';
-    z-index: 999;
+#loading .tv .image {
+    background: transparent none cover no-repeat center center;
+}
+
+#loading .tv .image, #loading .tv:after {
     position: absolute;
     left: 51px;
     top: 157px;
     display: block;
     width: 310px;
     height: 244px;
+}
+
+#loading .tv:after {
+    content: '';
+    z-index: 999;
     background: rgba(255, 255, 255, 1) url(../img/static-bg.png);
 
     -webkit-animation: tvstatic 5s linear infinite;

@@ -574,7 +574,7 @@
               ?>
                   <li class="channel col-lg-3" data-feed="<?php echo $channel->feed; ?>">
                     <div class="thumbnail"<?php if ($thumb_url != '') : ?> style="background-image: url(<?php echo $thumb_url; ?>);"<?php endif; ?>></div>
-                    <span class="name" spellcheck="false" contenteditable="true"><?php echo $channel->name; ?></span>
+                    <span class="name" spellcheck="false" contenteditable="true"><?php echo $channel->channel; ?></span>
                   </li>
               <?php endforeach; ?>
             </ul>

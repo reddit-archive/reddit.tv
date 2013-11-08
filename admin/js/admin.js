@@ -395,8 +395,8 @@ $('#default-channels').on('submit', function() {
 	$('#default-channels li.channel').each(function() {
 		var chan = $(this);
 		feed[feed.length] = {
-			'name' : chan.find('.name').text(),
-			'feed' : chan.attr('data-feed')
+			'channel' : chan.find('.name').text(),
+			'feed'    : chan.attr('data-feed')
 		};
 	});
 
@@ -412,8 +412,11 @@ $('#default-channels').on('submit', function() {
 		dataType: 'json',
 		method: 'POST',
 		success: function(data) {
-			console.log(data);
-			defaultChanMsg('success', 'Default channels saved!');
+			if (data.success) {
+				defaultChanMsg('success', 'Default channels saved!');
+			} else {
+				defaultChanMsg('danger', 'Error saving default channels.');
+			}
 		},
 		error: function(jXHR, textStatus, errorThrown) {
 			defaultChanMsg('danger', 'Error saving default channels.');

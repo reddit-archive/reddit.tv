@@ -39,6 +39,7 @@
 
 <script type="text/javascript">
   videoListMouse = false;
+  Globals.channels = <?php echo defaultChannels(); ?>;
 </script>
 <script src="js/main.js" type="text/javascript"></script>
 
@@ -102,7 +103,7 @@
     <div id="main-container" class="grid-container">
       <div id="loading">
          <div class="text">loading<div class="what"></div></div>
-         <div class="tv"></div>
+         <div class="tv"><div class="image"></div></div>
       </div>
       <div id="video-container">
         <div id="video-embed" class="grid-100 mobile-grid-100">

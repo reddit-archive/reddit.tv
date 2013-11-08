@@ -134,7 +134,7 @@ $().ready(function(){
     }
     else {
 
-        loadChannel("Videos", null);
+        loadChannel(Globals.channels[0].channel, null);
     }
 
 
@@ -199,7 +199,7 @@ $().ready(function(){
         
         Globals.sorting = $(this).attr('href').replace(/^.*#sort=/, '')
         Globals.videos = [];
-        loadChannel(Globals.channels[Globals.cur_chan].channel, null);
+        loadChannel(Globals.channels[Globals.cur_chan].feed, null);
 
         return false;
     });
@@ -370,83 +370,100 @@ function displayChannels() {
         $list = $('<ul></ul>'),
         $channel_base = $('#channels a.channel:first');
 
-    // $channel_base.hide();
-    // $channel_list.html($list);
-    for(var x in Globals.channels.reverse()){
-        displayChannel(x);
-    }
+    $.each(Globals.channels, function(i, val) {
+        displayChannel(i);
+    });
 }
 
 function displayChannel(chan){
     chan_feed = Globals.channels[chan].feed;
-    url = window.location.origin+window.location.pathname+"db/api.php?action=channel_thumbnail&feed="+chan_feed;
+    url = window.location.origin+window.location.pathname+"db/api.php";
     console.log(url)
-    $.ajax({
-        url: url,
-        dataType: "json",
-        success: function(data) {
-            var title, display_title, class_str='', remove_str='',
-                $channel_base = $('#add-channel-button'),
-                $channel = $channel_base.clone().removeAttr('id');
 
-            data = data[0];
-            chan_feed = data.feed;
-            chan_title = chan_feed.split("/");
-            chan_title = "/"+chan_title[1]+"/"+chan_title[2];
+    var title, display_title, class_str='', remove_str='',
+        $channel_base = $('#add-channel-button'),
+        $channel = $channel_base.clone().removeAttr('id');
 
-            chan = 0
-            for(chan=0; chan<Globals.channels.length; chan++){
-                console.log(Globals.channels[chan].feed)
-                if(Globals.channels[chan].feed == data.feed)
-                    break;
-            }
-            console.log(chan);
+    // data = data[0];
+    // chan_feed = data.feed;
+    chan_title = chan_feed.split("/");
+    chan_title = "/"+chan_title[1]+"/"+chan_title[2];
 
-            display_title = Globals.channels[chan].channel.length > 20 ?
-                Globals.channels[chan].channel.replace(/[aeiou]/gi,'').substr(0,20) :
-                Globals.channels[chan].channel;
+    /*chan = 0
+    for(chan=0; chan<Globals.channels.length; chan++){
+        console.log(Globals.channels[chan].feed)
+        if(Globals.channels[chan].feed == data.feed)
+            break;
+    }
+    console.log(chan);*/
 
-            if(isUserChan(Globals.channels[chan].channel)){
-                class_str = 'class="user-chan"';
-                remove_str = '<a id="remove-'+chan+'" class="remove-chan">-</a>';
-            }
+    display_title = Globals.channels[chan].channel.length > 20 ?
+        Globals.channels[chan].channel.replace(/[aeiou]/gi,'').substr(0,20) :
+        Globals.channels[chan].channel;
 
-            $channel
-                .show()
-                .insertAfter('#add-channel-button')
-                .attr({
-                    id: 'channel-' + chan,
-                    href: '#' + Globals.channels[chan].feed,
-                    title: chan_title
-                })
-                // .removeClass('loading') // temp
-                .find('.thumbnail')
+    if(isUserChan(Globals.channels[chan].channel)){
+        class_str = 'class="user-chan"';
+        remove_str = '<a id="remove-'+chan+'" class="remove-chan">-</a>';
+    }
+
+    $channel
+        .show()
+        .appendTo('#channels')
+        .attr({
+            id: 'channel-' + chan,
+            href: '#' + Globals.channels[chan].feed,
+            title: chan_title,
+            'data-feed' : Globals.channels[chan].feed
+        })
+        .find('.name')
+            .html(display_title);
+        // .removeClass('loading') // temp
+
+    if (Globals.channels[chan].thumbnail) {
+        $channel.find('.thumbnail')
+            .css({
+                'background-image': 'url(' + Globals.channels[chan].thumbnail + ')'
+            });
+    } else {
+        $.ajax({
+            url: url,
+            data: {
+                'action' : 'channel_thumbnail',
+                'feed'   : chan_feed
+            },
+            dataType: "json",
+            success: function(data) {
+                var channel = data[0],
+                    thumb   = channel.thumbnail_url;
+                if (!thumb || thumb == '') return;
+
+                $('#channels a.channel[data-feed="' + channel.feed + '"]').find('.thumbnail')
                     .css({
-                        'background-image': 'url(' + data.thumbnail_url + ')'
-                    })
-                .parent()
-                .find('.name')
-                    .html(display_title);
+                        'background-image': 'url(' +thumb + ')'
+                    });
 
-            $('#channel>ul').prepend('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'><img src="http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg" />'+display_title+remove_str+'</li>');
+            },
+            error: function(jXHR, textStatus, errorThrown) {
+                console.log('[ERROR] '+textStatus);
+                console.log('[ERROR] '+errorThrown);
+            }
+        });
+    }
 
-            $('#remove-'+chan).bind(
-                'click',
-                {channel: chan},
-                function(event) {
-                    removeChan(event.data.channel);
-                }
-            );
-        },
-        error: function(jXHR, textStatus, errorThrown) {
-            console.log('[ERROR] '+textStatus);
-            console.log('[ERROR] '+errorThrown);
+    // $('#channel>ul').prepend('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'><img src="http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg" />'+display_title+remove_str+'</li>');
+
+    /*$('#remove-'+chan).bind(
+        'click',
+        {channel: chan},
+        function(event) {
+            removeChan(event.data.channel);
         }
-    });
+    );*/
 }
 
 function loadChannel(channel, video_id) {
     var last_req = Globals.cur_chan_req, this_chan = getChan(channel), $video_embed = $('#video-embed'), $video_title = $('#video-title'), title;
+    console.log('loadChannel():', channel, video_id);
 
     // update promo state
     $('#promo-channel li').removeClass('chan-selected');
@@ -470,8 +487,7 @@ function loadChannel(channel, video_id) {
 
     $video_title.html('Loading '+title+' ...');
     // $video_embed.addClass('loading');
-    $('body').addClass('video-loading');
-    $('#loading .what').html(title);
+    loadingAnimation(title);
     $video_embed.empty();
     
     // TODO: Change to highlight the channel in the grid instead
@@ -779,9 +795,8 @@ function loadVideo(video) {
 
         $video_embed.empty();
         // $video_embed.addClass('loading');
-        $('body').addClass('video-loading');
-        $('#loading .what').html('');
-        
+        loadingAnimation();
+
         var embed = $.unescapifyHTML(Globals.videos[this_chan].video[selected_video].media_embed.content);
         embed = prepEmbed(embed, Globals.videos[this_chan].video[selected_video].domain);
         embed = prepEmbed(embed, 'size');
@@ -908,8 +923,7 @@ function loadPromo(type, id, desc){
         var $video_embed = $('#video-embed');
         $video_embed.empty();
         // $video_embed.addClass('loading');
-        $('body').addClass('video-loading');
-        $('#loading .what').html('');
+        loadingAnimation();
 
         $('#video-title').text(unescape(desc));
         $video_embed.html(embed);
@@ -1072,6 +1086,7 @@ function formatFeedURI(channel_obj){
 }
 
 function getChanName(feed){
+    console.log('getChanName():', feed);
     for(var x in Globals.channels){
         if(Globals.channels[x].feed.indexOf(feed) !== -1){
             return Globals.channels[x].channel;
@@ -1081,6 +1096,7 @@ function getChanName(feed){
 }
 
 function getChan(channel) {
+    console.log('getChan():', channel);
     for(var x in Globals.channels){
         if(Globals.channels[x].channel === channel || Globals.channels[x].feed === channel){
             return x;
@@ -1315,7 +1331,7 @@ function checkAnchor(){
             if(parts[1] === 'promo'){
                 loadPromo(parts[2], parts[3], parts[4]);
             }else{
-                var feed = "/"+parts[1]+"/"+parts[2]+"/";
+                var feed = "/"+parts[1]+"/"+parts[2];
                 var new_chan_name = getChanName(feed);
                 if(!new_chan_name){
                     addChannel(parts[2]);
@@ -1479,6 +1495,14 @@ function addChannelFromForm() {
         addChannel(channel);
 
     return false;
+}
+
+function loadingAnimation(text, background) {
+    if (!text) text = '';
+
+    $('body').addClass('video-loading');
+    $('#loading .what').html(text);
+    if (background) $('#loading .tv .image').css({ 'background-image' : 'url(' + background + ')' });
 }
 
 /* analytics */
