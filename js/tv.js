@@ -323,6 +323,8 @@ $().ready(function(){
     $.each(Globals.recommended_channels, function(i, channel) {
         var anchor, thumb, name;
 
+        if (i >= 8) return; // Only display the first 8
+
         anchor = $('<a />')
             .addClass('grid-25 channel')
             .attr({
