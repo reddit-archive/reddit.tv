@@ -146,39 +146,6 @@
 
         <div id="recommended-channels" class="channels">
           <h2>Recommended channels</h2>
-
-          <!-- <a class="grid-25 channel" href="#">
-            <div class="thumbnail"></div>
-            <span class="name">Lorem</span>
-          </a>
-          <a class="grid-25 channel" href="#">
-            <div class="thumbnail"></div>
-            <span class="name">Ipsum</span>
-          </a>
-          <a class="grid-25 channel" href="#">
-            <div class="thumbnail"></div>
-            <span class="name">Dolor</span>
-          </a>
-          <a class="grid-25 channel" href="#">
-            <div class="thumbnail"></div>
-            <span class="name">Sit</span>
-          </a>
-          <a class="grid-25 channel" href="#">
-            <div class="thumbnail"></div>
-            <span class="name">Lorem</span>
-          </a>
-          <a class="grid-25 channel" href="#">
-            <div class="thumbnail"></div>
-            <span class="name">Ipsum</span>
-          </a>
-          <a class="grid-25 channel" href="#">
-            <div class="thumbnail"></div>
-            <span class="name">Dolor</span>
-          </a>
-          <a class="grid-25 channel" href="#">
-            <div class="thumbnail"></div>
-            <span class="name">Sit</span>
-          </a> -->
         </div>
 
       </div>
