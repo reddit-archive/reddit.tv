@@ -217,74 +217,72 @@ div.show-videos ol.videos {
   display: block;
 }
 
-#default-channels .channels {
+#default-channels .channels, #recommended-channels .channels {
   margin-left: auto;
   margin-right: auto;
   max-width: 1040px;
 }
 
-#default-channels ul {
+#default-channels ul, #recommended-channels ul {
   margin: 0;
 }
 
-#default-channels .ui-sortable-helper .thumbnail {
-  /*border-color: #eee;*/
-}
-
-#default-channels .thumbnail {
+#default-channels .thumbnail, #recommended-channels .thumbnail {
   position: relative;
   padding: 0 !important;
 }
 
-#default-channels .name {
+#default-channels .name, #recommended-channels .name {
   background: #f5f5f5;
   border: 1px solid transparent;
   cursor: text;
 }
 
-#default-channels .channel:hover .name {
+#default-channels .channel:hover .name, #recommended-channels .channel:hover .name {
   border: 1px dashed #ccc;
 }
 
-#default-channels li.channel {
+#default-channels li.channel, #recommended-channels li.channel {
   cursor: move;
   min-height: 156px;
 }
 
-#default-channels div.delete.channel {
+#default-channels div.delete.channel, #recommended-channels div.delete.channel {
   color: #d9534f;
 }
 
-#default-channels #default-vid-delete {
+#default-channels #default-vid-delete, #recommended-channels #recommended-vid-delete {
   opacity: 0;
   float: right;
 }
 
-#default-channels.dragging #default-vid-delete {
+#default-channels.dragging #default-vid-delete, #recommended-channels.dragging #recommended-vid-delete {
   opacity: 1;
 }
 
-#default-channels #default-vid-delete .thumbnail {
+#default-channels #default-vid-delete .thumbnail, #recommended-channels #recommended-vid-delete .thumbnail {
+  background-image: none;
   background-color: #f2dede;
   border-color: #eed3d7;
 }
 
-#default-channels #default-vid-delete.hover {
+#default-channels #default-vid-delete.hover, #recommended-channels #recommended-vid-delete.hover {
   color: #d43f3a;
 }
-#default-channels #default-vid-delete.hover .thumbnail {
+
+#default-channels #default-vid-delete.hover .thumbnail, #recommended-channels #recommended-vid-delete.hover .thumbnail {
   background-color: #d9534f;
   border-color: #d43f3a;
 }
 
-#default-channels.loading #add-default-channel {
+#default-channels.loading #add-default-channel, #recommended-channels.loading #add-recommended-channel {
   color: rgba(0,0,0,0);
   background-image: url(img/small-loader.gif);
   background-repeat: no-repeat;
   background-position: center center;
 }
 
-#default-channels-message {
+#default-channels-message, #recommended-channels-message {
   margin: 0;
   padding: 6px 15px;
 }

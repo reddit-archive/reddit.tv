@@ -318,17 +318,38 @@ $().ready(function(){
         }
     });
 
-    $('#add-channel input.channel-name').on('keyup', function() {
-        var addChan = $('#add-channel'),
-            val     = $(this).val();
+    $('#add-channel input.channel-name').on('keyup', addChannelName);
 
-        addChan.removeClass('subreddit site');
-        
-        if ( val.match(/\w\.\w/) ) {
-            addChan.addClass('site');
-        } else if (val != '') {
-            addChan.addClass('subreddit');
-        }
+    $.each(Globals.recommended_channels, function(i, channel) {
+        var anchor, thumb, name;
+
+        anchor = $('<a />')
+            .addClass('grid-25 channel')
+            .attr({
+                href : '#',
+                'data-feed' : channel.feed
+            })
+            .appendTo('#recommended-channels');
+
+        thumb = $('<div class="thumbnail" />')
+                    .css({
+                        'background-image' : 'url(' + channel.thumbnail + ')'
+                    })
+                    .appendTo(anchor);
+
+        name = $('<span class="name" />')
+                    .text(channel.channel)
+                    .appendTo(anchor);
+
+        anchor.on('click', function() {
+            $('#add-channel input.channel-name')
+                .val( $(this).attr('data-feed').replace(/^\/\w+\//, '') )
+                .focus();
+
+            addChannelName();
+
+            return false;
+        });
     });
 
     // end document.ready
@@ -1518,6 +1539,19 @@ function loadingAnimation(text, background) {
     if (!text) text = '';
     $('#loading .what').html(text);
     if (background) $('#loading .tv .image').css({ 'background-image' : 'url(' + background + ')' });
+}
+
+function addChannelName() {
+    var addChan = $('#add-channel'),
+        val     = addChan.find('input.channel-name').val();
+
+    addChan.removeClass('subreddit site');
+    
+    if ( val.match(/\w\.\w/) ) {
+        addChan.addClass('site');
+    } else if (val != '') {
+        addChan.addClass('subreddit');
+    }
 }
 
 /* analytics */

@@ -272,161 +272,166 @@ $('button.btn-show-videos').click(function() {
 	}
 });
 
-$( '#default-channels ul' ).sortable({
-	containment: '#default-channels',
-	placeholder: 'channel col-lg-3',
-	connectWith: '#default-vid-delete',
-	start: function() {
-		$('#default-channels').addClass('dragging');
-	},
-	stop: function() {
-		$('#default-channels').removeClass('dragging');
-	},
-	cancel: ':input, button, .name'
-});
+var channelTypes = [ 'default', 'recommended' ];
 
-$('#default-vid-delete').droppable({
-	accept: '#default-channels li',
-	hoverClass: 'hover',
-	drop: function( event, ui ) {
-		$(ui.draggable).fadeOut('fast', function() { $(this).remove(); });
-	}
-});
-
-$('#default-channel-input')
-	.on('keydown', function(e) {
-		if (e.keyCode == 13) {
-			$('#add-default-channel').click();
-			return false;
-		}
-	})
-	.on('keyup', function() {
-		var btn   = $('#add-default-channel'),
-		    input = $('#default-channel-input');
-		if ( input.val() == '' || !input.is(':valid') ) {
-			btn.attr('disabled', 'disabled');
-		} else {
-			if ( !$('#default-channels').hasClass('loading') ) btn.removeAttr('disabled');
-		}
-	});
-
-$('#add-default-channel').click(function() {
-	var btn   = $('#add-default-channel'),
-	    input = $('#default-channel-input'),
-		feed  = input.val().replace(/\/$/, '');
-
-	if ( $('#default-channels li[data-feed="' + feed + '"]').length ) {
-		defaultChanMsg('warning', 'Channel already exists.');
-		return;
-	}
-
-
-	$('#default-channels').addClass('loading');
-	btn.attr('disabled', 'disabled');
-	console.log('http://www.reddit.com' + feed + '.json?limit=1');
-
-	// Get the channel name
-	$.ajax({
-		url: 'http://www.reddit.com' + feed + '.json?limit=1',
-		dataType: 'jsonp',
-		jsonp: 'jsonp',
-		success: function(data) {
-			$('#default-channels').removeClass('loading');
-			input.val('');
-
-			channelLi = $('<li class="channel col-lg-3" data-feed="' + feed + '"><div class="thumbnail"></div><span class="name" contentEditable="true" spellcheck="false">' + feed + '</span></li>');
-			channelLi.prependTo('#default-channels ul');
-
-
-			var name = data.data.children[0].data.subreddit;
-			if (feed.match(/^\/domain\//i)) {
-				channelLi.find('.name').text(feed.replace(/^\/domain\//i, ''));
-			} else if (name) {
-				channelLi.find('.name').text(name);
-			}
-
-			var msgStatus = 'success',
-			    msgTxt    = 'Channel added!'
-
-			if (!data.data.children || data.data.children.length < 1) {
-				msgStatus = 'warning';
-				msgTxt = 'Channel added, but it contains no videos.';
-			}
-
-			defaultChanMsg(msgStatus, msgTxt);
-
-			$.ajax({
-				url: window.location.origin + window.location.pathname.replace(/admin\/?$/, '') + 'db/api.php',
-				data: {
-				    'action' : 'channel_thumbnail',
-				    'feed'   : feed
-				},
-				dataType: 'json',
-				success: function(data) {
-					var thumb = data[0].thumbnail_url;
-				    if (!thumb) return;
-
-				    channelLi.find('.thumbnail')
-				    	.css({
-				    		'background-image' : 'url(' + thumb + ')'
-				    	});
-				},
-				error: function(jXHR, textStatus, errorThrown) {
-					defaultChanMsg('warning', 'Error getting channel thumbnail');
-				    console.log('[ERROR] '+textStatus);
-				    console.log('[ERROR] '+errorThrown);
-				}
-			});
-
+$.each(channelTypes, function(i, channelType) {
+	$( '#' + channelType + '-channels ul' ).sortable({
+		containment: '#' + channelType + '-channels',
+		placeholder: 'channel col-lg-3',
+		connectWith: '#' + channelType + '-vid-delete',
+		start: function() {
+			$('#' + channelType + '-channels').addClass('dragging');
 		},
-		error: function() {
-			defaultChanMsg('danger', 'Error adding channel.');
-			$('#default-channels').removeClass('loading');
-			btn.removeAttr('disabled');
+		stop: function() {
+			$('#' + channelType + '-channels').removeClass('dragging');
+		},
+		cancel: ':input, button, .name'
+	});
+
+	$('#' + channelType + '-vid-delete').droppable({
+		accept: '#' + channelType + '-channels li',
+		hoverClass: 'hover',
+		drop: function( event, ui ) {
+			$(ui.draggable).fadeOut('fast', function() { $(this).remove(); });
 		}
 	});
 
-	return false;
-});
-
-$('#default-channels').on('submit', function() {
-	var feed = [];
-
-	$('#default-channels li.channel').each(function() {
-		var chan = $(this);
-		feed[feed.length] = {
-			'channel' : chan.find('.name').text(),
-			'feed'    : chan.attr('data-feed')
-		};
-	});
-
-	feed = JSON.stringify(feed);
-
-	$.ajax({
-		url: window.location.origin + window.location.pathname,
-		data: {
-			'ajax'                : true,
-		    'type'                : 'settings',
-		    'db_default_channels' : feed
-		},
-		dataType: 'json',
-		method: 'POST',
-		success: function(data) {
-			if (data.success) {
-				defaultChanMsg('success', 'Default channels saved!');
+	$('#' + channelType + '-channel-input')
+		.on('keydown', function(e) {
+			if (e.keyCode == 13) {
+				$('#add-' + channelType + '-channel').click();
+				return false;
+			}
+		})
+		.on('keyup', function() {
+			var btn   = $('#add-' + channelType + '-channel'),
+			    input = $('#' + channelType + '-channel-input');
+			if ( input.val() == '' || !input.is(':valid') ) {
+				btn.attr('disabled', 'disabled');
 			} else {
-				defaultChanMsg('danger', 'Error saving default channels.');
+				if ( !$('#' + channelType + '-channels').hasClass('loading') ) btn.removeAttr('disabled');
 			}
-		},
-		error: function(jXHR, textStatus, errorThrown) {
-			defaultChanMsg('danger', 'Error saving default channels.');
-		    console.log('[ERROR] '+textStatus);
-		    console.log('[ERROR] '+errorThrown);
+		});
+
+	$('#add-' + channelType + '-channel').click(function() {
+		var btn   = $('#add-' + channelType + '-channel'),
+		    input = $('#' + channelType + '-channel-input'),
+			feed  = input.val().replace(/\/$/, '');
+
+		if ( $('#' + channelType + '-channels li[data-feed="' + feed + '"]').length ) {
+			channelMsg(channelType, 'warning', 'Channel already exists.');
+			return;
 		}
+
+		$('#' + channelType + '-channels').addClass('loading');
+		btn.attr('disabled', 'disabled');
+		console.log('http://www.reddit.com' + feed + '.json?limit=1');
+
+		// Get the channel name
+		$.ajax({
+			url: 'http://www.reddit.com' + feed + '.json?limit=1',
+			dataType: 'jsonp',
+			jsonp: 'jsonp',
+			success: function(data) {
+				$('#' + channelType + '-channels').removeClass('loading');
+				input.val('');
+
+				channelLi = $('<li class="channel col-lg-3" data-feed="' + feed + '"><div class="thumbnail"></div><span class="name" contentEditable="true" spellcheck="false">' + feed + '</span></li>');
+				channelLi.prependTo('#' + channelType + '-channels ul');
+
+				var name = data.data.children[0].data.subreddit;
+				if (feed.match(/^\/domain\//i)) {
+					channelLi.find('.name').text(feed.replace(/^\/domain\//i, ''));
+				} else if (name) {
+					channelLi.find('.name').text(name);
+				}
+
+				var msgStatus = 'success',
+				    msgTxt    = 'Channel added!'
+
+				if (!data.data.children || data.data.children.length < 1) {
+					msgStatus = 'warning';
+					msgTxt = 'Channel added, but it contains no videos.';
+				}
+
+				channelMsg(channelType, msgStatus, msgTxt);
+
+				$.ajax({
+					url: window.location.origin + window.location.pathname.replace(/admin\/?$/, '') + 'db/api.php',
+					data: {
+					    'action' : 'channel_thumbnail',
+					    'feed'   : feed
+					},
+					dataType: 'json',
+					success: function(data) {
+						var thumb = data[0].thumbnail_url;
+					    if (!thumb) return;
+
+					    channelLi.find('.thumbnail')
+					    	.css({
+					    		'background-image' : 'url(' + thumb + ')'
+					    	});
+					},
+					error: function(jXHR, textStatus, errorThrown) {
+						channelMsg(channelType, 'warning', 'Error getting channel thumbnail');
+					    console.log('[ERROR] '+textStatus);
+					    console.log('[ERROR] '+errorThrown);
+					}
+				});
+
+			},
+			error: function() {
+				channelMsg(channelType, 'danger', 'Error adding channel.');
+				$('#' + channelType + '-channels').removeClass('loading');
+				btn.removeAttr('disabled');
+			}
+		});
+
+		return false;
 	});
 
-	return false;
-});
+	$('#' + channelType + '-channels').on('submit', function() {
+		var feed = [],
+		    postData;
+
+		$('#' + channelType + '-channels li.channel').each(function() {
+			var chan = $(this);
+			feed[feed.length] = {
+				'channel' : chan.find('.name').text(),
+				'feed'    : chan.attr('data-feed')
+			};
+		});
+
+		feed = JSON.stringify(feed);
+
+		postData = {
+			'ajax' : true,
+			'type' : 'settings',
+		};
+		postData['db_' + channelType + '_channels'] = feed;
+
+		$.ajax({
+			url: window.location.origin + window.location.pathname,
+			data: postData,
+			dataType: 'json',
+			method: 'POST',
+			success: function(data) {
+				if (data.success) {
+					channelMsg(channelType, 'success', 'Channels saved!');
+				} else {
+					channelMsg(channelType, 'danger', 'Error saving channels.');
+				}
+			},
+			error: function(jXHR, textStatus, errorThrown) {
+				channelMsg(channelType, 'danger', 'Error saving channels.');
+			    console.log('[ERROR] '+textStatus);
+			    console.log('[ERROR] '+errorThrown);
+			}
+		});
+
+		return false;
+	});
+}); // $.each(channelTypes)
 
 //end document.ready
 });
@@ -590,7 +595,7 @@ function youtubeThumb(id, ele) {
 	};
 })(jQuery);
 
-function defaultChanMsg(status, msg) {
-	$('#default-channels-message').removeClass().addClass('alert alert-' + status)
+function channelMsg(channelType, status, msg) {
+	$('#' + channelType + '-channels-message').removeClass().addClass('alert alert-' + status)
 		.text(msg);
 }

@@ -586,6 +586,54 @@
           </div>
 
         </form>
+
+        <h3>Recommended Channels</h3>
+        <form id="recommended-channels" action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
+          <input type="hidden" name="type" value="recommended-channels" />
+          <div class="form-group row control-group">
+            <div class="col-lg-6">
+              <div class="input-group">
+                <input id="recommended-channel-input" type="text" class="form-control" placeholder="&quot;/r/subreddit&quot; or &quot;/domain/site.com&quot;" pattern="^/(r|domain)/[\w.]+$" />
+                <div class="input-group-btn">
+                  <div id="add-recommended-channel" class="btn btn-default" disabled="disabled">Add Channel</div>
+                </div><!-- /btn-group -->
+              </div><!-- /input-group -->
+            </div>
+
+            <div class="col-lg-2">
+              <button type="submit" class="btn btn-primary btn-block">Save</button>
+            </div>
+
+            <div class="col-lg-4">
+              <div id="recommended-channels-message"></div>
+            </div>
+          </div>
+
+          <div class="channels clearfix">
+            <ul class="list-unstyled">
+              <?php
+                $recommended_channels = json_decode($settings->recommended_channels);
+                foreach ($recommended_channels as $channel) :
+                  $thumb_url = '';
+                  $thumb = R::findOne('channel',
+                    ' feed = ? LIMIT 1 ', array( $channel->feed )
+                  );
+                  if ($thumb) $thumb_url = $thumb->thumbnail_url;
+              ?>
+                  <li class="channel col-lg-3" data-feed="<?php echo $channel->feed; ?>">
+                    <div class="thumbnail"<?php if ($thumb_url != '') : ?> style="background-image: url(<?php echo $thumb_url; ?>);"<?php endif; ?>></div>
+                    <span class="name" spellcheck="false" contenteditable="true"><?php echo $channel->channel; ?></span>
+                  </li>
+              <?php endforeach; ?>
+            </ul>
+
+            <div id="recommended-vid-delete" class="delete channel col-lg-3">
+                <div class="thumbnail"></div>
+                <span class="name">Drag here to delete</span>
+            </div>
+          </div>
+
+        </form>
       </div> <!-- Settings -->
 
     </div>

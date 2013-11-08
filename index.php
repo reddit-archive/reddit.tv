@@ -39,7 +39,8 @@
 
 <script type="text/javascript">
   videoListMouse = false;
-  Globals.channels = <?php echo defaultChannels(); ?>;
+  Globals.channels = <?php echo $settings->default_channels_json; ?>;
+  Globals.recommended_channels = <?php echo $settings->recommended_channels_json; ?>;
 </script>
 <script src="js/main.js" type="text/javascript"></script>
 
@@ -143,10 +144,10 @@
           </form>
         </div>
 
-        <div id="channel-recs" class="channels">
+        <div id="recommended-channels" class="channels">
           <h2>Recommended channels</h2>
 
-          <a class="grid-25 channel" href="#">
+          <!-- <a class="grid-25 channel" href="#">
             <div class="thumbnail"></div>
             <span class="name">Lorem</span>
           </a>
@@ -177,7 +178,7 @@
           <a class="grid-25 channel" href="#">
             <div class="thumbnail"></div>
             <span class="name">Sit</span>
-          </a>
+          </a> -->
         </div>
 
       </div>

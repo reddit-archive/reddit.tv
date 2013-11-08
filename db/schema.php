@@ -80,6 +80,7 @@ $channel_id = R::store($channel);
 	Settings for reddit.tv */
 $settings = R::dispense('settings');
 	$settings->default_channels = '[]';				// string JSON array of default channels 
+	$settings->recommended_channels = '[]';				// string JSON array of recommended channels, max 8
 
 R::store($settings);
 
