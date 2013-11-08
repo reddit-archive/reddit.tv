@@ -579,6 +579,7 @@ function openVideoList() {
 function closeVideoList() {
     videoList.open = false;
     videoList.addClass('bounceOutUp').removeClass('slideInDown');
+    $('#vid-list-tooltip').hide();
 }
 
 function loadVideoList(chan) {
@@ -602,6 +603,7 @@ function loadVideoList(chan) {
         $thumbnail
              .click( function () {
                 loadVideo( Number( $(this).attr('rel') ));
+                closeVideoList();
             });
         $thumbnail.css('background-image', 'url('+getThumbnailUrl(this_chan, i)+')');
 
