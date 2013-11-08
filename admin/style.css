@@ -96,22 +96,22 @@ form.edit, .item.edit {
     transition: none;
 }
 
-.upload.thumbnail .file-input-wrapper {
+.upload.vid-thumbnail .file-input-wrapper {
     position: absolute;
     bottom: 10px;
     left: 25%;
     width: 50%;
 }
 
-.upload.thumbnail.prepped .file-input-wrapper {
+.upload.vid-thumbnail.prepped .file-input-wrapper {
     opacity: 0;
 }
 
-.upload.thumbnail.prepped:hover .file-input-wrapper, .upload.thumbnail.drop .file-input-wrapper {
+.upload.vid-thumbnail.prepped:hover .file-input-wrapper, .upload.vid-thumbnail.drop .file-input-wrapper {
     opacity: 1;
 }
 
-.upload.thumbnail .file-input-name {
+.upload.vid-thumbnail .file-input-name {
     position: absolute;
     top: 0;
     left: -8px;
@@ -121,23 +121,23 @@ form.edit, .item.edit {
     overflow: hidden;
 }
 
-.upload.thumbnail:not(.prepped), .upload.thumbnail.drop {
+.upload.vid-thumbnail:not(.prepped), .upload.vid-thumbnail.drop {
     border: 2px dashed #ccc;
 }
 
-.upload.thumbnail.prepped .text, .upload.thumbnail.error .file-input-name, .upload.thumbnail.drop .file-input-name {
+.upload.vid-thumbnail.prepped .text, .upload.vid-thumbnail.error .file-input-name, .upload.vid-thumbnail.drop .file-input-name {
     display: none;
 }
 
-.upload.thumbnail.drop .text {
+.upload.vid-thumbnail.drop .text {
     display: block;
 }
 
-.upload.thumbnail.error .text {
+.upload.vid-thumbnail.error .text {
     color: #f00;
 }
 
-.upload.thumbnail.drop {
+.upload.vid-thumbnail.drop {
     background-image: url(img/drop-bg.png) !important;
     background-size: auto;
 }
