@@ -76,12 +76,20 @@ $channel = R::dispense('channel');
 
 $channel_id = R::store($channel);
 
+/* 	Settings 
+	Settings for reddit.tv */
+$settings = R::dispense('settings');
+	$settings->default_channels = '[]';				// string JSON array of default channels 
+
+R::store($settings);
+
 
 // Wipe all tables from null data
 $tables = Array(
 	'sponsoredvideo',
 	'sponsoredskin',
 	'sponsoredchannel',
+	'settings',
 	// 'channel',
 );
 

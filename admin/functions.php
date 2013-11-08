@@ -13,6 +13,7 @@ function ajaxFunc() {
 			'videos' => 'sponsoredvideo',
 			'skins' => 'sponsoredskin',
 			'channels' => 'sponsoredchannel',
+			'settings' => 'settings',
 		);
 
 	$db_name = $db_names[$_REQUEST['type']];
@@ -21,12 +22,17 @@ function ajaxFunc() {
 		'videos',
 		'skins',
 		'channels',
+		'settings'
 	);
 
-	if (!in_array($_REQUEST['type'], $funcs)) return;
+	if (!in_array($_REQUEST['type'], $funcs)) jsonError('Invalid action.');
 
 	if ($_REQUEST['action'] == 'get') {
 		jsonQuery();
+	} else if ($_REQUEST['type'] == 'settings') {
+		updateSettings();
+		// jsonQuery();
+		die();
 	} else {
 		addEdit();
 	}
@@ -171,6 +177,23 @@ function sanitize_file_name( $filename ) {
 	$filename = preg_replace('/[\s-]+/', '-', $filename);
 	$filename = trim($filename, '.-_');
 	return $filename;
+}
+
+function updateSettings() {
+	global $db_name;
+
+	$item = R::load($db_name, 1);
+	foreach ($_POST as $key => $val) {
+		if (substr($key, 0, 3) != 'db_') continue;
+
+		$item->{substr($key, 3)} = $val;
+	}
+
+	$id = R::store($item);
+
+	$res = new stdClass();
+	$res->success = $id ? true : false;
+	jsonForAjax($res);
 }
 
 ?>

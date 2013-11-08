@@ -281,7 +281,8 @@ $( '#default-channels ul' ).sortable({
 	},
 	stop: function() {
 		$('#default-channels').removeClass('dragging');
-	}
+	},
+	cancel: ':input, button, .name'
 });
 
 $('#default-vid-delete').droppable({
@@ -314,7 +315,11 @@ $('#add-default-channel').click(function() {
 	    input = $('#default-channel-input'),
 		feed  = input.val().replace(/\/$/, '');
 
-	if ( $('#default-channels li[data-feed="' + feed + '"]').length ) return; // Channel already exists
+	if ( $('#default-channels li[data-feed="' + feed + '"]').length ) {
+		defaultChanMsg('warning', 'Channel already exists.');
+		return;
+	}
+
 
 	$('#default-channels').addClass('loading');
 	btn.attr('disabled', 'disabled');
@@ -329,11 +334,26 @@ $('#add-default-channel').click(function() {
 			$('#default-channels').removeClass('loading');
 			input.val('');
 
-			channelLi = $('<li class="channel col-lg-3" data-feed="' + feed + '"><div class="thumbnail"></div><span class="name">' + feed + '</span></li>');
+			channelLi = $('<li class="channel col-lg-3" data-feed="' + feed + '"><div class="thumbnail"></div><span class="name" contentEditable="true" spellcheck="false">' + feed + '</span></li>');
 			channelLi.prependTo('#default-channels ul');
 
+
 			var name = data.data.children[0].data.subreddit;
-			if (name) channelLi.find('.name').text(name);
+			if (feed.match(/^\/domain\//i)) {
+				channelLi.find('.name').text(feed.replace(/^\/domain\//i, ''));
+			} else if (name) {
+				channelLi.find('.name').text(name);
+			}
+
+			var msgStatus = 'success',
+			    msgTxt    = 'Channel added!'
+
+			if (!data.data.children || data.data.children.length < 1) {
+				msgStatus = 'warning';
+				msgTxt = 'Channel added, but it contains no videos.';
+			}
+
+			defaultChanMsg(msgStatus, msgTxt);
 
 			$.ajax({
 				url: window.location.origin + window.location.pathname.replace(/admin\/?$/, '') + 'db/api.php',
@@ -352,6 +372,7 @@ $('#add-default-channel').click(function() {
 				    	});
 				},
 				error: function(jXHR, textStatus, errorThrown) {
+					defaultChanMsg('warning', 'Error getting channel thumbnail');
 				    console.log('[ERROR] '+textStatus);
 				    console.log('[ERROR] '+errorThrown);
 				}
@@ -359,15 +380,50 @@ $('#add-default-channel').click(function() {
 
 		},
 		error: function() {
-			alert('error!');
+			defaultChanMsg('danger', 'Error adding channel.');
 			$('#default-channels').removeClass('loading');
 			btn.removeAttr('disabled');
 		}
 	});
-	// if ()
 
 	return false;
-})
+});
+
+$('#default-channels').on('submit', function() {
+	var feed = [];
+
+	$('#default-channels li.channel').each(function() {
+		var chan = $(this);
+		feed[feed.length] = {
+			'name' : chan.find('.name').text(),
+			'feed' : chan.attr('data-feed')
+		};
+	});
+
+	feed = JSON.stringify(feed);
+
+	$.ajax({
+		url: window.location.origin + window.location.pathname,
+		data: {
+			'ajax'                : true,
+		    'type'                : 'settings',
+		    'db_default_channels' : feed
+		},
+		dataType: 'json',
+		method: 'POST',
+		success: function(data) {
+			console.log(data);
+			defaultChanMsg('success', 'Default channels saved!');
+		},
+		error: function(jXHR, textStatus, errorThrown) {
+			defaultChanMsg('danger', 'Error saving default channels.');
+		    console.log('[ERROR] '+textStatus);
+		    console.log('[ERROR] '+errorThrown);
+		}
+	});
+
+	return false;
+});
 
 //end document.ready
 });
@@ -530,3 +586,8 @@ function youtubeThumb(id, ele) {
 		});
 	};
 })(jQuery);
+
+function defaultChanMsg(status, msg) {
+	$('#default-channels-message').removeClass().addClass('alert alert-' + status)
+		.text(msg);
+}

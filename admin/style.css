@@ -226,17 +226,24 @@ div.show-videos ol.videos {
 #default-channels ul {
   margin: 0;
 }
-#default-channels .ui-sortable-helper {
-  /*padding: 0;*/
-  /*width: calc(25% - 30px);*/
-  /*background: #f5f5f5;
-  -webkit-box-shadow: 0px 0px 10px 0px #f5f5f5;
-          box-shadow: 0px 0px 10px 0px #f5f5f5;*/
+
+#default-channels .ui-sortable-helper .thumbnail {
+  /*border-color: #eee;*/
 }
 
 #default-channels .thumbnail {
   position: relative;
   padding: 0 !important;
+}
+
+#default-channels .name {
+  background: #f5f5f5;
+  border: 1px solid transparent;
+  cursor: text;
+}
+
+#default-channels .channel:hover .name {
+  border: 1px dashed #ccc;
 }
 
 #default-channels li.channel {
@@ -275,6 +282,11 @@ div.show-videos ol.videos {
   background-image: url(img/small-loader.gif);
   background-repeat: no-repeat;
   background-position: center center;
+}
+
+#default-channels-message {
+  margin: 0;
+  padding: 6px 15px;
 }
 
 /*!

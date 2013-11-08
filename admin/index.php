@@ -554,10 +554,30 @@
             <div class="col-lg-2">
               <button type="submit" class="btn btn-primary btn-block">Save</button>
             </div>
+
+            <div class="col-lg-4">
+              <div id="default-channels-message"></div>
+            </div>
           </div>
 
           <div class="channels clearfix">
-            <ul class="list-unstyled"></ul>
+            <ul class="list-unstyled">
+              <?php
+                $settings = R::load('settings', 1);
+                $default_channels = json_decode($settings->default_channels);
+                foreach ($default_channels as $channel) :
+                  $thumb_url = '';
+                  $thumb = R::findOne('channel',
+                    ' feed = ? LIMIT 1 ', array( $channel->feed )
+                  );
+                  if ($thumb) $thumb_url = $thumb->thumbnail_url;
+              ?>
+                  <li class="channel col-lg-3" data-feed="<?php echo $channel->feed; ?>">
+                    <div class="thumbnail"<?php if ($thumb_url != '') : ?> style="background-image: url(<?php echo $thumb_url; ?>);"<?php endif; ?>></div>
+                    <span class="name" spellcheck="false" contenteditable="true"><?php echo $channel->name; ?></span>
+                  </li>
+              <?php endforeach; ?>
+            </ul>
 
             <div id="default-vid-delete" class="delete channel col-lg-3">
                 <div class="thumbnail"></div>
