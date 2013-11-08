@@ -1,4 +1,8 @@
-<!DOCTYPE HTML>
+<?php
+  include_once('db/config.php');
+  include_once('lib/functions.php');
+  init();
+?><!DOCTYPE HTML>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
@@ -35,63 +39,9 @@
 
 <script type="text/javascript">
   videoListMouse = false;
-  function videoListCloseTimeout(){
-    // console.log('[videoListMouse] '+videoListMouse);
-    if(videoListMouse == false) {
-      closeVideoList();
-    }
-  }
-  function videoListOpenTimeout(){
-    // console.log('[videoListMouse] '+videoListMouse);
-    if(videoListMouse == true) {
-      openVideoList();
-    }
-  }
-  $(document).ready(function(){
-    $('header').mouseenter(function(){
-      // consoleLog('enter header');
-      videoListMouse = true;
-      setTimeout('videoListOpenTimeout();', 500);
-    });
-    $('#video-list').mouseenter(function(){
-      // consoleLog('enter video list');
-      videoListMouse = true;
-      openVideoList();
-    });
-    $('#settings').mouseenter(function(){
-      // console.log('enter settings')
-      videoListMouse = false;
-    });
-    $('header').mouseleave(function(){
-      // console.log('exit header')
-      videoListMouse = false;
-      setTimeout('videoListCloseTimeout()', 1000);
-    });
-    $('#video-list').mouseleave(function(){
-      // console.log('exit video list')
-      videoListMouse = false;
-      setTimeout('videoListCloseTimeout()', 1000);
-    });
-  });
 </script>
+<script src="js/main.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-  if(window.location.host.match('reddit.tv')){
-    consoleLog('Loading analytics ..');
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-12131688-3']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      consoleLog('Injecting GA ..');
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  }else{
-    consoleLog('Analytics not loaded.');
-  }
-</script>
 </head>
 <body>
   <header>
@@ -240,5 +190,7 @@
   </div>
 
 <div id="vid-list-tooltip"></div>
+
+<script src="js/analytics.js" type="text/javascript"></script>
 </body>
 </html>
