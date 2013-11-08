@@ -144,7 +144,7 @@
           </form>
         </div>
 
-        <div id="recommended-channels" class="channels">
+        <div class="recommended channels">
           <h2>Recommended channels</h2>
         </div>
 

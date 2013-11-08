@@ -609,14 +609,14 @@ body.video-loading #loading {
 }
 
 
-#recommended-channels {
+#add-channel .recommended.channels {
     position: absolute;
     bottom: 0;
     width: calc(100% - 20px);
     height: 350px;
 }
 
-#recommended-channels h2 {
+#add-channel .recommended.channels h2 {
     padding-left: 10px;
 }
 
@@ -631,7 +631,7 @@ body.video-loading #loading {
     margin-bottom: 10px;
 }
 
-#recommended-channels .channel {
+#add-channel .recommended.channels .channel {
     color: #ccc !important;
 }
 

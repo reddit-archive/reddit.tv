@@ -331,7 +331,7 @@ $().ready(function(){
                 href : '#',
                 'data-feed' : channel.feed
             })
-            .appendTo('#recommended-channels');
+            .appendTo('#add-channel .recommended.channels');
 
         thumb = $('<div class="thumbnail" />')
                     .css({
