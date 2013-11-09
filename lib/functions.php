@@ -31,4 +31,21 @@ function getChannels() {
 	}
 }
 
+function jsonError($error) {
+	die(json_encode(Array('error' => $error)));
+}
+
+function jsonForAjax($arr) {
+	// Only return JSON for AJAX requests
+	echo json_encode($arr);
+	die();
+}
+
+function default_value(&$var, $default) {
+    if (empty($var)) {
+        $var = $default;
+        return $var;
+    }
+}
+
 ?>
