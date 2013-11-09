@@ -1,5 +1,6 @@
 <?php
 
+include_once('../lib/functions.php');
 include_once('config.php');
 
 if($_GET['action'] == 'channel_thumbnail'){
@@ -22,6 +23,8 @@ if($_GET['action'] == 'channel_thumbnail'){
 	die();
 } else if ($_GET['action'] == 'youtube_thumbnail') {
 	getYoutubeThumbnail($_GET['id'], isset($_GET['base64']));
+} else if ($_GET['action'] == 'ads') {
+	getAds();
 }
 
 function getChannelThumbnail($feed){
@@ -91,6 +94,30 @@ function isVideo($video_domain) {
         'youtube.com', 'youtu.be', 'zapiks.com'
         );
     return in_array($video_domain, $domains);
+}
+
+function getAds() {
+	$settings = R::load('settings', 1);
+	$sponsoredvideos = R::getAll('
+		SELECT id, title, video_url, video_embed_code, image_url
+		FROM sponsoredvideo
+		WHERE status = 1
+		AND DATETIME(start_date) <= DATETIME("now")
+		AND DATETIME(end_date) >= DATETIME("now")
+		ORDER BY id
+	  '
+	);
+
+	$result = Array(
+		'settings' =>
+			Array(
+				'start' => (int)$settings->ads_start_at,
+				'every' => (int)$settings->ads_show_every
+				),
+		'videos' => $sponsoredvideos
+		);
+
+	jsonForAjax($result);
 }
 
 
