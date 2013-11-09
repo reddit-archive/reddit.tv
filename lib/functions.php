@@ -44,8 +44,9 @@ function jsonForAjax($arr) {
 function default_value(&$var, $default) {
     if (empty($var)) {
         $var = $default;
-        return $var;
     }
+
+	return $var;
 }
 
 ?>
