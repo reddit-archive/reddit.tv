@@ -46,7 +46,7 @@
 
         <div class="col-lg-6 adminTabs">
           <ul class="nav nav-tabs" id="adminTabs">
-            <li class="active"><a href="#videos" data-toggle="tab">Videos</a></li>
+            <li><a href="#videos" data-toggle="tab">Videos</a></li>
             <li><a href="#skins" data-toggle="tab">Skins</a></li>
             <li><a href="#channels" data-toggle="tab">Channels</a></li>
             <li><a href="#admin-settings" data-toggle="tab">Settings</a></li>
@@ -64,7 +64,7 @@
         <h1>Sponsored Videos</h1>
 
         <form action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
-          <input type="hidden" name="type" value="video" />
+          <input type="hidden" name="type" value="videos" />
           <div class="form-group row">
             <div class="col-lg-5">
               <div class="row">
@@ -538,6 +538,49 @@
       <div class="tab-pane active" id="admin-settings">
         <h1>Settings</h1>
         <hr />
+        <form id="general-settings" action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
+          <input type="hidden" name="type" value="settings" />
+          <div class="form-group row">
+            <div class="col-lg-4">
+              <div class="input-group">
+                <label class="input-group-addon">Ads: begin as</label>
+                <div class="btn-group">
+                  <select name="db_ads_start_at" class="selectpicker">
+                  <?php for ($i=1; $i <= 10; $i++) : ?>
+                    <option value="<?php echo $i; ?>">Video #<?php echo $i; ?></option>
+                  <?php endfor; ?>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="input-group">
+                <label class="input-group-addon">Ads: display every</label>
+                <div class="btn-group">
+                  <select name="db_ads_show_every" class="selectpicker">
+                  <?php for ($i=1; $i <= 10; $i++) : ?>
+                    <option value="<?php echo $i; ?>"><?php echo $i; ?> videos</option>
+                  <?php endfor; ?>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-lg-10">
+            </div>
+            <div class="col-lg-2">
+              <button type="submit" class="btn btn-primary btn-block">Save</button>
+            </div>
+
+            <div class="col-lg-4">
+              <div id="general-settings-message"></div>
+            </div>
+          </div>
+        </form>
+
         <h3>Default Channels</h3>
         <form id="default-channels" action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
           <input type="hidden" name="type" value="default-channels" />
