@@ -80,7 +80,9 @@ $channel_id = R::store($channel);
 	Settings for reddit.tv */
 $settings = R::dispense('settings');
 	$settings->default_channels = '[]';				// string JSON array of default channels 
-	$settings->recommended_channels = '[]';				// string JSON array of recommended channels, max 8
+	$settings->recommended_channels = '[]';			// string JSON array of recommended channels, max 8
+	$settings->ads_start_at = 3;					// integer index at which first ad is placed
+	$settings->ads_show_every = 5;					// integer show next ads every n videos
 
 R::store($settings);
 

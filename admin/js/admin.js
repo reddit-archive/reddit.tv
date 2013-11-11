@@ -103,7 +103,7 @@ $('input[name="db_video_url"]').on('keyup change', function() {
 	youtube = url.match(/^http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?(?:.*?&(?:amp;)?)?v=|\.be\/)([\w‌​\-]+)(?:&(?:amp;)?[\w\?=]*)?/i);
 	if (!youtube) return;
 
-	youtubeThumb(youtube[1], $(this).parents('form').find('.thumbnail'));
+	youtubeThumb(youtube[1], $(this).parents('form').find('.vid-thumbnail'));
 
 	if (ta.val() != '') return;
 	ta.val(generateEmbed(youtube[1]));
@@ -179,7 +179,7 @@ $('.btn-edit').on('click', function() {
 			});
 
 			if (data.image_url != '') {
-				form.find('.upload.thumbnail')
+				form.find('.upload.vid-thumbnail')
 					.removeClass('error')
 					.addClass('prepped')
 					.css('background-image', 'url(../' + data.image_url + ')');

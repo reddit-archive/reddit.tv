@@ -39,8 +39,8 @@
 
 <script type="text/javascript">
   videoListMouse = false;
-  Globals.channels = <?php echo $settings->default_channels_json; ?>;
-  Globals.recommended_channels = <?php echo $settings->recommended_channels_json; ?>;
+  Globals.channels = <?php echo default_value($settings->default_channels_json, '[]'); ?>;
+  Globals.recommended_channels = <?php echo default_value($settings->recommended_channels_json, '[]'); ?>;
 </script>
 <script src="js/main.js" type="text/javascript"></script>
 

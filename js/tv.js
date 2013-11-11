@@ -72,33 +72,20 @@ var Globals = {
     vd_minwidth: 30,        // minimum width of #video-display w/o width of player
     vd_minheight: 213,      // minimum height of #video-display w/o height of player
 
-    chan_thumbs: [ // temporary until database'd
-        'http://i2.ytimg.com/vi/suly1mahTSc/hqdefault.jpg', // all
-        'http://i2.ytimg.com/vi/Rd_BRT6_TPk/hqdefault.jpg', // videos
-        'http://i2.ytimg.com/vi/NX0VpF1K2aY/hqdefault.jpg', // funny
-        'http://b.vimeocdn.com/ts/411/614/411614719_640.jpg', // tech
-        'http://cdn.escapistmagazine.com/media/global/images/library/deriv/29/29326.jpg', // gaming
-        'http://i2.ytimg.com/vi/wQN6arM6fj0/hqdefault.jpg', // aww
-        'http://i2.ytimg.com/vi/7lIZQqYlz_o/hqdefault.jpg', // wtf
-        'http://i2.ytimg.com/vi/CMPIxEWGs5g/hqdefault.jpg', // music
-        'http://i2.ytimg.com/vi/QhFsKCF56xU/hqdefault.jpg', // listen
-        'http://i2.ytimg.com/vi/PwKpD3iDICo/hqdefault.jpg', // til
-        'http://image.pbs.org/video-assets/pbs/america-reframed/98701/images/Mezzanine_200.jpg', // pbs
-        'http://images.ted.com/images/ted/6c958d2d15b9c44400e2b7d6b0bbc9e32805d554_389x292.jpg', // ted
-        'http://i2.ytimg.com/vi/suly1mahTSc/hqdefault.jpg', // politics
-        'http://i2.ytimg.com/vi/znMBG5DQn14/hqdefault.jpg', // atheism
-        'http://i2.ytimg.com/vi/9Ix4AdrhtYg/hqdefault.jpg', // sports
-    ]
+    ads: {}
 };
 
 /* MAIN (Document Ready) */
-$().ready(function(){
+$(document).ready(function(){
     loadSettings();
     if (Globals.forceTheme) {
         loadTheme(Globals.forceTheme, false);
     } else {
         loadTheme(Globals.theme);
     }
+
+    apiCall('ads', null, function(data) { Globals.ads = data; });
+
     displayChannels();
 
     if ('promo' in Globals && !window.location.hash) {
@@ -413,8 +400,6 @@ function displayChannels() {
 
 function displayChannel(chan){
     chan_feed = Globals.channels[chan].feed;
-    url = window.location.origin+window.location.pathname+"db/api.php";
-    console.log(url)
 
     var title, display_title, class_str='', remove_str='',
         $channel_base = $('#add-channel-button'),
@@ -461,14 +446,10 @@ function displayChannel(chan){
                 'background-image': 'url(' + Globals.channels[chan].thumbnail + ')'
             });
     } else {
-        $.ajax({
-            url: url,
-            data: {
-                'action' : 'channel_thumbnail',
-                'feed'   : chan_feed
-            },
-            dataType: "json",
-            success: function(data) {
+        apiCall(
+            'channel_thumbnail',
+            { 'feed' : chan_feed },
+            function(data) {
                 var channel = data[0],
                     thumb   = channel.thumbnail_url;
                 if (!thumb || thumb == '') return;
@@ -479,11 +460,11 @@ function displayChannel(chan){
                     });
 
             },
-            error: function(jXHR, textStatus, errorThrown) {
+            function(jXHR, textStatus, errorThrown) {
                 console.log('[ERROR] '+textStatus);
                 console.log('[ERROR] '+errorThrown);
             }
-        });
+        );
     }
 
     // $('#channel>ul').prepend('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'><img src="http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg" />'+display_title+remove_str+'</li>');
@@ -622,34 +603,43 @@ function loadVideoList(chan) {
     var this_chan = chan, $list = $('<span></span>');
     for(var i in Globals.videos[this_chan].video) {
         var this_video = Globals.videos[this_chan].video[i];
-
-        if (! this_video.title_unesc) {
-            this_video.title_unesc = $.unescapifyHTML(this_video.title);
-            this_video.title_quot  = String(this_video.title_unesc).replace(/\"/g,'&quot;');
-        }
-
-        var $thumbnail = $('<div id="video-list-thumb-' + i + '" class="thumbnail"' + ' rel="' + i + '"' +
-                           ' title="' + this_video.title_quot + '"></div>');
-
-	// make nsfw thumbnails easily findable
-        if (this_video.over_18) {
-            $thumbnail.addClass('nsfw_thumb');
-        }
-
-        $thumbnail
-             .click( function () {
-                loadVideo( Number( $(this).attr('rel') ));
-                closeVideoList();
-            });
-        $thumbnail.css('background-image', 'url('+getThumbnailUrl(this_chan, i)+')');
-
-
+        // console.log(Globals.videos[this_chan].video[i]);
+        $thumbnail = thumbElement(this_video, this_chan, i);
         $list.append($thumbnail);
     }
 
     $('#video-list')
+        .html($list);
+
+    // Populate with ads
+    if (Globals.ads && Globals.ads.videos.length > 0) {
+        var usedAds = [],
+            adNum   = 0;
+
+        $('#video-list .thumbnail').each(function(i) {
+            // console.log(i);
+            // if (i == Globals.ads.settings.start - 1) adNum = Globals.ads.settings.every;
+            if (i == Globals.ads.settings.start - 1) adNum = Globals.ads.settings.every;
+
+            var num = (adNum == 0) ? i : adNum,
+                set = (adNum == 0) ? Globals.ads.settings.start : Globals.ads.settings.every;
+
+            // console.log('numset', num, set);
+
+            // if ( i == parseInt(set) - 1 ) {
+            if ( adNum == Globals.ads.settings.every ) {
+                // Temporary red div as ad placeholder
+                $('<div class="thumbnail" style="background:red"></div>').insertBefore($(this));
+
+                adNum = 1;
+            }
+
+            if (i >= Globals.ads.settings.start) adNum++;
+        });
+    }
+
+    $('#video-list')
         .stop(true, true)
-        .html($list)
         .show()
         .animate({ height: '100px', padding: '5px' }, 1000, function() {
             $('img').lazyload({
@@ -1117,6 +1107,9 @@ function formatFeedURI(channel_obj){
     else {
 
         uri = channel_obj.feed + sortType + '.json?limit=100' + sortOption;
+        // Can we do this with searching? sortType seems in the way.
+        // uri = channel_obj.feed + sortType."/search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A1382227035..%29&restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
+
     }
 
     console.log(uri);
@@ -1554,6 +1547,52 @@ function addChannelName() {
     } else if (val != '') {
         addChan.addClass('subreddit');
     }
+}
+
+function thumbElement(this_video, this_chan, id) {
+    var i = id;
+    if (! this_video.title_unesc) {
+        this_video.title_unesc = $.unescapifyHTML(this_video.title);
+        this_video.title_quot  = String(this_video.title_unesc).replace(/\"/g,'&quot;');
+    }
+
+    var $thumbnail = $('<div id="video-list-thumb-' + i + '" class="thumbnail"' + ' rel="' + i + '"' +
+                       ' title="' + this_video.title_quot + '"></div>');
+
+    // make nsfw thumbnails easily findable
+    if (this_video.over_18) {
+        $thumbnail.addClass('nsfw_thumb');
+    }
+
+    $thumbnail
+         .click( function () {
+            loadVideo( Number( $(this).attr('rel') ));
+            closeVideoList();
+        });
+    $thumbnail.css('background-image', 'url('+getThumbnailUrl(this_chan, i)+')');
+
+    return $thumbnail;
+}
+
+function apiCall(action, data, successCallback, errorCallback) {
+    var apiData = $.extend({ 'action' : action }, (typeof data != 'object') ? {} : data );
+
+    if ( !$.isFunction(successCallback) ) successCallback = function(){};
+    if ( !$.isFunction(errorCallback) )   errorCallback   = function(){};
+
+    $.ajax({
+        url: window.location.origin + window.location.pathname + 'db/api.php',
+        data: apiData,
+        dataType: 'json',
+        success: successCallback,
+        error: function(jXHR, textStatus, errorThrown) {
+            console.log('[ERROR] '+textStatus);
+            console.log('[ERROR] '+errorThrown);
+            errorCallback(jXHR, textStatus, errorThrown);
+        }
+    });
+
+
 }
 
 /* analytics */
