@@ -589,11 +589,13 @@ function toggleVideoList(){
 }
 
 function openVideoList() {
+    console.log('video list open');
     videoList.open = true;
     videoList.addClass('slideInDown').removeClass('bounceOutUp');
 }
 
 function closeVideoList() {
+    console.log('video list close');
     videoList.open = false;
     videoList.addClass('bounceOutUp').removeClass('slideInDown');
     $('#vid-list-tooltip').hide();

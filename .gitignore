@@ -6,3 +6,4 @@ lib
 !admin/lib/
 .DS_Store
 database.s3db
+.elasticbeanstalk/
