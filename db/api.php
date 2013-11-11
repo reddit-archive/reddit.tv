@@ -10,7 +10,8 @@ if($_GET['action'] == 'channel_thumbnail'){
 	$channel = R::findOne('channel', ' feed = ?', array($feed));
 
 	if(empty($channel) || empty($channel->thumbnail_url) || !empty($_GET['debug'])){
-		$channel = R::dispense('channel');
+		if(empty($channel))
+			$channel = R::dispense('channel');
 		$channel->feed = $feed;
 		$channel->thumbnail_url = getChannelThumbnail($feed);
 
