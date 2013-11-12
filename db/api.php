@@ -9,8 +9,9 @@ if($_GET['action'] == 'channel_thumbnail'){
 	//Reload the bean
 	$channel = R::findOne('channel', ' feed = ?', array($feed));
 
-	if(empty($channel) || !empty($_GET['debug'])){
-		$channel = R::dispense('channel');
+	if(empty($channel) || empty($channel->thumbnail_url) || !empty($_GET['debug'])){
+		if(empty($channel))
+			$channel = R::dispense('channel');
 		$channel->feed = $feed;
 		$channel->thumbnail_url = getChannelThumbnail($feed);
 
@@ -30,7 +31,12 @@ if($_GET['action'] == 'channel_thumbnail'){
 function getChannelThumbnail($feed){
 	$thumbnail_url = null;
 
-	$uri = "http://www.reddit.com".$feed."/search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A1382227035..%29&restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
+	if(preg_match("/\/domain\//u", $feed) > 0){
+		$uri = "http://www.reddit.com".$feed."/search/.json?timestamp%3A1382227035..%29&restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
+	}
+	else {
+		$uri = "http://www.reddit.com".$feed."/search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A1382227035..%29&restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
+	}
 	$file = file($uri);
 	$channel_info = json_decode($file[0]);
 
