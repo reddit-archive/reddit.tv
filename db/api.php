@@ -13,7 +13,7 @@ if($_GET['action'] == 'channel_thumbnail'){
 			$channel->feed = $feed;
 			$channel->thumbnail_url = $thumbnail_url;
 			$channel->data_source = 'memcache';
-			echo json_encode($channel);
+			echo json_encode(array($channel));
 			die();
 		}
 	}
