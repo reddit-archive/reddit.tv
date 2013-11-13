@@ -35,14 +35,14 @@
 
 <script src="js/tv.youtube.js" type="text/javascript"></script>
 <script src="js/tv.vimeo.js" type="text/javascript"></script>
-<script src="js/tv.js" type="text/javascript"></script>
 
 <script type="text/javascript">
-  videoListMouse = false;
-  Globals.channels = <?php echo default_value($settings->default_channels_json, '[]'); ?>;
-  Globals.recommended_channels = <?php echo default_value($settings->recommended_channels_json, '[]'); ?>;
+Globals = {
+  channels: <?php echo default_value($settings->default_channels_json, '[]'); ?>,
+  recommended_channels: <?php echo default_value($settings->recommended_channels_json, '[]'); ?>,
+};
 </script>
-<script src="js/main.js" type="text/javascript"></script>
+<script src="js/tv.js" type="text/javascript"></script>
 
 </head>
 <body>

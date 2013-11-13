@@ -27,7 +27,7 @@ function ajaxFunc() {
 
 	if (!in_array($_REQUEST['type'], $funcs)) jsonError('Invalid action.');
 
-	if ($_REQUEST['action'] == 'get') {
+	if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'get') {
 		jsonQuery();
 	} else if ($_REQUEST['type'] == 'settings') {
 		updateSettings();
@@ -107,7 +107,7 @@ function statusCodeToText($code, $start_date) {
 	);
 
 	$status = $statuses[$code];
-	if ($status == 'ready' && mktime() > strtotime($start_date)) $status = 'active';
+	if ($status == 'ready' && time() > strtotime($start_date)) $status = 'active';
 
 	return $status;
 }

@@ -55,7 +55,7 @@ input.add-channel {
     overflow-y: hidden !important;
     position: absolute;
     float: left;
-    z-index: 9001;
+    z-index: 10009;
     transition: top .5s;
     -webkit-transition: top .5s;
     padding: 5px;
@@ -238,7 +238,8 @@ body.video-loading #loading {
 }
 
 #loading .tv .image {
-    background: transparent none cover no-repeat center center;
+    background: transparent none no-repeat center center;
+    background-size: cover;
 }
 
 #loading .tv .image, #loading .tv:after {
