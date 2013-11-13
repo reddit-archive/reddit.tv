@@ -30,7 +30,7 @@ else{
 	//R::setup('database.txt'); -- for other systems
 }
 
-if(class_exists(Memcache)){
+if(class_exists('Memcache')){
 	// Connection constants
 	define('MEMCACHED_HOST', 'reddittvdev.0ohhtp.cfg.usw1.cache.amazonaws.com');
 	define('MEMCACHED_PORT', '11211');
