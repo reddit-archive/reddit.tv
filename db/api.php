@@ -31,11 +31,12 @@ if($_GET['action'] == 'channel_thumbnail'){
 		$id = R::store($channel);
 
 		$channel->data_source = 'http';
-		if($cacheAvailable)
-			$memcache->add("chthmb-$feed", $channel->thumbnail_url, false, 1800);
 	} else {
 		$channel->data_source = 'database';
 	}
+
+	if($cacheAvailable)
+		$memcache->add("chthmb-$feed", $channel->thumbnail_url, false, 1800);
 
 	echo json_encode(R::exportAll($channel));
 	die();
