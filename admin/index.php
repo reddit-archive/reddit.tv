@@ -40,8 +40,8 @@
     <div id="header" class="container">
       <div class="row">
         <div class="col-lg-6">
-          <img src="../img/logo.png" id="logo" class="pull-left" />
-          <h2 class="pull-left">Admin</h2>
+          <a href="/"><img src="../img/logo.png" id="logo" class="pull-left" /></a>
+          <h2 class="pull-left"><a href="/admin" style="color:#000;">Admin</a></h2>
         </div>
 
         <div class="col-lg-6 adminTabs">

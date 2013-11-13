@@ -49,7 +49,7 @@ Globals = {
   <header>
     <div id="header" class="grid-container">
       <div id="logo" class="grid-25">
-        <img src="img/logo.png" />
+        <a href="/"><img src="img/logo.png" /></a>
       </div>
       <div id="now-playing-title" class="grid-50 center-align">
         /r/subreddit
