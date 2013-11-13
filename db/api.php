@@ -121,12 +121,18 @@ function isVideo($video_domain) {
 
 function getAds() {
 	$settings = R::load('settings', 1);
+	// For SQLite:
+	/*
+		AND DATETIME(start_date) <= DATETIME("now")
+		AND DATETIME(end_date) >= DATETIME("now")
+	*/
+
 	$sponsoredvideos = R::getAll('
 		SELECT id, title, video_url, video_embed_code, image_url
 		FROM sponsoredvideo
 		WHERE status = 1
-		AND DATETIME(start_date) <= DATETIME("now")
-		AND DATETIME(end_date) >= DATETIME("now")
+		AND start_date <= NOW()
+		AND end_date >= NOW()
 		ORDER BY id
 	  '
 	);
