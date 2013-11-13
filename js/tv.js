@@ -272,7 +272,7 @@ var RedditTV = Class.extend({
 					$(this).data('title', $(this).attr('title'));
 					$(this).attr('title', '');
 					toolTip.show().html(title);
-					toolTipPos = $(this).offset().left + ($(this).width() / 2) - ($('#vid-list-tooltip').width() / 2);
+					toolTipPos = $(this).offset().left;
 					toolTip.css({
 							'z-index': 9001,
 							'left': (toolTipPos < 0) ? 0 : toolTipPos

@@ -142,40 +142,15 @@ input.add-channel {
 
 #vid-list-tooltip {
     position: absolute;
-    top: 146px;
-    background: #CEE3FD;
-    border: 1px solid #c2e1f5;
+    top: 151px;
+    color:#fff;
+    background: rgba(33,33,33,0.8);
     padding: 8px;
     min-width: 160px;
     max-width: 494px;
     text-align: center;
-    border-radius: 5px;
     font-weight: 400;
     font-size: 12px;
-}
-#vid-list-tooltip:after, #vid-list-tooltip:before {
-    bottom: 100%;
-    border: solid transparent;
-    content: '';
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-}
-
-#vid-list-tooltip:after {
-    border-color: rgba(136, 183, 213, 0);
-    border-bottom-color: #CEE3FD;
-    border-width: 10px;
-    left: 50%;
-    margin-left: -10px;
-}
-#vid-list-tooltip:before {
-    border-color: rgba(194, 225, 245, 0);
-    border-bottom-color: #CEE3FD;
-    border-width: 11px;
-    left: 50%;
-    margin-left: -11px;
 }
 
 #main-container {
