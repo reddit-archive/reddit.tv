@@ -6,6 +6,18 @@ include_once('config.php');
 if($_GET['action'] == 'channel_thumbnail'){
 	$feed = $_GET['feed'];
 
+	if($cacheAvailable){
+		$thumbnail_url = $memcache->get("chthmb-$feed");
+		if(!empty($thumbnail_url)){
+			$channel = new stdClass();
+			$channel->feed = $feed;
+			$channel->thumbnail_url = $thumbnail_url;
+			$channel->data_source = 'memcache';
+			echo json_encode($channel);
+			die();
+		}
+	}
+
 	//Reload the bean
 	$channel = R::findOne('channel', ' feed = ?', array($feed));
 
@@ -17,8 +29,13 @@ if($_GET['action'] == 'channel_thumbnail'){
 
 		//Store the bean
 		$id = R::store($channel);
-	}
 
+		$channel->data_source = 'http';
+		if($cacheAvailable)
+			$memcache->add("chthmb-$feed", $channel->thumbnail_url, false, 1800);
+	} else {
+		$channel->data_source = 'database';
+	}
 
 	echo json_encode(R::exportAll($channel));
 	die();

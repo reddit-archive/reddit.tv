@@ -30,13 +30,16 @@ else{
 	//R::setup('database.txt'); -- for other systems
 }
 
-// Connection constants
-define('MEMCACHED_HOST', 'reddittvdev.0ohhtp.cfg.usw1.cache.amazonaws.com');
-define('MEMCACHED_PORT', '11211');
- 
-// Connection creation
-$memcache = new Memcache;
-$cacheAvailable = $memcache->connect(MEMCACHED_HOST, MEMCACHED_PORT);
-var_export($cacheAvailable);
+if(class_exists(Memcache)){
+	// Connection constants
+	define('MEMCACHED_HOST', 'reddittvdev.0ohhtp.cfg.usw1.cache.amazonaws.com');
+	define('MEMCACHED_PORT', '11211');
+	 
+	// Connection creation
+	$memcache = new Memcache;
+	$cacheAvailable = $memcache->connect(MEMCACHED_HOST, MEMCACHED_PORT);
+} else {
+	$cacheAvailable = false;
+}
 
 ?>
