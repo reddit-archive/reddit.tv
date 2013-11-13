@@ -120,7 +120,9 @@ function getAds() {
 				'start' => (int)$settings->ads_start_at,
 				'every' => (int)$settings->ads_show_every
 				),
-		'videos' => $sponsoredvideos
+		'videos' => $sponsoredvideos,
+		'used' => Array(),
+		'last' => 9001
 		);
 
 	jsonForAjax($result);
