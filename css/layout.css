@@ -180,8 +180,8 @@ input.add-channel {
 
 #main-container {
     padding-top: 10px;
-    height: 660px;
-    max-height: 660px;
+    height: 670px;
+    max-height: 670px;
     position: relative;
 }
 
@@ -327,8 +327,8 @@ body.video-loading #loading {
 }
 
 #video-container, #add-channel {
-    height: 660px;
-    max-height: 660px;
+    height: 670px;
+    max-height: 670px;
 }
 
 #video-embed {
@@ -352,7 +352,7 @@ body.video-loading #loading {
 
 #video-view {
     background-color: #252525;
-    min-height:660px;
+    min-height:670px;
     margin-bottom: 30px;
     overflow: hidden;
     position: relative;

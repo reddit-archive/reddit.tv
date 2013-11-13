@@ -1175,6 +1175,7 @@ var RedditTV = Class.extend({
 			speed = (instant === true) ? 10 : 500;
 
 		console.log('vid w/h:', vidW, vidH);
+		$('#ytplayer').height('100%');
 
 		if (!container.hasClass('add-channel')) {
 			vid
