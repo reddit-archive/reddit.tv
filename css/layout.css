@@ -42,6 +42,10 @@ header .grid-container {
     padding-bottom: 0;
 }
 
+#now-playing-title:hover {
+    color:#000;
+}
+
 input.add-channel {
     margin-top: 15px;
     margin-right: 45px;
