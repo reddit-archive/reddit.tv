@@ -231,6 +231,7 @@ body.video-loading #loading {
     display: block;
     width: 310px;
     height: 244px;
+    background-size: 150%;
 }
 
 #loading .tv:after {

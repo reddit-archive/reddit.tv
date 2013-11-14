@@ -66,14 +66,14 @@ var vimeo = {
         vimeo.sendMsg(msg);
 
         //auto play if enabled
-        if(Globals.auto){
+        if(rtv.Globals.auto){
             vimeo.play();
         }
     },
 
     finishListener: function(){
-        if(Globals.auto){
-            loadVideo('next');
+        if(rtv.Globals.auto){
+            rtv.loadVideo('next');
         }
     },
 

@@ -136,8 +136,6 @@ var RedditTV = Class.extend({
 		});
 		$('#settings .settings-auto input').change(function() {
 			self.Globals.auto = ($(this).is(':checked')) ? true : false;
-			// This isn't being set right, is needing 2 clicks
-			// alert(Globals.auto); 
 			$.jStorage.set('auto', self.Globals.auto);
 		});
 		$('#settings .settings-shuffle input').change(function() {

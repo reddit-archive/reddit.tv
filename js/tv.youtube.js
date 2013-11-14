@@ -16,7 +16,7 @@ var youtube = {
 
     stateListener: function(state){
 
-        if (Globals.cur_chan === -1) {
+        if (rtv.Globals.cur_chan === -1) {
 
             if (state === 0) {
 
