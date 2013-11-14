@@ -145,14 +145,14 @@ var RedditTV = Class.extend({
 		});
 		$('#settings .settings-sfw input').change(function() {
 			self.Globals.sfw = ($(this).is(':checked')) ? true : false;
-			if(!Globals.sfw){
+			if(!self.Globals.sfw){
 				if(!confirm("Are you over 18?")){
 					$(this).removeClass('active').find('input').prop("checked", true);
 					self.Globals.sfw = true;
 				}
 			}
 			$.jStorage.set('sfw', self.Globals.sfw);
-			showHideNsfwThumbs(Globals.sfw, self.Globals.cur_chan);
+			self.showHideNsfwThumbs(self.Globals.sfw);
 		});
 		$('#settings .settings-fill').click(function() {
 			fillScreen();
@@ -643,19 +643,17 @@ var RedditTV = Class.extend({
 		return (self.Globals.sfw && self.Globals.videos[chan].video[video].over_18);
 	},
 
-	showHideNsfwThumbs: function(sfw, this_chan) {
-		$('.nsfw_thumb').each(function() {
-				$(this).attr('src', self.getThumbnailUrl(this_chan.feed, Number($(this).attr('rel'))));
-		});
+	showHideNsfwThumbs: function(sfw) {
+		$('.nsfw_thumb').toggleClass('visible', !sfw);
 	},
 
 	getThumbnailUrl: function(chan, video_id) {
 		var video = (typeof chan == 'object') ? chan.video[video_id] : self.Globals.videos[chan].video[video_id];
 
-		if (self.sfwCheck(video_id, chan)) {
+		/*if (self.sfwCheck(video_id, chan)) {
 			return 'img/nsfw.png';
-		}
-		else if (video.media.oembed) {
+		}*/
+		if (video.media.oembed) {
 			return video.media.oembed.thumbnail_url !== undefined ? 
 				video.media.oembed.thumbnail_url :
 				'img/noimage.png';
@@ -846,8 +844,6 @@ var RedditTV = Class.extend({
 	},
 
 	loadVideoList: function(chan) {
-		console.log('[loadVideoList]', chan);
-
 		var this_chan = chan,
 			$list = $('<span></span>');
 		for(var i in self.Globals.videos[this_chan.feed].video) {
@@ -883,6 +879,8 @@ var RedditTV = Class.extend({
 				if (i >= self.Globals.ads.settings.start) adNum++;
 			});
 		}
+
+		self.showHideNsfwThumbs(self.Globals.sfw);
 
 		$('#video-list')
 			.stop(true, true)
