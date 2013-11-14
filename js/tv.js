@@ -274,16 +274,19 @@ var RedditTV = Class.extend({
 
 					var toolTip = $('#vid-list-tooltip'),
 						toolTipPos = 0,
-						title = $(this).attr('title');
+						title = $(this).attr('title'),
+						toolTipCss = { 'z-index': 9001, 'left': '', 'right': '' };
 
 					$(this).data('title', $(this).attr('title'));
 					$(this).attr('title', '');
 					toolTip.show().html(title);
 					toolTipPos = $(this).offset().left;
-					toolTip.css({
-							'z-index': 9001,
-							'left': (toolTipPos < 0) ? 0 : toolTipPos
-						});
+					toolTipCss.left = (toolTipPos < 0) ? 0 : toolTipPos;
+					if ($(document).width() - toolTipPos <= 150) {
+						toolTipCss.left = '';
+						toolTipCss.right = 0;
+					}
+					toolTip.css(toolTipCss);
 				} else if (e.type == 'mouseleave') {
 					$(this).attr('title', $(this).data('title'));
 					$('#vid-list-tooltip').hide();

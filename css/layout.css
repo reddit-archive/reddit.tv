@@ -139,10 +139,23 @@ input.add-channel {
 }
 
 #video-list .thumbnail.focus {
-    /*height:100%;*/
-    background-size: calc(100% + 12px);
+    border-width: 6px !important;
+    background-size: calc(100% + 12px) !important;
 }
 
+#video-list .thumbnail.focus:hover {
+    border-color: #ccc;
+}
+
+#video-list .thumbnail:not(.focus):hover {
+    border: 2px solid #ccc;
+    background-size: calc(100% + 4px);
+}
+
+#video-list .thumbnail.promo {
+    border: 2px solid #ef4b23;
+    background-size: calc(100% + 4px);
+}
 #video-list .nsfw_thumb {
     display: none;
     position: relative;
@@ -167,6 +180,10 @@ input.add-channel {
 #video-list .nsfw_thumb:hover:after {
     background-color: transparent;
 }
+#video-list .nsfw_thumb.focus:after {
+    background-position: -6px -6px;
+    background-size: calc(100% + 12px) !important;
+}
 
 #video-list .nsfw_thumb.visible {
     display: inline-block;
@@ -178,8 +195,8 @@ input.add-channel {
     color:#fff;
     background: rgba(33,33,33,0.8);
     padding: 8px;
-    /*min-width: 160px;*/
-    max-width: 494px;
+    min-width: 150px;
+    max-width: 470px;
     text-align: left;
     font-weight: 400;
     font-size: 12px;
