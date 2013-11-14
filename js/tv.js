@@ -186,7 +186,6 @@ var RedditTV = Class.extend({
 		});
 
 		$(document).keydown(function (e) {
-			return true; // Let's disable these for now
 			if (e.shiftKey || e.metaKey || e.ctrlKey || e.altKey) return true;
 
 			if(!$(e.target).is('form>*, input')) {
