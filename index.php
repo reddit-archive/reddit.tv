@@ -53,7 +53,7 @@ Globals = {
           <a href="/"><img src="img/logo.png" /></a>
         </div>
         <div id="now-playing-title" class="grid-50 center-align">
-          /r/subreddit
+          /r/subreddit &#9660;
         </div>
 
         <div id="settings">
