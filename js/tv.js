@@ -1049,6 +1049,7 @@ var RedditTV = Class.extend({
 			$video_embed.empty();
 			self.loadingAnimation('', video.media.oembed.thumbnail_url);
 
+			console.log('video', video, video.media_embed.content)
 			var embed = $.unescapifyHTML(video.media_embed.content);
 			embed = self.prepEmbed(embed, video.domain);
 			embed = self.prepEmbed(embed, 'size');
@@ -1277,7 +1278,7 @@ var RedditTV = Class.extend({
 
 	getRandomAd: function() {
 		if ( self.Globals.ads.used.length == self.Globals.ads.videos.length ) {
-			self.Globals.ads.last = self.Globals.ads.used[self.Globals.ads.used.length-1];
+			if (self.Globals.ads.videos.length > 1) self.Globals.ads.last = self.Globals.ads.used[self.Globals.ads.used.length-1];
 			self.Globals.ads.used = [];
 		}
 
@@ -1295,7 +1296,7 @@ var RedditTV = Class.extend({
 	formatAdVideos: function(videos) {
 		$.each(videos, function(i, vid) {
 			var domain  = vid.video_url.replace(/^https?:\/\/(?:www\.)?(.*?)\/.*$/, '$1'),
-			    created = self.createEmbed(vid.video_url, videos[i].domain);
+			    created = self.createEmbed(vid.video_url, domain);
 
 			videos[i].media = { 'oembed': { 'thumbnail_url': (vid.image_url) ? vid.image_url : created.thumbnail } };
 			videos[i].media_embed = { 'content': created.embed };
