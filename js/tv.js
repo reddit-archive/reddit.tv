@@ -247,6 +247,10 @@ var RedditTV = Class.extend({
 				$(this).addClass('focus');
 				self.closeVideoList();
 				self.Globals.videoListMouse = false;
+
+				if ( $(this).hasClass('promo') ) {
+					self.loadVideo(parseInt($(this).attr('data-adNum')), true);
+				}
 			}
 		);
 
@@ -871,7 +875,7 @@ var RedditTV = Class.extend({
 					thumbnail = self.thumbElement(ad, {feed: '/promo' }, rtv.Globals.ads.videos.indexOf(ad));
 					thumbnail.insertBefore($(this));
 					thumbnail.addClass('promo')
-						.attr('data-adNum', $('#video-list .promo.thumbnail').length);
+						.attr('data-adNum', $('#video-list .promo.thumbnail').length - 1);
 
 					adNum = 1;
 				}
@@ -936,7 +940,7 @@ var RedditTV = Class.extend({
 
 			if ( newAnchor.hasClass('promo') || thumbAnchor.hasClass('promo') ) {
 				newAnchor.trigger('click');
-				window.location.hash = newAnchor.attr('href');
+				if (thumbAnchor.hasClass('promo')) window.location.hash = newAnchor.attr('href');
 				return;
 			}
 		}
@@ -1027,7 +1031,7 @@ var RedditTV = Class.extend({
 			//set location hash
 			var parts, hash = document.location.hash;
 			if (promo) {
-				hash = '/promo/' + video.id;
+				hash = '';
 			} else {
 				if (!hash) {
 					var feed = this_chan.feed;
@@ -1049,7 +1053,6 @@ var RedditTV = Class.extend({
 			$video_embed.empty();
 			self.loadingAnimation('', video.media.oembed.thumbnail_url);
 
-			console.log('video', video, video.media_embed.content)
 			var embed = $.unescapifyHTML(video.media_embed.content);
 			embed = self.prepEmbed(embed, video.domain);
 			embed = self.prepEmbed(embed, 'size');
@@ -1106,7 +1109,7 @@ var RedditTV = Class.extend({
 		if ( !this_video.title ) this_video.title_unesc = this_video.title_quot = '';
 
 		videoId = (self.Globals.videos[this_chan.feed]) ? self.Globals.videos[this_chan.feed].video[id].id : id;
-		url = this_chan.feed + '/' + videoId;
+		url = ( this_chan.feed != '/promo' ) ? this_chan.feed + '/' + videoId : '';
 
 		anchorId = ( this_chan.feed != '/promo' ) ? ' id="video-list-thumb-' + id + '"' : '';
 		if (isPromo) anchorClass.push('promo');
