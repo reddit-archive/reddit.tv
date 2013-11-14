@@ -244,6 +244,7 @@ var RedditTV = Class.extend({
 			function() {
 				// Kinda busted?
 				self.closeVideoList();
+				self.Globals.videoListMouse = false;
 			}
 		);
 
@@ -340,14 +341,9 @@ var RedditTV = Class.extend({
 		});
 
 		$('header').mouseenter(function(){
-			// consoleLog('enter header');
+			// console.log('enter header');
 			self.Globals.videoListMouse = true;
 			setTimeout(self.videoListOpenTimeout, 500);
-		});
-		$('#video-list').mouseenter(function(){
-			// consoleLog('enter video list');
-			self.Globals.videoListMouse = true;
-			self.openVideoList();
 		});
 		$('#settings').mouseenter(function(){
 			// console.log('enter settings')
@@ -355,11 +351,6 @@ var RedditTV = Class.extend({
 		});
 		$('header').mouseleave(function(){
 			// console.log('exit header')
-			self.Globals.videoListMouse = false;
-			setTimeout(self.videoListCloseTimeout, 1000);
-		});
-		$('#video-list').mouseleave(function(){
-			// console.log('exit video list')
 			self.Globals.videoListMouse = false;
 			setTimeout(self.videoListCloseTimeout, 1000);
 		});
@@ -1061,7 +1052,7 @@ var RedditTV = Class.extend({
 
 	thumbElement: function(this_video, this_chan, id) {
 		var videoId, url, $thumbnail, thumbnail_image;
-		console.log(this_video, this_chan);
+		// console.log(this_video, this_chan);
 
 		if ( this_video.title && !this_video.title_unesc ) {
 			this_video.title_unesc = $.unescapifyHTML(this_video.title);
