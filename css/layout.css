@@ -301,6 +301,10 @@ body.video-loading #loading {
     position: relative;
 }
 
+#video-container.promo #video-actions {
+    display: none;
+}
+
 #video-container, #add-channel {
     height: 670px;
     max-height: 670px;

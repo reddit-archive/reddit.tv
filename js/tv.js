@@ -70,7 +70,12 @@ var RedditTV = Class.extend({
 		}, Globals); // end Globals
 
 		// Load ads
-		self.apiCall('ads', null, function(data) { self.Globals.ads = data; });
+		self.Globals.videos['/promo'] = { 'video': [] };
+		self.apiCall('ads', null, function(data) {
+			self.Globals.ads = data;
+			self.Globals.videos['/promo'].video = self.formatAdVideos(data.videos);
+			$(document).trigger('adsLoaded');
+		});
 
 		self.loadSettings();
 		self.setBindings();
@@ -164,7 +169,9 @@ var RedditTV = Class.extend({
 			loadVideo('prev');
 		});
 		$('#video-list').bind('mousewheel', function(event,delta){
+			// $(this).animate({ scrollLeft: this.scrollLeft - (delta * 30) }, 100);
 			this.scrollLeft -= (delta * 30);
+			event.preventDefault();
 		});
 		$('#sorting a').click(function() {
 			if ($(this).hasClass('active')) return false;
@@ -218,9 +225,9 @@ var RedditTV = Class.extend({
 			}
 		});
 
-		$(window).resize(function() {
-			resizePlayer();
-		});
+		/*$(window).resize(function() {
+			self.resizePlayer();
+		});*/
 
 		/* clear add sr on click */
 		$('#channel-name').click(function(){
@@ -750,7 +757,14 @@ var RedditTV = Class.extend({
 				}*/
 
 				if(parts[1] === 'promo'){
-					// self.loadPromo(parts[2], parts[3], parts[4]);
+					if ( !self.Globals.ads.videos ) {
+						$(document).on('adsLoaded', function() {
+							var promoIndex = self.findVideoById(parts[2], '/promo');
+							self.loadVideo(promoIndex, true);
+						});
+					} else {
+						self.loadVideo(self.findVideoById(parts[2], '/promo'), true);
+					}
 				}else{
 					var feed = '/' + parts[1] + '/' + parts[2];
 					var new_chan_name = self.getChanName(feed);
@@ -849,7 +863,6 @@ var RedditTV = Class.extend({
 			$thumbnail = self.thumbElement(this_video, this_chan, i);
 			$list.append($thumbnail);
 		}
-		console.log('list', $list.find('.thumbnail').length);
 
 		$('#video-list')
 			.html($list);
@@ -896,12 +909,16 @@ var RedditTV = Class.extend({
 		setTimeout(self.toggleVideoList, 2000);
 	},
 
-	loadVideo: function(video) {
+	loadVideo: function(video, promo) {
 		var this_chan = self.Globals.cur_chan,
 			this_video = self.Globals.cur_video,
 			selected_video = this_video,
-			videos_size = Object.size(self.Globals.videos[this_chan.feed].video)-1;
+			videos_size = 0;
 
+		if (this_chan.feed) videos_size = Object.size(self.Globals.videos[this_chan.feed].video)-1;
+		if (!promo) promo = false;
+
+		// if (video === false) self.loadVideo('next');
 		/*if(!videoList.open) {
 			self.openVideoList();
 			setTimeout(self.videoListCloseTimeout, 2000);
@@ -923,7 +940,7 @@ var RedditTV = Class.extend({
 			while(self.sfwCheck(self.getVideoKey(selected_video), this_chan.feed) && selected_video < videos_size){
 				selected_video++;
 			}
-			if(self.sfwCheck(getVideoKey(selected_video), this_chan.feed)){
+			if(self.sfwCheck(self.getVideoKey(selected_video), this_chan.feed)){
 				selected_video = this_video;
 			}
 		}else if(selected_video >= 0 && video === 'prev'){
@@ -931,10 +948,10 @@ var RedditTV = Class.extend({
 			if(selected_video < 0){
 				selected_video = videos_size;
 			}
-			while(self.sfwCheck(getVideoKey(selected_video), this_chan.feed) && selected_video > 0){
+			while(self.sfwCheck(self.getVideoKey(selected_video), this_chan.feed) && selected_video > 0){
 				selected_video--;
 			}
-			if(self.sfwCheck(getVideoKey(selected_video), this_chan.feed)){
+			if(self.sfwCheck(self.getVideoKey(selected_video), this_chan.feed)){
 				selected_video = this_video;
 			}
 		}else if(video === 'first'){
@@ -952,16 +969,18 @@ var RedditTV = Class.extend({
 		}
 
 		//exit if trying to load over_18 content without confirmed over 18
-		if(self.sfwCheck(selected_video, this_chan.feed)){
+		if (!promo && self.sfwCheck(selected_video, this_chan.feed) ) {
 			return false;
 		}
 
 		if(selected_video !== this_video || video === 'first' || video === 0) {
 			self.Globals.cur_video = selected_video;
+			var video = (!promo) ? self.Globals.videos[this_chan.feed].video[selected_video] : self.Globals.ads.videos[selected_video];
 
 			// scroll to thumbnail in video list and highlight it
 			$('#video-list .focus').removeClass('focus');
-			$('#video-list-thumb-' + selected_video).addClass('focus');
+			// To-do: Focus and scroll to promo somehow, needs unique ID
+			if (!promo) $('#video-list-thumb-' + selected_video).addClass('focus');
 			$('#video-list:not(.scrollbar)').stop(true,true).scrollTo('.focus', { duration:1000, offset:-280 });
 			if ($('#video-list').hasClass('scrollbar')) { // Only do this for the jScrollPane-esque thing
 				var focused	  = $('#video-list .focus'),
@@ -996,17 +1015,20 @@ var RedditTV = Class.extend({
 				$nextbutton.hide().css({ 'visibility':'visible' }).stop(true,true).fadeIn('slow');
 			}
 
-			var video = self.Globals.videos[this_chan.feed].video[selected_video];
 			//set location hash
 			var parts, hash = document.location.hash;
-			if(!hash){
-				var feed = this_chan.feed;
-				parts = feed.split("/");
-				hash = '/'+parts[1]+'/'+parts[2]+'/'+video.id;
-			}else{
-				var anchor = hash.substring(1);
-				parts = anchor.split("/"); // #/r/videos/id
-				hash = '/'+parts[1]+'/'+parts[2]+'/'+video.id;
+			if (promo) {
+				hash = '/promo/' + video.id;
+			} else {
+				if (!hash) {
+					var feed = this_chan.feed;
+					parts = feed.split("/");
+					hash = '/'+parts[1]+'/'+parts[2]+'/'+video.id;
+				} else {
+					var anchor = hash.substring(1);
+					parts = anchor.split("/"); // #/r/videos/id
+					hash = '/'+parts[1]+'/'+parts[2]+'/'+video.id;
+				}
 			}
 			Globals.current_anchor = '#'+hash;
 			window.location.hash = hash;
@@ -1019,14 +1041,18 @@ var RedditTV = Class.extend({
 			// $video_embed.addClass('loading');
 			self.loadingAnimation('', video.media.oembed.thumbnail_url);
 
-			var embed = $.unescapifyHTML(video.media_embed.content);
+			var embed = (promo) ? video.media_embed.content : $.unescapifyHTML(video.media_embed.content);
 			embed = self.prepEmbed(embed, video.domain);
 			embed = self.prepEmbed(embed, 'size');
+			$('#video-container').toggleClass('promo', promo);
+
+			var videoTitle = '<a href="' + redditlink + '" target="_blank"'
+									+ ' title="' + video.title_quot + '">'
+									+ video.title_unesc + '</a>';
+			if (promo) videoTitle = ( video.title ) ? video.title_unesc : '';
 
 			var redditlink = 'http://reddit.com'+$.unescapifyHTML(video.permalink);
-			$('#video-title').html('<a href="' + redditlink + '" target="_blank"'
-									+ ' title="' + video.title_quot + '">'
-									+ video.title_unesc + '</a>');
+			$('#video-title').html(videoTitle);
 			$('#video-comments-link').attr("href", redditlink);
 			$('#video-tweet-link').attr("href", "https://twitter.com/intent/tweet?original_referer="
 									+ window.location + "&tweet=" 
@@ -1060,8 +1086,8 @@ var RedditTV = Class.extend({
 	},
 
 	thumbElement: function(this_video, this_chan, id) {
-		var videoId, url, $thumbnail, thumbnail_image;
-		console.log(this_video, this_chan);
+		var videoId, url, $thumbnail, thumbnail_image, anchorId;
+		// console.log(this_video, this_chan);
 
 		if ( this_video.title && !this_video.title_unesc ) {
 			this_video.title_unesc = $.unescapifyHTML(this_video.title);
@@ -1072,9 +1098,8 @@ var RedditTV = Class.extend({
 		videoId = (self.Globals.videos[this_chan.feed]) ? self.Globals.videos[this_chan.feed].video[id].id : id;
 		url = this_chan.feed + '/' + videoId;
 
-		// id="video-list-thumb-' + i + '"
-		// ' rel="' + i + '"'
-		$thumbnail = $('<a href="#' + url + '" class="thumbnail"></a>');
+		anchorId = ( this_chan.feed != '/promo' ) ? ' id="video-list-thumb-' + id + '"' : '';
+		$thumbnail = $('<a href="#' + url + '"' + anchorId + ' class="thumbnail"></a>');
 		if (this_video.title_quot) $thumbnail.attr('title', this_video.title_quot);
 
 		// make nsfw thumbnails easily findable
@@ -1261,6 +1286,16 @@ var RedditTV = Class.extend({
 		self.Globals.ads.used.push(rand);
 
 		return self.Globals.ads.videos[rand];
+	},
+
+	formatAdVideos: function(videos) {
+		$.each(videos, function(i, vid) {
+			videos[i].media = { 'oembed': { 'thumbnail_url': vid.image_url } };
+			videos[i].media_embed = { 'content': vid.video_embed_code };
+			videos[i].domain = ( vid.video_url.match(/youtube\.com|youtu\.be/) ) ? 'youtube.com' : vid.video_url.replace(/^https?:\/\/(.*?)\/.*$/, '$1');
+		});
+
+		return videos;
 	},
 
 	stripHTML: function(s) {
