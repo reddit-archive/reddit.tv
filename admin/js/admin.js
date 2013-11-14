@@ -212,6 +212,8 @@ $('.btn-edit').on('click', function() {
 				moment(form.find('input[name="db_end_date"]').val()),
 				form.find('.campaign-length')
 			);
+
+			$('html, body').animate({ scrollTop: 0 }, 300);
 		},
 		error: function(jXHR, textStatus, errorThrown) {
 			console.log('[ERROR] '+textStatus);
