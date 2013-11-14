@@ -535,6 +535,7 @@
       </div> <!-- Channels -->
 
       <!-- Settings Pane -->
+      <?php $settings = R::load('settings', 1); ?>
       <div class="tab-pane active" id="admin-settings">
         <h1>Settings</h1>
         <hr />
@@ -546,8 +547,11 @@
                 <label class="input-group-addon">Ads: begin as</label>
                 <div class="btn-group">
                   <select name="db_ads_start_at" class="selectpicker">
-                  <?php for ($i=1; $i <= 10; $i++) : ?>
-                    <option value="<?php echo $i; ?>">Video #<?php echo $i; ?></option>
+                  <?php
+                    for ($i=1; $i <= 10; $i++) :
+                      $selected = ($i == $settings->ads_start_at) ? ' selected' : '';
+                  ?>
+                    <option value="<?php echo $i; ?>"<?php echo $selected; ?>>Video #<?php echo $i; ?></option>
                   <?php endfor; ?>
                   </select>
                 </div>
@@ -559,8 +563,11 @@
                 <label class="input-group-addon">Ads: display every</label>
                 <div class="btn-group">
                   <select name="db_ads_show_every" class="selectpicker">
-                  <?php for ($i=1; $i <= 10; $i++) : ?>
-                    <option value="<?php echo $i; ?>"><?php echo $i; ?> videos</option>
+                  <?php
+                    for ($i=1; $i <= 10; $i++) :
+                      $selected = ($i == $settings->ads_show_every) ? ' selected' : '';
+                  ?>
+                    <option value="<?php echo $i; ?>"<?php echo $selected; ?>><?php echo $i; ?> videos</option>
                   <?php endfor; ?>
                   </select>
                 </div>
@@ -606,7 +613,6 @@
           <div class="channels clearfix">
             <ul class="list-unstyled">
               <?php
-                $settings = R::load('settings', 1);
                 $default_channels = json_decode($settings->default_channels);
                 foreach ($default_channels as $channel) :
                   $thumb_url = '';

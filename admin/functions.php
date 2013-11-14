@@ -31,8 +31,6 @@ function ajaxFunc() {
 		jsonQuery();
 	} else if ($_REQUEST['type'] == 'settings') {
 		updateSettings();
-		// jsonQuery();
-		die();
 	} else {
 		addEdit();
 	}
