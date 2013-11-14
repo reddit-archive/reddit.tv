@@ -42,7 +42,7 @@ header .grid-container {
     padding-bottom: 0;
 }
 
-#now-playing-title:hover {
+#now-playing-title:hover, #now-playing-title.active {
     color:#000;
 }
 

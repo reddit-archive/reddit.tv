@@ -824,6 +824,7 @@ var RedditTV = Class.extend({
 		// console.log('open video-list')
 		// videoList.open = true;
 		$('#video-list').addClass('slideInDown').removeClass('bounceOutUp');
+		$('#now-playing-title').addClass('active');
 	},
 
 	closeVideoList: function() {
@@ -831,6 +832,7 @@ var RedditTV = Class.extend({
 		// videoList.open = false;
 		$('#video-list').addClass('bounceOutUp').removeClass('slideInDown');
 		$('#vid-list-tooltip').hide();
+		$('#now-playing-title').removeClass('active');
 	},
 
 	loadVideoList: function(chan) {
