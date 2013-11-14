@@ -1052,10 +1052,9 @@ var RedditTV = Class.extend({
 			var $video_embed = $('#video-embed');
 
 			$video_embed.empty();
-			// $video_embed.addClass('loading');
 			self.loadingAnimation('', video.media.oembed.thumbnail_url);
 
-			var embed = (promo) ? video.media_embed.content : $.unescapifyHTML(video.media_embed.content);
+			var embed = $.unescapifyHTML(video.media_embed.content);
 			embed = self.prepEmbed(embed, video.domain);
 			embed = self.prepEmbed(embed, 'size');
 			$('#video-container').toggleClass('promo', promo);
@@ -1307,9 +1306,12 @@ var RedditTV = Class.extend({
 
 	formatAdVideos: function(videos) {
 		$.each(videos, function(i, vid) {
-			videos[i].media = { 'oembed': { 'thumbnail_url': vid.image_url } };
-			videos[i].media_embed = { 'content': vid.video_embed_code };
-			videos[i].domain = ( vid.video_url.match(/youtube\.com|youtu\.be/) ) ? 'youtube.com' : vid.video_url.replace(/^https?:\/\/(.*?)\/.*$/, '$1');
+			var domain  = vid.video_url.replace(/^https?:\/\/(?:www\.)?(.*?)\/.*$/, '$1'),
+			    created = self.createEmbed(vid.video_url, videos[i].domain);
+
+			videos[i].media = { 'oembed': { 'thumbnail_url': (vid.image_url) ? vid.image_url : created.thumbnail } };
+			videos[i].media_embed = { 'content': created.embed };
+			videos[i].domain = domain;
 		});
 
 		return videos;

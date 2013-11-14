@@ -30,9 +30,9 @@ var youtube = {
             return;
         }
 
-        if(Globals.auto){ //global scope
+        if(rtv.Globals.auto){ //global scope
             if(state === 0){
-                loadVideo('next');  //tv.js
+                rtv.loadVideo('next');  //tv.js
             }else if(state === -1){
                 youtube.togglePlay();
             }else if(state === 1){
@@ -47,7 +47,7 @@ var youtube = {
 
     errorListener: function(error){
         consoleLog('youtube error received: '+error);
-        loadVideo('next');
+        rtv.loadVideo('next');
     },
 
     createEmbed: function(url){
