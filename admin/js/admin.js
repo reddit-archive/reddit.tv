@@ -165,7 +165,6 @@ $('.btn-edit').on('click', function() {
 				.appendTo(form);
 
 			$.each(data, function( index, value ) {
-				// console.log(index, value);
 				var input = form.find('*[name="db_' + index + '"]');
 
 				if (input.hasClass('skip')) return;
@@ -209,8 +208,8 @@ $('.btn-edit').on('click', function() {
 			submitBtn.text(submitBtn.text().replace(/Add/i, 'Edit'));
 
 			dateRangeCallback(
-				moment($('#' + type + '_start_date').val()),
-				moment($('#' + type + '_end_date').val()),
+				moment(form.find('input[name="db_start_date"]').val()),
+				moment(form.find('input[name="db_end_date"]').val()),
 				form.find('.campaign-length')
 			);
 		},
@@ -325,7 +324,6 @@ $.each(channelTypes, function(i, channelType) {
 
 		$('#' + channelType + '-channels').addClass('loading');
 		btn.attr('disabled', 'disabled');
-		console.log('http://www.reddit.com' + feed + '.json?limit=1');
 
 		// Get the channel name
 		$.ajax({
@@ -450,6 +448,7 @@ function generateEmbed(id) {
         '<param name="movie" value="http://www.youtube.com/v/#ID#?hd=1&amp;showsearch=0&amp;version=3&amp;modestbranding=1" />' +
         '<param name="allowFullScreen" value="true" />' +
         '<param name="allowscriptaccess" value="always" />' +
+		'<embed src="http://www.youtube.com/v/#ID#?hd=1&amp;showsearch=0&amp;modestbranding=1&amp;version=3&amp;feature=oembed" type="application/x-shockwave-flash" width="100%" height="100%" allowscriptaccess="always" allowfullscreen="true"></embed>' +
         '</object>';
 
     return code.replace(/#ID#/g, id);
