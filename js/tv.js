@@ -246,6 +246,7 @@ var RedditTV = Class.extend({
 			'.thumbnail',
 			function() {
 				// Kinda busted?
+				$(this).addClass('focus');
 				self.closeVideoList();
 				self.Globals.videoListMouse = false;
 			}
@@ -874,6 +875,8 @@ var RedditTV = Class.extend({
 					ad = self.getRandomAd();
 					thumbnail = self.thumbElement(ad, {feed: '/promo' }, rtv.Globals.ads.videos.indexOf(ad));
 					thumbnail.insertBefore($(this));
+					thumbnail.addClass('promo')
+						.attr('data-adNum', $('#video-list .promo.thumbnail').length);
 
 					adNum = 1;
 				}
@@ -905,7 +908,8 @@ var RedditTV = Class.extend({
 		var this_chan = self.Globals.cur_chan,
 			this_video = self.Globals.cur_video,
 			selected_video = this_video,
-			videos_size = 0;
+			videos_size = 0,
+			thumbAnchor, newAnchor;
 
 		if (this_chan.feed) videos_size = Object.size(self.Globals.videos[this_chan.feed].video)-1;
 		if (!promo) promo = false;
@@ -924,6 +928,24 @@ var RedditTV = Class.extend({
 			selected_video = self.Globals.shuffled.indexOf(selected_video);
 		}
 		 
+		thumbAnchor = $('#video-list .promo.thumbnail.focus:first');
+		if (!thumbAnchor.length) thumbAnchor = $('#video-list-thumb-' + selected_video);
+
+		newAnchor = (video == 'next') ? thumbAnchor.next() : thumbAnchor.prev();
+		if ( newAnchor.length && (video == 'next' || video == 'prev') ) {
+			if ( thumbAnchor.hasClass('promo') ) {
+				var next_video = parseInt(newAnchor.data('id'))
+				next_video = (video == 'next') ? next_video + 1 : next_video - 1;
+				this_video = selected_video = next_video;
+			}
+
+			if ( newAnchor.hasClass('promo') || thumbAnchor.hasClass('promo') ) {
+				newAnchor.trigger('click');
+				window.location.hash = newAnchor.attr('href');
+				return;
+			}
+		}
+
 		if(video === 'next' && selected_video <= videos_size){
 			selected_video++;
 			if(selected_video > videos_size){
@@ -970,7 +992,7 @@ var RedditTV = Class.extend({
 			var video = (!promo) ? self.Globals.videos[this_chan.feed].video[selected_video] : self.Globals.ads.videos[selected_video];
 
 			// scroll to thumbnail in video list and highlight it
-			$('#video-list .focus').removeClass('focus');
+			$('#video-list .focus:not(.promo)').removeClass('focus');
 			// To-do: Focus and scroll to promo somehow, needs unique ID
 			if (!promo) $('#video-list-thumb-' + selected_video).addClass('focus');
 			$('#video-list:not(.scrollbar)').stop(true,true).scrollTo('.focus', { duration:1000, offset:-280 });
@@ -1077,7 +1099,9 @@ var RedditTV = Class.extend({
 	},
 
 	thumbElement: function(this_video, this_chan, id) {
-		var videoId, url, $thumbnail, thumbnail_image, anchorId;
+		var videoId, url, $thumbnail, thumbnail_image, anchorId,
+		    anchorClass = [ 'thumbnail' ],
+			isPromo = (this_chan.feed == '/promo');
 		// console.log(this_video, this_chan);
 
 		if ( this_video.title && !this_video.title_unesc ) {
@@ -1090,8 +1114,10 @@ var RedditTV = Class.extend({
 		url = this_chan.feed + '/' + videoId;
 
 		anchorId = ( this_chan.feed != '/promo' ) ? ' id="video-list-thumb-' + id + '"' : '';
-		$thumbnail = $('<a href="#' + url + '"' + anchorId + ' class="thumbnail"></a>');
+		if (isPromo) anchorClass.push('promo');
+		$thumbnail = $('<a href="#' + url + '"' + anchorId + ' class="' + anchorClass.join(' ') + '"></a>');
 		if (this_video.title_quot) $thumbnail.attr('title', this_video.title_quot);
+		$thumbnail.data('id', id);
 
 		// make nsfw thumbnails easily findable
 		if (this_video.over_18) {
