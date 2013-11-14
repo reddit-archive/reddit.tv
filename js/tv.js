@@ -372,9 +372,6 @@ var RedditTV = Class.extend({
 	},
 
 	displayChannel: function(chan) {
-		// chan.feed = Globals.channels[chan].feed;
-		// chan.feed = Globals.channels[chan].feed;
-
 		var title, display_title, class_str='', remove_str='',
 			$channel_base = $('#add-channel-button'),
 			$channel = $channel_base.clone().removeAttr('id');
@@ -1267,21 +1264,14 @@ var RedditTV = Class.extend({
 			subreddit = self.stripHTML($('#channel-name').val());
 			click = true;
 		}
-		if (!getChan(subreddit)) {
-			var feed = "/r/"+subreddit;
-			console.log(feed);
-
-			var c_data = {'channel': subreddit, feed: feed};
+		if (!self.getChan(subreddit)) {
+			var c_data = { 'channel': subreddit, 'feed': '/r/' + subreddit };
 			self.Globals.channels.unshift(c_data);
 			self.Globals.user_channels.unshift(c_data);
 			
 			$.jStorage.set('user_channels', self.Globals.user_channels);
 
-			self.displayChannel(feed);
-
-			/*if (click){
-				$('#channel-'+x).click();
-			}*/
+			self.displayChannel(c_data);
 		}
 
 		return false;
