@@ -188,6 +188,7 @@ var RedditTV = Class.extend({
 		});
 
 		$(document).keydown(function (e) {
+			return true; // Let's disable these for now
 			if (e.shiftKey || e.metaKey || e.ctrlKey || e.altKey) return true;
 
 			if(!$(e.target).is('form>*, input')) {
@@ -228,11 +229,6 @@ var RedditTV = Class.extend({
 		/*$(window).resize(function() {
 			self.resizePlayer();
 		});*/
-
-		/* clear add sr on click */
-		$('#channel-name').click(function(){
-			$(this).val('');
-		});
 
 		/* Anchor Checker */
 		if("onhashchange" in window){
@@ -1026,7 +1022,7 @@ var RedditTV = Class.extend({
 					hash = '/'+parts[1]+'/'+parts[2]+'/'+video.id;
 				}
 			}
-			Globals.current_anchor = '#'+hash;
+			self.Globals.current_anchor = '#'+hash;
 			window.location.hash = hash;
 
 			self.gaHashTrack();
@@ -1056,7 +1052,6 @@ var RedditTV = Class.extend({
 									+ "&url="+redditlink);
 			$('#video-share-link').attr("href", redditlink);
 			$video_embed.html(embed);
-			// $video_embed.removeClass('loading');
 			$('body').removeClass('video-loading');
 
 			self.addListeners(video.domain);
