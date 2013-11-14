@@ -47,60 +47,62 @@ Globals = {
 </head>
 <body>
   <header>
-    <div id="header" class="grid-container">
-      <div id="logo" class="grid-25">
-        <a href="/"><img src="img/logo.png" /></a>
-      </div>
-      <div id="now-playing-title" class="grid-50 center-align">
-        /r/subreddit
-      </div>
-
-      <div id="settings">
-        <div class="buttons btn-group" data-toggle="buttons">
-          <label class="btn btn-default icon-next settings-auto">
-            <input type="checkbox"> Auto Play/Advance
-          </label>
-          <label class="btn btn-default icon-shuffle settings-shuffle">
-            <input type="checkbox"> Shuffle
-          </label>
-          <label class="btn btn-default icon-spam settings-sfw">
-            <input type="checkbox"> SFW
-          </label>
-          <!-- TODO: Make fullscreen using HTML5 fullscreen API
-          <label class="btn btn-default icon-expand settings-fill">
-            <input type="checkbox"> Fill Screen
-          </label> -->
-
-          <div id="sorting" class="btn-group">
-            <button type="button" class="btn btn-default icon-menu" data-toggle="dropdown">
-              Sorting
-              <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-              <li><a href="#sort=hot">Hot</a></li>
-              <li><a href="#sort=top:day">Top Today</a></li>
-              <li><a href="#sort=top:week">Top Week</a></li>
-              <li><a href="#sort=top:month">Top Month</a></li>
-              <li><a href="#sort=top:year">Top Year</a></li>
-            </ul>
-          </div>
-          <div id="hax" class="btn-group">
-            <button type="button" class="btn btn-default" data-toggle="dropdown">
-              Hax
-              <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-              <li><a href="https://www.youtube.com/account_playback" target="_blank">YouTube Annotations</a></li>
-            </ul>
-          </div>
-
-          <button id="toggle-settings" type="button" class="btn btn-default icon-equalizer"></button>
+    <div id="header-container">
+      <div id="header" class="grid-container">
+        <div id="logo" class="grid-25">
+          <a href="/"><img src="img/logo.png" /></a>
         </div>
-      </div>
-    </div> <!-- /#header -->
+        <div id="now-playing-title" class="grid-50 center-align">
+          /r/subreddit &#9660;
+        </div>
+
+        <div id="settings">
+          <div class="buttons btn-group" data-toggle="buttons">
+            <label class="btn btn-default icon-next settings-auto">
+              <input type="checkbox"> Auto Play/Advance
+            </label>
+            <label class="btn btn-default icon-shuffle settings-shuffle">
+              <input type="checkbox"> Shuffle
+            </label>
+            <label class="btn btn-default icon-spam settings-sfw">
+              <input type="checkbox"> SFW
+            </label>
+            <!-- TODO: Make fullscreen using HTML5 fullscreen API
+            <label class="btn btn-default icon-expand settings-fill">
+              <input type="checkbox"> Fill Screen
+            </label> -->
+
+            <div id="sorting" class="btn-group">
+              <button type="button" class="btn btn-default icon-menu" data-toggle="dropdown">
+                Sorting
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a href="#sort=hot">Hot</a></li>
+                <li><a href="#sort=top:day">Top Today</a></li>
+                <li><a href="#sort=top:week">Top Week</a></li>
+                <li><a href="#sort=top:month">Top Month</a></li>
+                <li><a href="#sort=top:year">Top Year</a></li>
+              </ul>
+            </div>
+            <div id="hax" class="btn-group">
+              <button type="button" class="btn btn-default" data-toggle="dropdown">
+                Hax
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a href="https://www.youtube.com/account_playback" target="_blank">YouTube Annotations</a></li>
+              </ul>
+            </div>
+
+            <button id="toggle-settings" type="button" class="btn btn-default icon-equalizer"></button>
+          </div>
+        </div>
+      </div> <!-- /#header -->
+    </div> <!-- /#header-container -->
+    <div id="video-list" class="animated"></div>
   </header>
   <div id="video-view">
-    <div id="video-list" class="animated"></div>
     <div id="main-container" class="grid-container">
       <div id="loading">
          <div class="text">loading<div class="what"></div></div>

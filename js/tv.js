@@ -251,6 +251,7 @@ var RedditTV = Class.extend({
 			function() {
 				// Kinda busted?
 				self.closeVideoList();
+				self.Globals.videoListMouse = false;
 			}
 		);
 
@@ -347,14 +348,9 @@ var RedditTV = Class.extend({
 		});
 
 		$('header').mouseenter(function(){
-			// consoleLog('enter header');
+			// console.log('enter header');
 			self.Globals.videoListMouse = true;
 			setTimeout(self.videoListOpenTimeout, 500);
-		});
-		$('#video-list').mouseenter(function(){
-			// consoleLog('enter video list');
-			self.Globals.videoListMouse = true;
-			self.openVideoList();
 		});
 		$('#settings').mouseenter(function(){
 			// console.log('enter settings')
@@ -362,11 +358,6 @@ var RedditTV = Class.extend({
 		});
 		$('header').mouseleave(function(){
 			// console.log('exit header')
-			self.Globals.videoListMouse = false;
-			setTimeout(self.videoListCloseTimeout, 1000);
-		});
-		$('#video-list').mouseleave(function(){
-			// console.log('exit video list')
 			self.Globals.videoListMouse = false;
 			setTimeout(self.videoListCloseTimeout, 1000);
 		});
@@ -501,7 +492,7 @@ var RedditTV = Class.extend({
 
 		var npTitle = self.Globals.cur_chan.feed;
 		if (self.Globals.cur_chan.channel) npTitle = self.Globals.cur_chan.channel + ' - ' + npTitle;
-		$('#now-playing-title').empty().append(npTitle);
+		$('#now-playing-title').empty().append(npTitle+" &#9660;");
 
 		
 		if(self.Globals.videos[this_chan.feed] === undefined){
@@ -834,6 +825,7 @@ var RedditTV = Class.extend({
 	},
 
 	toggleVideoList: function() {
+		// console.log('toggle video-list');
 		if($('#video-list').hasClass('bounceOutUp')) {
 			self.openVideoList();
 		}
@@ -843,14 +835,18 @@ var RedditTV = Class.extend({
 	},
 
 	openVideoList: function() {
+		// console.log('open video-list')
 		// videoList.open = true;
 		$('#video-list').addClass('slideInDown').removeClass('bounceOutUp');
+		$('#now-playing-title').addClass('active');
 	},
 
 	closeVideoList: function() {
+		// console.log('close video-list')
 		// videoList.open = false;
 		$('#video-list').addClass('bounceOutUp').removeClass('slideInDown');
 		$('#vid-list-tooltip').hide();
+		$('#now-playing-title').removeClass('active');
 	},
 
 	loadVideoList: function(chan) {
@@ -906,7 +902,7 @@ var RedditTV = Class.extend({
 		}
 
 		// videoList.open = true;
-		setTimeout(self.toggleVideoList, 2000);
+		setTimeout(self.closeVideoList, 2000);
 	},
 
 	loadVideo: function(video, promo) {

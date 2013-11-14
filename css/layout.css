@@ -20,9 +20,12 @@ body {
 
 header {
     position: relative;
-    background-color: #CEE3FD;
     border-bottom: 1px solid rgba(0,0,0,0.5);
     z-index: 3;
+}
+
+#header-container {
+    background-color: #CEE3FD;
 }
 
 header .grid-container {
@@ -37,6 +40,10 @@ header .grid-container {
 #now-playing-title {
     padding-top: 15px;
     padding-bottom: 0;
+}
+
+#now-playing-title:hover, #now-playing-title.active {
+    color:#000;
 }
 
 input.add-channel {
@@ -55,7 +62,7 @@ input.add-channel {
     overflow-y: hidden !important;
     position: absolute;
     float: left;
-    z-index: 10009;
+    z-index: -1;
     transition: top .5s;
     -webkit-transition: top .5s;
     padding: 5px;
@@ -142,13 +149,13 @@ input.add-channel {
 
 #vid-list-tooltip {
     position: absolute;
-    top: 151px;
+    top: 150px;
     color:#fff;
     background: rgba(33,33,33,0.8);
     padding: 8px;
-    min-width: 160px;
+    /*min-width: 160px;*/
     max-width: 494px;
-    text-align: center;
+    text-align: left;
     font-weight: 400;
     font-size: 12px;
 }
