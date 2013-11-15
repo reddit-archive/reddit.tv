@@ -144,13 +144,19 @@ Globals = {
           </div>
 
           <form>
-           <input type="text" class="channel-name" placeholder="Subreddit or domain name" />
-           <input type="submit" class="channel-submit" value="Add channel" />
+            <input type="text" class="channel-name" placeholder="Subreddit or domain name" />
+            <input type="submit" class="channel-submit" value="Add channel" />
           </form>
+
+          <div id="add-channel-message"></div>
         </div>
 
         <div class="recommended channels">
           <h2>Recommended channels</h2>
+        </div>
+
+        <div class="channel-to-add channels">
+          <h2>Videos in /r/subreddit</h2>
         </div>
 
       </div>

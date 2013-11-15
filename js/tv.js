@@ -315,7 +315,11 @@ var RedditTV = Class.extend({
 			}
 		});
 
-		$('#add-channel input.channel-name').on('keyup', self.addChannelName);
+		$('#add-channel input.channel-name').on('keyup', function() {
+			self.addChannelName();
+			window.clearTimeout(self.Globals.addChannelCheck);
+			self.Globals.addChannelCheck = window.setTimeout(self.addChannelCheck, 500);
+		});
 
 		$.each(self.Globals.recommended_channels, function(i, channel) {
 			var anchor, thumb, name;
@@ -346,6 +350,7 @@ var RedditTV = Class.extend({
 					.focus();
 
 				self.addChannelName();
+				self.addChannelCheck();
 
 				return false;
 			});
@@ -496,55 +501,22 @@ var RedditTV = Class.extend({
 
 		
 		if(self.Globals.videos[this_chan.feed] === undefined){
-			var feed = self.getFeedURI(channel);
-			self.Globals.cur_chan_req = $.ajax({
-				url: "http://www.reddit.com"+feed,
-				dataType: "jsonp",
-				jsonp: "jsonp",
-				success: function(data) {
-					self.Globals.videos[this_chan.feed] = {};
-					self.Globals.videos[this_chan.feed].video = []; //clear out stored videos
-					for(var x in data.data.children){
-						if(self.isVideo(data.data.children[x].data.domain) && (data.data.children[x].data.score > 1)){
-							if(self.isEmpty(data.data.children[x].data.media_embed) || data.data.children[x].data.domain === 'youtube.com' || data.data.children[x].data.domain === 'youtu.be'){
-								var created = self.createEmbed(data.data.children[x].data.url, data.data.children[x].data.domain);
-								if(created !== false){
-									data.data.children[x].data.media_embed.content = created.embed;
-									data.data.children[x].data.media = {};
-									data.data.children[x].data.media.oembed = {};
-									data.data.children[x].data.media.oembed.thumbnail_url = created.thumbnail;
-								}
-							}
-							if(data.data.children[x].data.media_embed.content){
-								self.Globals.videos[this_chan.feed].video.push(data.data.children[x].data);
-							}
-						}
-					}
+			self.redditApiCall('videos', { 'channel': this_chan, 'video_id': video_id }, function(data, local) {
+					var this_chan = local.channel,
+					    video_id  = local.video_id;
 
-					//remove duplicates
-					self.Globals.videos[this_chan.feed].video = self.filterVideoDupes(self.Globals.videos[this_chan.feed].video);
-
-					if(self.Globals.videos[this_chan.feed].video.length > 0){
-						if(video_id !== null){
+					if (self.Globals.videos[this_chan.feed].video.length > 0) {
+						if (video_id !== null) {
 							self.loadVideoById(video_id);
-						}else{
+						} else {
 							self.loadVideoList(this_chan);
 							self.Globals.cur_video = 0;
 							self.loadVideo('first');
 						}
-						// $video_embed.removeClass('loading');
-					}else{
-						// $video_embed.removeClass('loading');
+					} else {
 						alert('No videos found in '+this_chan.channel);
 					}
-					$('body').removeClass('video-loading');
-				},
-				error: function(jXHR, textStatus, errorThrown) {
-					if(textStatus !== 'abort'){
-						alert('Could not load feed. Is reddit down?');
-					}
-				}
-			});
+				});
 		}else{
 			if(self.Globals.videos[this_chan.feed].video.length > 0){
 				if(video_id !== null){
@@ -725,6 +697,60 @@ var RedditTV = Class.extend({
 		});
 	}, // apiCall()
 
+	redditApiCall: function(action, data, successCallback, errorCallback) {
+		if ( !$.isFunction(successCallback) ) successCallback = function(){};
+		if ( !$.isFunction(errorCallback) )	errorCallback	= function(){};
+
+		if (action == 'videos') {
+			var this_chan = data.channel,
+			    feed = self.getFeedURI(this_chan),
+			    video_id = data.video_id;
+
+			self.Globals.cur_chan_req = $.ajax({
+				url: 'http://www.reddit.com' + feed,
+				dataType: 'jsonp',
+				jsonp: 'jsonp',
+				context: data,
+				success: function(data) {
+					var this_chan = this.channel;
+
+					self.Globals.videos[this_chan.feed] = {};
+					self.Globals.videos[this_chan.feed].video = []; //clear out stored videos
+					for (var x in data.data.children) {
+						if (self.isVideo(data.data.children[x].data.domain) && (data.data.children[x].data.score > 1)) {
+							if ( self.isEmpty(data.data.children[x].data.media_embed) || data.data.children[x].data.domain === 'youtube.com' || data.data.children[x].data.domain === 'youtu.be' ){
+								var created = self.createEmbed(data.data.children[x].data.url, data.data.children[x].data.domain);
+								if (created !== false) {
+									data.data.children[x].data.media_embed.content = created.embed;
+									data.data.children[x].data.media = {};
+									data.data.children[x].data.media.oembed = {};
+									data.data.children[x].data.media.oembed.thumbnail_url = created.thumbnail;
+								}
+							}
+							if (data.data.children[x].data.media_embed.content) {
+								self.Globals.videos[this_chan.feed].video.push(data.data.children[x].data);
+							}
+						}
+					}
+
+					//remove duplicates
+					self.Globals.videos[this_chan.feed].video = self.filterVideoDupes(self.Globals.videos[this_chan.feed].video);
+
+					successCallback(data, this);
+
+					$('body').removeClass('video-loading');
+				},
+				error: function(jXHR, textStatus, errorThrown) {
+					if(textStatus !== 'abort'){
+						alert('Could not load feed. Is reddit down?');
+					}
+
+					errorCallback(jXHR, textStatus, errorThrown);
+				}
+			});
+		} // action == videos
+	}, // redditApiCall()
+
 	checkAnchor: function() {
 		/* Anchor Checker */
 		//check fo anchor changes, if there are do stuff
@@ -799,9 +825,8 @@ var RedditTV = Class.extend({
 	}, // getChanName()
 
 	getChan: function(channel) {
-		console.log('getChan():', channel);
 		for(var x in self.Globals.channels){
-			if(self.Globals.channels[x].channel === channel || self.Globals.channels[x].feed === channel){
+			if(self.Globals.channels[x].feed === channel){
 				return x;
 			}
 		}
@@ -1262,14 +1287,72 @@ var RedditTV = Class.extend({
 		return false;
 	}, // addChannelFromForm()
 
-	addChannel: function(subreddit) {
-		var click;
-		if (!subreddit) {
-			subreddit = self.stripHTML($('#channel-name').val());
-			click = true;
+	addChannelName: function() {
+		var addChan = $('#add-channel'),
+		    val     = addChan.find('input.channel-name').val();
+
+		addChan.removeClass('subreddit site');
+		if (val == '') addChan.removeClass('videos');
+		
+		if ( val.match(/\w\.\w/) ) {
+			addChan.addClass('site');
+		} else if (val != '') {
+			addChan.addClass('subreddit');
 		}
-		if (!self.getChan(subreddit)) {
-			var c_data = { 'channel': subreddit, 'feed': '/r/' + subreddit };
+	}, // addChannelName()
+
+	addChannelCheck: function() {
+		var msg     = $('#add-channel-message'),
+		    channel = $('#add-channel input.channel-name').val(),
+		    videos  = self.Globals.videos[channel.feed];
+
+		if (channel == '') return;
+
+		channel = (channel.match(/\./)) ? '/domain/' + channel : '/r/' + channel;
+
+		if (self.getChan(channel)) {
+			msg.html('Channel already exists.');
+			return;
+		}
+
+		msg.html('');
+
+		if (videos) {
+			self.populateAddChanVids(channel.feed);
+		} else {
+			rtv.redditApiCall('videos', { 'channel': { 'feed': channel } }, function(data, local) { self.populateAddChanVids(local.channel.feed); });
+		}
+
+	}, // addChannelCheck()
+
+	populateAddChanVids: function(feed) {
+		var channel = self.Globals.videos[feed],
+		    div     = $('#add-channel .channel-to-add');
+
+		if (!channel || !channel.video) return; // No videos, let's handle this error later
+
+		div.find('.channel').remove();
+		div.find('h2').text('Videos in '+ feed);
+
+		$.each(channel.video, function(i, val) {
+			if (i >= 8) return false;
+			var vid = $('<a class="grid-25 channel" href="#' + feed + '"><div class="thumbnail" style="background-image: url(' + val.media.oembed.thumbnail_url + ');"></div><span class="name">' + val.title + '</span></a>');
+			vid.appendTo(div);
+		});
+
+		$('#add-channel').addClass('videos');
+	}, // populateAddChanVids()
+
+	addChannel: function(subreddit) {
+		var feed;
+
+		if (!subreddit) subreddit = self.stripHTML($('#channel-name').val());
+
+		feed = subreddit;
+		if ( !feed.match(/\//) ) feed = (subreddit.match(/\./)) ? '/domain/' + subreddit : '/r/' + subreddit;
+
+		if (!self.getChan(feed)) {
+			var c_data = { 'channel': subreddit, 'feed': feed };
 			self.Globals.channels.unshift(c_data);
 			self.Globals.user_channels.unshift(c_data);
 			
