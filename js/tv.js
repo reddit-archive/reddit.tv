@@ -321,6 +321,8 @@ var RedditTV = Class.extend({
 			if ( $(this).data('val') == $(this).val() ) return;
 			$(this).data('val', $(this).val());
 
+			$('#add-channel-message').text('');
+
 			window.clearTimeout(self.Globals.addChannelCheck);
 			self.Globals.addChannelCheck = window.setTimeout(self.addChannelCheck, 500);
 		});
@@ -704,13 +706,13 @@ var RedditTV = Class.extend({
 		var last_req = self.Globals.cur_chan_req;
 		if (last_req !== null) last_req.abort();
 
-		var redditApiError = function(jXHR, textStatus, errorThrown) {
+		var redditApiError = function(jXHR, textStatus, errorThrown, local) {
 			if(textStatus !== 'abort') {
 				// alert('Could not load feed. Is reddit down?');
 			}
 
 			console.log(jXHR, textStatus, errorThrown);
-			errorCallback(jXHR, textStatus, errorThrown);
+			errorCallback(jXHR, textStatus, errorThrown, local);
 
 			$('body').removeClass('video-loading');
 		}
@@ -723,7 +725,7 @@ var RedditTV = Class.extend({
 				url: 'http://www.reddit.com' + self.getFeedURI(this_chan),
 				dataType: 'jsonp',
 				jsonp: 'jsonp',
-				timeout: 3000, // Server doesn't return JSON on error, have to rely on this.
+				timeout: 5000, // Server doesn't return JSON on error, have to rely on this.
 				context: data,
 				success: function(data, textStatus) {
 					var this_chan = this.channel;
@@ -749,6 +751,10 @@ var RedditTV = Class.extend({
 
 					//remove duplicates
 					self.Globals.videos[this_chan.feed].video = self.filterVideoDupes(self.Globals.videos[this_chan.feed].video);
+					this.videos = self.Globals.videos[this_chan.feed].video;
+					this.data = data;
+
+					if (!this.videos.length) return redditApiError(null, textStatus, null, this);
 
 					successCallback(data, this);
 
@@ -757,7 +763,9 @@ var RedditTV = Class.extend({
 			});
 		} // action == videos
 
-		self.Globals.cur_chan_req.error(redditApiError);
+		self.Globals.cur_chan_req.error(function(jXHR, textStatus, errorThrown) {
+			redditApiError(jXHR, textStatus, errorThrown, this);
+		});
 	}, // redditApiCall()
 
 	checkAnchor: function() {
@@ -1321,7 +1329,8 @@ var RedditTV = Class.extend({
 		    channel = $('#add-channel input.channel-name').val(),
 		    videos;
 
-		if (channel == '' || $('#add-channel').hasClass('loading')) return;
+		// I don't think any subreddits less than 3 characters exist, and return non-JSONP 404s which bug up $.ajax anyway
+		if (channel.length < 3 || $('#add-channel').hasClass('loading')) return;
 
 		channel = (channel.match(/\./)) ? '/domain/' + channel : '/r/' + channel;
 		videos  = self.Globals.videos[channel];
@@ -1337,22 +1346,40 @@ var RedditTV = Class.extend({
 			self.populateAddChanVids(channel);
 		} else {
 			$('#add-channel').addClass('loading');
-			if ( !$('#add-channel').hasClass('videos') ) {
-				$('#add-channel .recommended.channels').fadeOut(200);
-			}
-
-			rtv.redditApiCall('videos', { 'channel': { 'feed': channel } },
+			self.redditApiCall('videos', { 'channel': { 'feed': channel } },
 				function(data, local) {
 					self.populateAddChanVids(local.channel.feed);
 					$('#add-channel').removeClass('loading');
 				},
-				function() {
+				function(jXHR, textStatus, errorThrown, local) {
 					var msg     = $('#add-channel-message'),
-					    channel = $('#add-channel input.channel-name').val();
+					    channel = $('#add-channel input.channel-name').val(),
+					    addChan = $('#add-channel'),
+					    errorTxt;
 
-					$('#add-channel').removeClass('loading');
+					addChan.removeClass('loading');
 
-					msg.html()
+					if (addChan.hasClass('videos')) {
+						addChan.find('.channel-to-add').fadeOut(200, function() {
+							addChan.removeClass('videos');
+						});
+						addChan.find('.recommended.channels').fadeIn(200);
+					}
+
+					if (textStatus == 'success') {
+						errorTxt = 'Subreddit exists, ';
+						if ( !local.videos.length || !local.data.data.children.length ) {
+							errorTxt += 'but contains no ';
+							errorTxt += (!local.data.data.children.length) ? 'posts.' : 'video posts.';
+						} else {
+							errorTxt += 'but errored.';
+						}
+					} else {
+						errorTxt = 'Error loading feed.';
+						if (local.channel.feed.match(/^\/r\//)) errorTxt += '.. Are you sure the <a href="http://reddit.com' + local.channel.feed + '" target="_blank">subreddit exists?</a>';
+					}
+
+					msg.html(errorTxt);
 				}
 			);
 		}
@@ -1365,6 +1392,10 @@ var RedditTV = Class.extend({
 		    chans   = $('#add-channel .channel-to-add .channel');
 
 		if (!channel || !channel.video) return; // No videos, let's handle this error later
+
+		if ( !$('#add-channel').hasClass('videos') ) {
+			$('#add-channel .recommended.channels').fadeOut(200);
+		}
 
 		div.find('h2').text(feed);
 

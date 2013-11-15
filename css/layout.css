@@ -706,6 +706,7 @@ body.video-loading #loading {
 }
 
 #add-channel-message {
+    z-index: 9001;
     position: absolute;
     left: 0px;
     bottom: -40px;
