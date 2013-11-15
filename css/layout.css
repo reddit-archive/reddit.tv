@@ -617,7 +617,7 @@ body.video-loading #loading {
     float: left;
     text-transform: uppercase;
     text-align: center;
-    background: #488dc8;
+    background: #488dc8 none no-repeat center center;
     color: #fff;
     width: calc(40% - 15px);
     right: 10px;   
@@ -628,6 +628,11 @@ body.video-loading #loading {
 
 #add-channel .channel-submit:hover, #add-channel .channel-submit:active {
     color: #000;
+}
+
+#add-channel.loading .channel-submit {
+    color: transparent;
+    background-image: url(../img/channel-loader.gif);
 }
 
 #add-channel .subreddit {
@@ -683,6 +688,10 @@ body.video-loading #loading {
 
 #add-channel .channels h2 {
     margin-top: 5px;
+}
+
+#add-channel .channel-to-add h2 {
+    text-transform: none;
 }
 
 #add-channel .channels .channel {

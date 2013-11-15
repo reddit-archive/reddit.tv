@@ -316,6 +316,11 @@ var RedditTV = Class.extend({
 
 		$('#add-channel input.channel-name').on('keyup', function() {
 			self.addChannelName();
+
+			// Only continue if the value has changed, no arrow keys, etc
+			if ( $(this).data('val') == $(this).val() ) return;
+			$(this).data('val', $(this).val());
+
 			window.clearTimeout(self.Globals.addChannelCheck);
 			self.Globals.addChannelCheck = window.setTimeout(self.addChannelCheck, 500);
 		});
@@ -348,6 +353,8 @@ var RedditTV = Class.extend({
 					.val( $(this).attr('data-feed').replace(/^\/\w+\//, '') )
 					.focus();
 
+				$('#add-channel .recommended.channels').fadeOut(200);
+				$('#add-channel .channel-to-add .channel').remove();
 				self.addChannelName();
 				self.addChannelCheck();
 
@@ -458,9 +465,7 @@ var RedditTV = Class.extend({
 
 	loadChannel: function(channel, video_id) {
 		// console.log('[loadChannel]', channel, video_id);
-		var last_req = self.Globals.cur_chan_req,
-			// this_chan = getChan(channel),
-			this_chan = channel,
+		var this_chan = channel,
 			$video_embed = $('#video-embed'),
 			$video_title = $('#video-title'),
 			title;
@@ -468,10 +473,6 @@ var RedditTV = Class.extend({
 		// update promo state
 		$('#promo-channel li').removeClass('chan-selected');
 
-		if(last_req !== null){
-			last_req.abort();
-		}
-		
 		self.Globals.shuffled = [];
 		self.Globals.cur_chan = this_chan;
 		
@@ -700,17 +701,31 @@ var RedditTV = Class.extend({
 		if ( !$.isFunction(successCallback) ) successCallback = function(){};
 		if ( !$.isFunction(errorCallback) )	errorCallback	= function(){};
 
+		var last_req = self.Globals.cur_chan_req;
+		if (last_req !== null) last_req.abort();
+
+		var redditApiError = function(jXHR, textStatus, errorThrown) {
+			if(textStatus !== 'abort') {
+				// alert('Could not load feed. Is reddit down?');
+			}
+
+			console.log(jXHR, textStatus, errorThrown);
+			errorCallback(jXHR, textStatus, errorThrown);
+
+			$('body').removeClass('video-loading');
+		}
+
 		if (action == 'videos') {
-			var this_chan = data.channel,
-			    feed = self.getFeedURI(this_chan),
-			    video_id = data.video_id;
+			var video_id  = data.video_id,
+			    this_chan = data.channel;
 
 			self.Globals.cur_chan_req = $.ajax({
-				url: 'http://www.reddit.com' + feed,
+				url: 'http://www.reddit.com' + self.getFeedURI(this_chan),
 				dataType: 'jsonp',
 				jsonp: 'jsonp',
+				timeout: 3000, // Server doesn't return JSON on error, have to rely on this.
 				context: data,
-				success: function(data) {
+				success: function(data, textStatus) {
 					var this_chan = this.channel;
 
 					self.Globals.videos[this_chan.feed] = {};
@@ -738,16 +753,11 @@ var RedditTV = Class.extend({
 					successCallback(data, this);
 
 					$('body').removeClass('video-loading');
-				},
-				error: function(jXHR, textStatus, errorThrown) {
-					if(textStatus !== 'abort'){
-						alert('Could not load feed. Is reddit down?');
-					}
-
-					errorCallback(jXHR, textStatus, errorThrown);
 				}
 			});
 		} // action == videos
+
+		self.Globals.cur_chan_req.error(redditApiError);
 	}, // redditApiCall()
 
 	checkAnchor: function() {
@@ -1130,7 +1140,7 @@ var RedditTV = Class.extend({
 
 		if ( this_video.title && !this_video.title_unesc ) {
 			this_video.title_unesc = $.unescapifyHTML(this_video.title);
-			this_video.title_quot  = String(this_video.title_unesc).replace(/\"/g,'&quot;');
+			this_video.title_quot  = this.escape(this_video.title_unesc);
 		}
 		if ( !this_video.title ) this_video.title_unesc = this_video.title_quot = '';
 
@@ -1278,7 +1288,10 @@ var RedditTV = Class.extend({
 	}, // toggleAddChannel()
 
 	addChannelFromForm: function() {
-		var channel = $('#add-channel input.channel-name').val();
+		var addChan = $('#add-channel'),
+		    channel = addChan.find('input.channel-name').val();
+
+		if (addChan.hasClass('loading')) return false;
 
 		if (channel != '')
 			self.addChannel(channel);
@@ -1291,7 +1304,10 @@ var RedditTV = Class.extend({
 		    val     = addChan.find('input.channel-name').val();
 
 		addChan.removeClass('subreddit site');
-		if (val == '') addChan.removeClass('videos');
+		if (val == '') {
+			addChan.removeClass('videos');
+			addChan.find('.recommended.channels').show();
+		}
 		
 		if ( val.match(/\w\.\w/) ) {
 			addChan.addClass('site');
@@ -1303,11 +1319,12 @@ var RedditTV = Class.extend({
 	addChannelCheck: function() {
 		var msg     = $('#add-channel-message'),
 		    channel = $('#add-channel input.channel-name').val(),
-		    videos  = self.Globals.videos[channel.feed];
+		    videos;
 
-		if (channel == '') return;
+		if (channel == '' || $('#add-channel').hasClass('loading')) return;
 
 		channel = (channel.match(/\./)) ? '/domain/' + channel : '/r/' + channel;
+		videos  = self.Globals.videos[channel];
 
 		if (self.getChan(channel)) {
 			msg.html('Channel already exists.');
@@ -1317,26 +1334,52 @@ var RedditTV = Class.extend({
 		msg.html('');
 
 		if (videos) {
-			self.populateAddChanVids(channel.feed);
+			self.populateAddChanVids(channel);
 		} else {
-			rtv.redditApiCall('videos', { 'channel': { 'feed': channel } }, function(data, local) { self.populateAddChanVids(local.channel.feed); });
+			$('#add-channel').addClass('loading');
+			if ( !$('#add-channel').hasClass('videos') ) {
+				$('#add-channel .recommended.channels').fadeOut(200);
+			}
+
+			rtv.redditApiCall('videos', { 'channel': { 'feed': channel } },
+				function(data, local) {
+					self.populateAddChanVids(local.channel.feed);
+					$('#add-channel').removeClass('loading');
+				},
+				function() {
+					var msg     = $('#add-channel-message'),
+					    channel = $('#add-channel input.channel-name').val();
+
+					$('#add-channel').removeClass('loading');
+
+					msg.html()
+				}
+			);
 		}
 
 	}, // addChannelCheck()
 
 	populateAddChanVids: function(feed) {
 		var channel = self.Globals.videos[feed],
-		    div     = $('#add-channel .channel-to-add');
+		    div     = $('#add-channel .channel-to-add'),
+		    chans   = $('#add-channel .channel-to-add .channel');
 
 		if (!channel || !channel.video) return; // No videos, let's handle this error later
 
-		div.find('.channel').remove();
-		div.find('h2').text('Videos in '+ feed);
+		div.find('h2').text(feed);
 
 		$.each(channel.video, function(i, val) {
 			if (i >= 8) return false;
-			var vid = $('<a class="grid-25 channel" href="#' + feed + '"><div class="thumbnail" style="background-image: url(' + val.media.oembed.thumbnail_url + ');"></div><span class="name">' + val.title + '</span></a>');
-			vid.appendTo(div);
+			var vid = $('<a class="grid-25 channel" href="#' + feed + '/' + val.id + '"><div class="thumbnail" style="background-image: url(' + val.media.oembed.thumbnail_url + ');"></div><span class="name">' + val.title + '</span></a>');
+
+			if (chans.length) {
+				chans.eq(i).show().delay(i * 50).fadeOut(200, function() {
+					$(this).replaceWith(vid).fadeIn(200);
+				});
+			} else {
+				vid.hide().delay(i * 50).fadeIn(200)
+					.appendTo(div);
+			}
 		});
 
 		$('#add-channel').addClass('videos');
@@ -1362,6 +1405,10 @@ var RedditTV = Class.extend({
 
 		return false;
 	}, // addChannel()
+
+	channelType: function(channel) {
+		return (subreddit.match(/(\/domain\/|\.)/)) ? 'domain' : 'subreddit';
+	},
 
 	getRandomAd: function() {
 		if ( self.Globals.ads.used.length == self.Globals.ads.videos.length ) {
@@ -1400,7 +1447,26 @@ var RedditTV = Class.extend({
 	gaHashTrack: function() {
 		if(!_gaq) return;
 		_gaq.push(['_trackPageview',location.pathname + location.hash]);
-	}
+	},
+
+	escape: function(string) {
+		// List of HTML entities for escaping.
+		var htmlEscapes = {
+			'&': '&amp;',
+			'<': '&lt;',
+			'>': '&gt;',
+			'"': '&quot;',
+			"'": '&#x27;',
+			'/': '&#x2F;'
+		};
+
+		// Regex containing the keys listed immediately above.
+		var htmlEscaper = /[&<>"'\/]/g;
+
+		return ('' + string).replace(htmlEscaper, function(match) {
+			return htmlEscapes[match];
+		});
+	} // escape() [stolen from _.js]
 });
 
 var rtv;
