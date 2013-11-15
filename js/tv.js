@@ -477,10 +477,12 @@ var RedditTV = Class.extend({
 
 	loadChannel: function(channel, video_id) {
 		// console.log('[loadChannel]', channel, video_id);
-		var this_chan = channel,
-			$video_embed = $('#video-embed'),
+		var $video_embed = $('#video-embed'),
 			$video_title = $('#video-title'),
-			title;
+			this_chan, title, getChan;
+
+		getChan = self.getChanObj(channel.feed);
+		this_chan = (getChan) ? getChan : channel;
 
 		// update promo state
 		$('#promo-channel li').removeClass('chan-selected');
@@ -499,8 +501,13 @@ var RedditTV = Class.extend({
 		title = "/"+title[1]+"/"+title[2];
 
 		$video_title.html('Loading '+title+' ...');
-		// $video_embed.addClass('loading');
-		self.loadingAnimation(title);
+		var thumbId = video_id;
+		if (!thumbId) {
+			var vidFeed = self.Globals.videos[channel.feed];
+			if (vidFeed && vidFeed.video && vidFeed.video.length) thumbId = vidFeed.video[0].id;
+		}
+		var loadingThumb = (!thumbId && this_chan.thumbnail) ? this_chan.thumbnail : self.getThumbnailUrl(channel, thumbId);
+		self.loadingAnimation(title, loadingThumb);
 		$video_embed.empty();
 		
 		// TODO: Change to highlight the channel in the grid instead
@@ -636,11 +643,15 @@ var RedditTV = Class.extend({
 	},
 
 	getThumbnailUrl: function(chan, video_id) {
-		var video = (typeof chan == 'object') ? chan.video[video_id] : self.Globals.videos[chan].video[video_id];
+		var video;
+		if (typeof chan == 'object') {
+			if (!chan.video) return false;
+ 			video = chan.video[video_id];
+		} else {
+			if (!self.Globals.videos[chan].video) return false;
+			video = self.Globals.videos[chan].video[video_id];
+		}
 
-		/*if (self.sfwCheck(video_id, chan)) {
-			return 'img/nsfw.png';
-		}*/
 		if (video.media.oembed) {
 			return video.media.oembed.thumbnail_url !== undefined ? 
 				video.media.oembed.thumbnail_url :
@@ -859,6 +870,11 @@ var RedditTV = Class.extend({
 		}
 		return false;
 	}, // getChan()
+
+	getChanObj: function(channel) {
+		var getChan = self.getChan(channel);
+		return (getChan !== false) ? self.Globals.channels[getChan] : getChan;
+	}, // getChanObj()
 
 	videoListCloseTimeout: function() {
 		// console.log('[videoListMouse] '+videoListMouse);
@@ -1435,7 +1451,7 @@ var RedditTV = Class.extend({
 		if ( !feed.match(/\//) ) feed = (subreddit.match(/\./)) ? '/domain/' + subreddit : '/r/' + subreddit;
 
 		if (!self.getChan(feed)) {
-			var c_data = { 'channel': subreddit, 'feed': feed };
+			var c_data = { 'channel': subreddit, 'feed': feed, 'owner': 'user' };
 			self.Globals.channels.unshift(c_data);
 			self.Globals.user_channels.unshift(c_data);
 			
