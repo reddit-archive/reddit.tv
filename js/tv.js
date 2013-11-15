@@ -1128,12 +1128,13 @@ var RedditTV = Class.extend({
 			embed = self.prepEmbed(embed, 'size');
 			$('#video-container').toggleClass('promo', promo);
 
+			var redditlink = 'http://reddit.com'+$.unescapifyHTML(video.permalink);
+
 			var videoTitle = '<a href="' + redditlink + '" target="_blank"'
 									+ ' title="' + video.title_quot + '">'
 									+ video.title_unesc + '</a>';
 			if (promo) videoTitle = ( video.title ) ? video.title_unesc : '';
 
-			var redditlink = 'http://reddit.com'+$.unescapifyHTML(video.permalink);
 			$('#video-title').html(videoTitle);
 			$('#video-comments-link').attr("href", redditlink);
 			$('#video-tweet-link').attr("href", "https://twitter.com/intent/tweet?original_referer="
