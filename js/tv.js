@@ -188,34 +188,33 @@ var RedditTV = Class.extend({
 		});
 
 		$(document).keydown(function (e) {
-			return true; // Let's disable these for now
 			if (e.shiftKey || e.metaKey || e.ctrlKey || e.altKey) return true;
 
 			if(!$(e.target).is('form>*, input')) {
 				var keyCode = e.keyCode || e.which, arrow = {left: 37, up: 38, right: 39, down: 40 };
 				switch (keyCode) {
 				case arrow.left:  case 72: // h
-					loadVideo('prev');
+					rtv.loadVideo('prev');
 					break;
 				case arrow.up:	case 75: // k
-					chgChan('up');
+					rtv.chgChan('up');
 					break;
 				case arrow.right: case 76: // l
-					loadVideo('next');
+					rtv.loadVideo('next');
 					break;
 				case arrow.down:  case 74: // j
-					chgChan('down');
+					rtv.chgChan('down');
 					break;
 				case 32:
-					togglePlay();
+					rtv.togglePlay();
 					break;
 				case 70:
 					$('#fill').attr('checked', true);
-					fillScreen();
+					rtv.fillScreen();
 					break;
 				case 27:
 					if($('#fill').is(':checked')){
-						fillScreen();
+						rtv.fillScreen();
 					}
 					break;
 				case 67:
