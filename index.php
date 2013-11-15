@@ -162,12 +162,19 @@ Globals = {
       </div>
     </div>
   </div>
+
   <div id="channels" class="channels grid-container">
     <a id="add-channel-button" class="grid-25 channel" href="#add-channel">
       <div class="thumbnail"></div>
       <span class="name">Add Channel</span>
     </a>
   </div>
+
+  <footer>
+    <div class="grid-container">
+      Privacy Policy, etc
+    </div>
+  </footer>
 
 <div id="vid-list-tooltip"></div>
 
