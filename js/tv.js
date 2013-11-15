@@ -440,10 +440,20 @@ var RedditTV = Class.extend({
 				'channel_thumbnail',
 				{ 'feed' : chan.feed },
 				function(data) {
-					var channel = data[0],
-						thumb	= channel.thumbnail_url;
+					var channel   = data[0],
+						thumb	  = channel.thumbnail_url,
+						chanIndex = self.getChan(channel.feed),
+						chanObj   = self.Globals.channels[chanIndex];
+
 					if (!thumb || thumb == '') return;
 
+					if (chanObj) {
+						chanObj.thumbnail = thumb;
+						if (chanObj.owner == 'user') {
+							self.Globals.user_channels[chanIndex] = chanObj;
+							$.jStorage.set('user_channels', self.Globals.user_channels);
+						}
+					}
 					$('#channels a.channel[data-feed="' + channel.feed + '"]').find('.thumbnail')
 						.css({
 							'background-image': 'url(' + thumb + ')'
