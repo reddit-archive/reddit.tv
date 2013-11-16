@@ -126,7 +126,7 @@ Globals = {
         </div>
       </div>
 
-      <div id="add-channel">
+      <div id="add-channel" class="disabled">
         <div id="video-return"></div>
 
         <div class="grid-50 prefix-50 text">

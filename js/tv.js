@@ -386,6 +386,7 @@ var RedditTV = Class.extend({
 			$(this).data('val', $(this).val());
 
 			$('#add-channel-message').text('');
+			$('#add-channel').addClass('disabled');
 
 			window.clearTimeout(self.Globals.addChannelCheck);
 			self.Globals.addChannelCheck = window.setTimeout(self.addChannelCheck, 500);
@@ -1408,10 +1409,11 @@ var RedditTV = Class.extend({
 	}, // toggleAddChannel()
 
 	addChannelFromForm: function() {
-		var addChan = $('#add-channel'),
-		    channel = addChan.find('input.channel-name').val();
+		var addChan   = $('#add-channel'),
+		    channel   = addChan.find('input.channel-name').val(),
+		    submitBtn = addChan.find('input.channel-submit');
 
-		if (addChan.hasClass('loading')) return false;
+		if (addChan.hasClass('loading') || addChan.hasClass('disabled')) return false;
 
 		if (channel != '')
 			self.addChannel(channel);
@@ -1500,10 +1502,13 @@ var RedditTV = Class.extend({
 
 	populateAddChanVids: function(feed) {
 		var channel = self.Globals.videos[feed],
+		    addChan = $('#add-channel'),
 		    div     = $('#add-channel .channel-to-add'),
 		    chans   = $('#add-channel .channel-to-add .channel');
 
 		if (!channel || !channel.video) return; // No videos, let's handle this error later
+
+		addChan.removeClass('disabled');
 
 		if ( !$('#add-channel').hasClass('videos') ) {
 			$('#add-channel .recommended.channels').fadeOut(200);
