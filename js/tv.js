@@ -265,6 +265,70 @@ var RedditTV = Class.extend({
 			}
 		);
 
+		// Channel thumbnail delete onClicks
+		$('#channels').on(
+			'click',
+			'a.channel span.delete',
+			function() {
+				var thumb  = $(this).parent(),
+				    anchor = $(this).parents('a.channel'),
+				    confirm;
+
+				anchor.addClass('deleting');
+				confirm = $('<div class="delete confirm">Are you sure you want to delete this channel?<button type="button" class="btn btn-primary" title="Delete">YES</button></div>');
+				thumb.append(confirm);
+				confirm.hide().fadeIn(100);
+
+				return false;
+			}
+		);
+
+		// Channel thumbnail delete bindings
+		$('#channels').on(
+			'click',
+			'a.channel.deleting button',
+			function() {
+				var anchor    = $(this).parents('a.channel'),
+				    feed      = anchor.data('feed'),
+				    deleted   = self.removeChannel(feed),
+				    isCurChan = (self.Globals.cur_chan.feed == feed);
+
+				if (deleted && isCurChan) {
+					anchor
+						.addClass('temp')
+						.removeClass('deleting')
+						.find('.thumbnail span.delete')
+							.attr({
+								className: 'add',
+								title: 'Add this channel permanently'
+							})
+							.text('+');
+
+					anchor.find('.thumbnail .confirm').fadeOut(100, function() {
+						$(this).remove();
+					});
+				}
+
+				if (deleted && !isCurChan) anchor.remove();
+
+				return false;
+			}
+		);
+
+		// Remove deletion confirmation on mouseleave
+		$('#channels').on(
+			'mouseleave',
+			'a.channel.deleting',
+			function() {
+				var thumb  = $(this).find('.thumbnail');
+
+				$(this).removeClass('deleting');
+				$(this).find('.thumbnail .confirm').fadeOut(100, function() {
+					$(this).remove();
+				});
+			}
+		);
+
 		// VidList tooltips
 		$('#video-list').on(
 			'mouseenter mouseleave',
@@ -417,15 +481,24 @@ var RedditTV = Class.extend({
 			remove_str = '<a id="remove-'+chan+'" class="remove-chan">-</a>';
 		}*/
 
-		$channel
-			.show()
-			.appendTo('#channels')
-			.attr({
+		var chanAttr = {
 				// id: 'channel-' + chan,
 				href: '#' + chan.feed,
 				title: chan_title,
 				'data-feed' : chan.feed
-			})
+			};
+
+		if (chan.owner) {
+			chanAttr['data-owner'] = chan.owner;
+			$channel.addClass(chan.owner)
+				.find('.thumbnail')
+				.append('<span class="delete" title="Delete this channel">&times;</span>');
+		}
+
+		$channel
+			.show()
+			.appendTo('#channels')
+			.attr(chanAttr)
 			.find('.name')
 				.html(display_title);
 			// .removeClass('loading') // temp
@@ -435,7 +508,9 @@ var RedditTV = Class.extend({
 				.css({
 					'background-image': 'url(' + chan.thumbnail + ')'
 				});
-		} else {
+		}
+
+		if ( !chan.thumbnail || chan.owner == 'user' ) { // get the newest thumbnail if it's a user channel
 			self.apiCall(
 				'channel_thumbnail',
 				{ 'feed' : chan.feed },
@@ -866,6 +941,16 @@ var RedditTV = Class.extend({
 		for(var x in self.Globals.channels){
 			if(self.Globals.channels[x].feed === channel){
 				return x;
+			}
+		}
+		return false;
+	}, // getChan()
+
+	getChanUser: function(channel, user) {
+		var channels = (user != undefined && user != true) ? self.Globals.user_channels : self.Globals.channels;
+		for (var x in channels) {
+			if (channels[x].feed === channel) {
+				return (user) ? self.getChan(channel, x) : x;
 			}
 		}
 		return false;
@@ -1463,6 +1548,24 @@ var RedditTV = Class.extend({
 
 		return false;
 	}, // addChannel()
+
+	removeChannel: function(feed) {
+		var chanIndex = self.getChan(feed),
+		    channel   = self.Globals.channels[chanIndex];
+		    canDelete = false;
+
+		if (!chanIndex || !channel) return false;
+
+		if (channel.owner == 'user') canDelete = true;
+
+		if (canDelete) {
+			self.Globals.channels.splice(chanIndex, 1);
+			self.Globals.user_channels.splice(chanIndex, 1);
+			$.jStorage.set('user_channels', self.Globals.user_channels);
+		}
+
+		return canDelete;
+	}, // removeChannel()
 
 	channelType: function(channel) {
 		return (subreddit.match(/(\/domain\/|\.)/)) ? 'domain' : 'subreddit';
