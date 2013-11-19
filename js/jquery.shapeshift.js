@@ -6,6 +6,7 @@
     pluginName = "shapeshift";
     defaults = {
       selector: "*",
+      ignore: null,
       enableDrag: true,
       enableCrossDrop: true,
       enableResize: true,
@@ -253,10 +254,12 @@
             placeholder_class = options.placeholderClass;
             $child = $child.siblings("." + placeholder_class);
           }
-          if (animated && !is_dragged_child) {
-            $child.stop(true, false).animate(attributes, animation_speed, function() {});
-          } else {
-            $child.css(attributes);
+          if ( options.ignore && !$child.is(options.ignore) ) {
+              if (animated && !is_dragged_child) {
+                $child.stop(true, false).animate(attributes, animation_speed, function() {});
+              } else {
+                $child.css(attributes);
+              }
           }
         }
         if (trigger_drop_finished) {
@@ -410,11 +413,13 @@
         $selected = $placeholder = $clone = selected_offset_y = selected_offset_x = null;
         drag_timeout = false;
         if (options.enableDrag) {
-          $container.children("." + active_class).filter(options.dragWhitelist).draggable({
+          if ( options.ignore ) active_class += ":not(" + options.ignore + ")"
+          $container.children("." + active_class + ":not(.ui-draggable)").filter(options.dragWhitelist).draggable({
             addClasses: false,
-            containment: 'document',
+            containment: 'parent',
             handle: options.handle,
             zIndex: 9999,
+            distance: 20,
             start: function(e, ui) {
               var selected_tag;
               _this.globals.dragging = true;
@@ -438,8 +443,6 @@
                   return drag_timeout = false;
                 }), drag_rate);
               }
-              ui.position.left = e.pageX - $selected.parent().offset().left - selected_offset_x;
-              return ui.position.top = e.pageY - $selected.parent().offset().top - selected_offset_y;
             },
             stop: function() {
               var $current_container, $original_container, $previous_container;
