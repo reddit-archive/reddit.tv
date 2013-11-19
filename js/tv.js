@@ -48,7 +48,7 @@ var RedditTV = Class.extend({
 
 			videos: [],
 			user_channels: [],
-			all_channels: [],
+			channel_sorting: [],
 			cur_video: 0,
 			cur_chan: {},
 			cur_chan_req: null,
@@ -90,7 +90,8 @@ var RedditTV = Class.extend({
 			auto_cookie = $.jStorage.get('auto'),
 			sfw_cookie = $.jStorage.get('sfw'),
 			theme_cookie = $.jStorage.get('theme'),
-			shuffle_cookie = $.jStorage.get('shuffle');
+			shuffle_cookie = $.jStorage.get('shuffle'),
+			sorting_cookie = $.jStorage.get('channel_sorting');
 
 		if(auto_cookie !== null && auto_cookie !== self.Globals.auto){
 			self.Globals.auto = (auto_cookie === 'true') ? true : false;
@@ -110,14 +111,16 @@ var RedditTV = Class.extend({
 				$('#settings .settings-' + i).addClass('active').find('input').attr('checked', true);
 		});
 
+		if (sorting_cookie !== null && sorting_cookie !== self.Globals.channel_sorting) {
+			self.Globals.channel_sorting = sorting_cookie;
+		}
+
 		if(theme_cookie !== null && theme_cookie !== self.Globals.theme){
 			self.Globals.theme = theme_cookie;
 		}
 		if(channels_cookie !== null && channels_cookie !== self.Globals.user_channels){
 			self.Globals.user_channels = channels_cookie;
-			for(var x in self.Globals.user_channels){
-				self.Globals.channels.unshift(self.Globals.user_channels[x]);
-			}
+			self.Globals.channels = self.Globals.user_channels.concat(self.Globals.channels);
 		}
 	}, // loadSettings()
 
@@ -320,6 +323,8 @@ var RedditTV = Class.extend({
 					});
 				}
 
+				self.saveChannelOrder();
+
 				return false;
 			}
 		);
@@ -459,6 +464,9 @@ var RedditTV = Class.extend({
 		
 		if (animate) channels.addClass('animate');
 
+		if ( !$('#channels[class*="shapeshifted_container"]').length )
+			channels.on('ss-arranged', self.saveChannelOrder);
+
 		channels.shapeshift({
 			selector: 'a.channel',
 			ignore: '#add-channel-button, .promo',
@@ -475,13 +483,34 @@ var RedditTV = Class.extend({
 		if (animate) channels.removeClass('animate');
 	}, // bindChannelSorting()
 
+	saveChannelOrder: function() {
+		var feeds = [];
+		$('#channels a.channel:not(#add-channel-button):not(.promo):not(.temp)').each(function() {
+			feeds.push($(this).data('feed'));
+		});
+
+		self.Globals.channel_sorting = feeds;
+
+		if (self.Globals.channels.length > feeds.length) {
+			$.each(self.Globals.channels, function(i, chan) {
+				if (self.Globals.channel_sorting.indexOf(chan.feed) == -1)
+					self.Globals.channel_sorting.push(chan.feed);
+			});
+		}
+
+		$.jStorage.set('channel_sorting', self.Globals.channel_sorting);
+	}, // saveChannelOrder()
+
 	displayChannels: function() {
 		var $channel_list = $('#channel-list'),
 			$list = $('<ul></ul>'),
-			$channel_base = $('#channels a.channel:first');
+			$channel_base = $('#channels a.channel:first'),
+			sorted = (self.Globals.channel_sorting.length);
 
-		$.each(self.Globals.channels, function(i, chan) {
-			self.displayChannel(chan);
+		var channels = (sorted) ? self.Globals.channel_sorting : self.Globals.channels;
+		$.each(channels, function(i, chan) {
+			chan = (sorted) ? self.getChanObj(chan) : chan;
+			if (chan.feed) self.displayChannel(chan);
 		});
 
     	self.bindChannelSorting();
@@ -530,11 +559,16 @@ var RedditTV = Class.extend({
 
 		$channel
 			.show()
-			.insertAfter('#add-channel-button')
 			.attr(chanAttr)
 			.find('.name')
 				.html(display_title);
 			// .removeClass('loading') // temp
+
+		if (added) {
+			$channel.insertAfter('#add-channel-button');
+		} else {
+			$channel.appendTo('#channels');
+		}
 
 		if (chan.thumbnail) {
 			$channel.find('.thumbnail')
@@ -570,8 +604,6 @@ var RedditTV = Class.extend({
 				}
 			);
 		}
-
-		$('#channels').attr('data-count', channelIndex);
 
 		if (added) {
 			self.bindChannelSorting(true);
@@ -976,7 +1008,7 @@ var RedditTV = Class.extend({
 
 	getChanName: function(feed) {
 		console.log('[getChanName]', feed);
-		var channels = $.extend(self.Globals.channels, self.Globals.user_channels);
+		var channels = self.Globals.user_channels.concat(self.Globals.channels);
 		for(var x in channels){
 			if(self.Globals.channels[x].feed.indexOf(feed) !== -1){
 				return self.Globals.channels[x].channel;
@@ -1597,6 +1629,8 @@ var RedditTV = Class.extend({
 
 			self.displayChannel(c_data, true);
 		}
+
+		self.saveChannelOrder();
 
 		return false;
 	}, // addChannel()
