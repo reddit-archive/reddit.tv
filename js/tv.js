@@ -309,7 +309,16 @@ var RedditTV = Class.extend({
 					});
 				}
 
-				if (deleted && !isCurChan) anchor.remove();
+				if (deleted && !isCurChan) {
+					anchor.transition({
+						scale   : 0,
+						opacity : 0
+					}, 300, function() {
+						$(this).remove();
+
+						self.bindChannelSorting(true);
+					});
+				}
 
 				return false;
 			}
@@ -445,6 +454,27 @@ var RedditTV = Class.extend({
 		});
 	}, // setBindings()
 
+	bindChannelSorting: function(animate) {
+		var channels = $('#channels');
+		
+		if (animate) channels.addClass('animate');
+
+		channels.shapeshift({
+			selector: 'a.channel',
+			ignore: '#add-channel-button, .promo',
+			align: 'center',
+			colWidth: 250,
+			columns: 4,
+			minColumns: 4,
+			gutterX: 0,
+			gutterY: 0,
+			paddingX: 0,
+			paddingY: 0,
+		});
+
+		if (animate) channels.removeClass('animate');
+	}, // bindChannelSorting()
+
 	displayChannels: function() {
 		var $channel_list = $('#channel-list'),
 			$list = $('<ul></ul>'),
@@ -453,9 +483,11 @@ var RedditTV = Class.extend({
 		$.each(self.Globals.channels, function(i, chan) {
 			self.displayChannel(chan);
 		});
+
+    	self.bindChannelSorting();
 	}, // displayChannels()
 
-	displayChannel: function(chan) {
+	displayChannel: function(chan, added) {
 		var title, display_title, class_str='', remove_str='',
 			$channel_base = $('#add-channel-button'),
 			$channel = $channel_base.clone().removeAttr('id');
@@ -498,7 +530,7 @@ var RedditTV = Class.extend({
 
 		$channel
 			.show()
-			.appendTo('#channels')
+			.insertAfter('#add-channel-button')
 			.attr(chanAttr)
 			.find('.name')
 				.html(display_title);
@@ -537,6 +569,21 @@ var RedditTV = Class.extend({
 
 				}
 			);
+		}
+
+		$('#channels').attr('data-count', channelIndex);
+
+		if (added) {
+			self.bindChannelSorting(true);
+			$channel.css({
+				scale   : 0,
+				opacity : 0
+			})
+			.delay(300)
+			.transition({
+				scale   : 1,
+				opacity : 1
+			}, 300);
 		}
 
 		// $('#channel>ul').prepend('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'><img src="http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg" />'+display_title+remove_str+'</li>');
@@ -1548,7 +1595,7 @@ var RedditTV = Class.extend({
 			
 			$.jStorage.set('user_channels', self.Globals.user_channels);
 
-			self.displayChannel(c_data);
+			self.displayChannel(c_data, true);
 		}
 
 		return false;

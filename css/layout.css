@@ -686,6 +686,23 @@ body.video-loading #loading {
     margin-bottom: 10px;
 }
 
+#channels a.channel {
+    min-height: 160px;
+    margin: 0;
+}
+
+#channels a.channel:not(#add-channel-button):not(.promo) .name {
+    cursor: move;
+}
+
+#channels.animate, #channels.animate a.channel {
+    -webkit-transition: all 0.3s ease-in-out;
+       -moz-transition: all 0.3s ease-in-out;
+        -ms-transition: all 0.3s ease-in-out;
+         -o-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+}
+
 #channels a.channel.user .thumbnail {
     position: relative;
 }
@@ -712,11 +729,22 @@ body.video-loading #loading {
             transition: all 0.1s ease-in-out;
 }
 
+#channels {
+    width: 1000px;
+    padding: 0;
+    position: relative;
+}
+
+#channels a.channel {
+    position: absolute;
+}
+
+
 #channels a.channel.user .thumbnail span.add {
     font-size: 24px;
 }
 
-#channels a.channel.user:hover .thumbnail span {
+#channels a.channel.user:not(.ss-dragged-child):not(.deleting):hover .thumbnail span {
     opacity: 1;
 }
 
@@ -765,7 +793,7 @@ body.video-loading #loading {
 }
 
 #add-channel .channel-to-add .name {
-    height: 21px;
+    height: 25px;
     overflow: hidden;
     text-overflow: ellipsis;
     text-transform: none;
@@ -805,15 +833,21 @@ body.video-loading #loading {
     background-size: auto;
 }
 
-.channels .channel.focus .thumbnail, .channels .channel:hover .thumbnail {
+.channels .channel.focus .thumbnail, .channels .channel:hover .thumbnail, #channels.ss-current-container .channel.ss-dragged-child .thumbnail {
     border-color: #5f99cf;
 }
 
 .name {
-    margin-top: 5px;
+    padding-top: 5px;
     display: block;
     font-weight: 600;
     font-size: 15px;
+}
+
+#channels .name {
+    padding-top: 7px;
+    background: #fff;
+    border-radius: 0 0 5px 5px;
 }
 
 /* Media queries */
