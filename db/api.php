@@ -3,47 +3,54 @@
 include_once('../lib/functions.php');
 include_once('config.php');
 
-if($_GET['action'] == 'channel_thumbnail'){
-	$feed = $_GET['feed'];
+switch($_GET['action']) {
+	case 'channel_thumbnail':
+		$feed = $_GET['feed'];
 
-	if($cacheAvailable){
-		$thumbnail_url = $memcache->get("chthmb-$feed");
-		if(!empty($thumbnail_url)){
-			$channel = new stdClass();
-			$channel->feed = $feed;
-			$channel->thumbnail_url = $thumbnail_url;
-			$channel->data_source = 'memcache';
-			echo json_encode(array($channel));
-			die();
+		if($cacheAvailable){
+			$thumbnail_url = $memcache->get("chthmb-$feed");
+			if(!empty($thumbnail_url)){
+				$channel = new stdClass();
+				$channel->feed = $feed;
+				$channel->thumbnail_url = $thumbnail_url;
+				$channel->data_source = 'memcache';
+				echo json_encode(array($channel));
+				die();
+			}
 		}
-	}
 
-	//Reload the bean
-	$channel = R::findOne('channel', ' feed = ?', array($feed));
+		//Reload the bean
+		$channel = R::findOne('channel', ' feed = ?', array($feed));
 
-	if(empty($channel) || empty($channel->thumbnail_url) || !empty($_GET['debug'])){
-		if(empty($channel))
-			$channel = R::dispense('channel');
-		$channel->feed = $feed;
-		$channel->thumbnail_url = getChannelThumbnail($feed);
+		if(empty($channel) || empty($channel->thumbnail_url) || !empty($_GET['debug'])){
+			if(empty($channel))
+				$channel = R::dispense('channel');
+			$channel->feed = $feed;
+			$channel->thumbnail_url = getChannelThumbnail($feed);
 
-		//Store the bean
-		$id = R::store($channel);
+			//Store the bean
+			$id = R::store($channel);
 
-		$channel->data_source = 'http';
-	} else {
-		$channel->data_source = 'database';
-	}
+			$channel->data_source = 'http';
+		} else {
+			$channel->data_source = 'database';
+		}
 
-	if($cacheAvailable)
-		$memcache->add("chthmb-$feed", $channel->thumbnail_url, false, 1800);
+		if($cacheAvailable)
+			$memcache->add("chthmb-$feed", $channel->thumbnail_url, false, 1800);
 
-	echo json_encode(R::exportAll($channel));
-	die();
-} else if ($_GET['action'] == 'youtube_thumbnail') {
-	getYoutubeThumbnail($_GET['id'], isset($_GET['base64']));
-} else if ($_GET['action'] == 'ads') {
-	getAds();
+		echo json_encode(R::exportAll($channel));
+		die();
+		break;
+	case 'youtube_thumbnail':
+		getYoutubeThumbnail($_GET['id'], isset($_GET['base64']));
+		break;
+	case 'ads':
+		getAds();
+		break;
+	case 'sponsored_channel':
+		getSponsoredChannel();
+		break;
 }
 
 function getChannelThumbnail($feed){
@@ -128,7 +135,7 @@ function getAds() {
 		AND DATETIME(end_date) >= DATETIME("now")
 	*/
 
-	$sponsoredvideos = R::getAll('
+	$sponsored_videos = R::getAll('
 		SELECT id, title, video_url, video_embed_code, image_url
 		FROM sponsoredvideo
 		WHERE status = 1
@@ -144,12 +151,29 @@ function getAds() {
 				'start' => (int)$settings->ads_start_at,
 				'every' => (int)$settings->ads_show_every
 				),
-		'videos' => $sponsoredvideos,
+		'videos' => $sponsored_videos,
 		'used' => Array(),
 		'last' => 9001
 		);
 
 	jsonForAjax($result);
+}
+
+function getSponsoredChannel() {
+
+	$sponsored_channel = R::getAll('
+		SELECT id, title, sponsor_name, image_url, autoplay, video_list
+		FROM sponsoredchannel
+		WHERE status = 1
+		AND start_date <= NOW()
+		AND end_date >= NOW()
+		ORDER BY start_date DESC
+		LIMIT 1
+	  '
+	);
+
+	jsonForAjax($sponsored_channel);
+
 }
 
 
