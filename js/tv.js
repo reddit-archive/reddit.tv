@@ -70,10 +70,10 @@ var RedditTV = Class.extend({
 		}, Globals); // end Globals
 
 		// Load ads
-		self.Globals.videos['/promo'] = { 'video': [] };
+		self.Globals.videos['/sponsor'] = { 'video': [] };
 		self.apiCall('ads', null, function(data) {
 			self.Globals.ads = data;
-			self.Globals.videos['/promo'].video = self.formatAdVideos(data.videos);
+			self.Globals.videos['/sponsor'].video = self.formatAdVideos(data.videos);
 			$(document).trigger('adsLoaded');
 		});
 
@@ -263,7 +263,7 @@ var RedditTV = Class.extend({
 				self.closeVideoList();
 				self.Globals.videoListMouse = false;
 
-				if ( $(this).hasClass('promo') ) {
+				if ( $(this).hasClass('sponsored') ) {
 					self.loadVideo(parseInt($(this).attr('data-adNum')), true);
 				}
 			}
@@ -480,7 +480,7 @@ var RedditTV = Class.extend({
 
 		channels.shapeshift({
 			selector: 'a.channel',
-			ignore: '#add-channel-button, .promo',
+			ignore: '#add-channel-button, .sponsored',
 			align: 'center',
 			colWidth: 250,
 			columns: 4,
@@ -496,7 +496,7 @@ var RedditTV = Class.extend({
 
 	saveChannelOrder: function() {
 		var feeds = [];
-		$('#channels a.channel:not(#add-channel-button):not(.promo):not(.temp)').each(function() {
+		$('#channels a.channel:not(#add-channel-button):not(.sponsored):not(.temp)').each(function() {
 			feeds.push($(this).data('feed'));
 		});
 
@@ -982,7 +982,7 @@ var RedditTV = Class.extend({
 							self.loadVideo(promoIndex, true);
 						});
 					} else {
-						self.loadVideo(self.findVideoById(parts[2], '/promo'), true);
+						self.loadVideo(self.findVideoById(parts[2], '/sponsor'), true);
 					}
 				}else{
 					var feed = '/' + parts[1] + '/' + parts[2];
@@ -1117,10 +1117,10 @@ var RedditTV = Class.extend({
 
 				if ( adNum == self.Globals.ads.settings.every ) {
 					ad = self.getRandomAd();
-					thumbnail = self.thumbElement(ad, {feed: '/promo' }, rtv.Globals.ads.videos.indexOf(ad));
+					thumbnail = self.thumbElement(ad, {feed: '/sponsor' }, rtv.Globals.ads.videos.indexOf(ad));
 					thumbnail.insertBefore($(this));
-					thumbnail.addClass('promo')
-						.attr('data-adNum', $('#video-list .promo.thumbnail').length - 1);
+					thumbnail.addClass('sponsored')
+						.attr('data-adNum', $('#video-list .sponsored.thumbnail').length - 1);
 
 					adNum = 1;
 				}
@@ -1150,7 +1150,7 @@ var RedditTV = Class.extend({
 		setTimeout(self.closeVideoList, 2000);
 	}, // loadVideoList()
 
-	loadVideo: function(video, promo) {
+	loadVideo: function(video, sponsored) {
 		var this_chan = self.Globals.cur_chan,
 			this_video = self.Globals.cur_video,
 			selected_video = this_video,
@@ -1158,7 +1158,7 @@ var RedditTV = Class.extend({
 			thumbAnchor, newAnchor;
 
 		if (this_chan.feed) videos_size = Object.size(self.Globals.videos[this_chan.feed].video)-1;
-		if (!promo) promo = false;
+		if (!sponsored) sponsored = false;
 
 		// if (video === false) self.loadVideo('next');
 		/*if(!videoList.open) {
@@ -1174,20 +1174,20 @@ var RedditTV = Class.extend({
 			selected_video = self.Globals.shuffled.indexOf(selected_video);
 		}
 		 
-		thumbAnchor = $('#video-list .promo.thumbnail.focus:first');
+		thumbAnchor = $('#video-list .sponsored.thumbnail.focus:first');
 		if (!thumbAnchor.length) thumbAnchor = $('#video-list-thumb-' + selected_video);
 
 		newAnchor = (video == 'next') ? thumbAnchor.next() : thumbAnchor.prev();
 		if ( newAnchor.length && (video == 'next' || video == 'prev') ) {
-			if ( thumbAnchor.hasClass('promo') ) {
+			if ( thumbAnchor.hasClass('sponsored') ) {
 				var next_video = parseInt(newAnchor.data('id'))
 				next_video = (video == 'next') ? next_video + 1 : next_video - 1;
 				this_video = selected_video = next_video;
 			}
 
-			if ( newAnchor.hasClass('promo') || thumbAnchor.hasClass('promo') ) {
+			if ( newAnchor.hasClass('sponsored') || thumbAnchor.hasClass('sponsored') ) {
 				newAnchor.trigger('click');
-				if (thumbAnchor.hasClass('promo')) window.location.hash = newAnchor.attr('href');
+				if (thumbAnchor.hasClass('sponsored')) window.location.hash = newAnchor.attr('href');
 				return;
 			}
 		}
@@ -1229,18 +1229,18 @@ var RedditTV = Class.extend({
 		}
 
 		//exit if trying to load over_18 content without confirmed over 18
-		if (!promo && self.sfwCheck(selected_video, this_chan.feed) ) {
+		if (!sponsored && self.sfwCheck(selected_video, this_chan.feed) ) {
 			return false;
 		}
 
 		if(selected_video !== this_video || video === 'first' || video === 0) {
 			self.Globals.cur_video = selected_video;
-			var video = (!promo) ? self.Globals.videos[this_chan.feed].video[selected_video] : self.Globals.ads.videos[selected_video];
+			var video = (!sponsored) ? self.Globals.videos[this_chan.feed].video[selected_video] : self.Globals.ads.videos[selected_video];
 
 			// scroll to thumbnail in video list and highlight it
-			$('#video-list .focus:not(.promo)').removeClass('focus');
+			$('#video-list .focus:not(.sponsored)').removeClass('focus');
 			// To-do: Focus and scroll to promo somehow, needs unique ID
-			if (!promo) $('#video-list-thumb-' + selected_video).addClass('focus');
+			if (!sponsored) $('#video-list-thumb-' + selected_video).addClass('focus');
 			$('#video-list:not(.scrollbar)').stop(true,true).scrollTo('.focus', { duration:1000, offset:-280 });
 			if ($('#video-list').hasClass('scrollbar')) { // Only do this for the jScrollPane-esque thing
 				var focused	  = $('#video-list .focus'),
@@ -1277,7 +1277,7 @@ var RedditTV = Class.extend({
 
 			//set location hash
 			var parts, hash = document.location.hash;
-			if (promo) {
+			if (sponsored) {
 				hash = '';
 			} else {
 				if (!hash) {
@@ -1303,14 +1303,14 @@ var RedditTV = Class.extend({
 			var embed = $.unescapifyHTML(video.media_embed.content);
 			embed = self.prepEmbed(embed, video.domain);
 			embed = self.prepEmbed(embed, 'size');
-			$('#video-container').toggleClass('promo', promo);
+			$('#video-container').toggleClass('sponsored', sponsored);
 
 			var redditlink = 'http://reddit.com'+$.unescapifyHTML(video.permalink);
 
 			var videoTitle = '<a href="' + redditlink + '" target="_blank"'
 									+ ' title="' + video.title_quot + '">'
 									+ video.title_unesc + '</a>';
-			if (promo) videoTitle = ( video.title ) ? video.title_unesc : '';
+			if (sponsored) videoTitle = ( video.title ) ? video.title_unesc : '';
 
 			$('#video-title').html(videoTitle);
 			$('#video-comments-link').attr("href", redditlink);
@@ -1347,7 +1347,7 @@ var RedditTV = Class.extend({
 	thumbElement: function(this_video, this_chan, id) {
 		var videoId, url, $thumbnail, thumbnail_image, anchorId,
 		    anchorClass = [ 'thumbnail' ],
-			isPromo = (this_chan.feed == '/promo');
+			sponsored = (this_chan.feed == '/sponsor');
 		// console.log(this_video, this_chan);
 
 		if ( this_video.title && !this_video.title_unesc ) {
@@ -1357,10 +1357,10 @@ var RedditTV = Class.extend({
 		if ( !this_video.title ) this_video.title_unesc = this_video.title_quot = '';
 
 		videoId = (self.Globals.videos[this_chan.feed]) ? self.Globals.videos[this_chan.feed].video[id].id : id;
-		url = ( this_chan.feed != '/promo' ) ? this_chan.feed + '/' + videoId : '';
+		url = ( !sponsored ) ? this_chan.feed + '/' + videoId : '';
 
-		anchorId = ( this_chan.feed != '/promo' ) ? ' id="video-list-thumb-' + id + '"' : '';
-		if (isPromo) anchorClass.push('promo');
+		anchorId = ( !sponsored ) ? ' id="video-list-thumb-' + id + '"' : '';
+		if (sponsored) anchorClass.push('sponsored');
 		$thumbnail = $('<a href="#' + url + '"' + anchorId + ' class="' + anchorClass.join(' ') + '"></a>');
 		if (this_video.title_quot) $thumbnail.attr('title', this_video.title_quot);
 		$thumbnail.data('id', id);

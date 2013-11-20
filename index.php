@@ -118,7 +118,7 @@ Globals = {
             <span id="video-sponsored-label" class="sponsored">SPONSORED </span>
             <span id="video-title"></span> 
           </div>
-          <div id="promo-actions" class="grid-30 right-align">
+          <div id="sponsored-actions" class="grid-30 right-align">
             SPONSORED
           </div>
           <div id="video-actions" class="grid-30 right-align">
