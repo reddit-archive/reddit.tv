@@ -77,6 +77,17 @@ var RedditTV = Class.extend({
 			$(document).trigger('adsLoaded');
 		});
 
+		// Load sponsored channel
+		if(self.Globals.sponsored_channels.length >= 1){
+			self.Globals.sponsored_channels = self.formatSponsoredChannels(self.Globals.sponsored_channels);
+			self.Globals.channels = self.Globals.channels.concat(self.Globals.sponsored_channels);
+			for(c in self.Globals.sponsored_channels){
+				self.Globals.videos[self.Globals.sponsored_channels[c].feed] = {
+					video: self.Globals.sponsored_channels[c].videos
+				};
+			}
+		}
+
 		self.loadSettings();
 		self.setBindings();
 		self.displayChannels();
@@ -1010,16 +1021,17 @@ var RedditTV = Class.extend({
 		console.log('[getChanName]', feed);
 		var channels = self.Globals.user_channels.concat(self.Globals.channels);
 		for(var x in channels){
-			if(self.Globals.channels[x].feed.indexOf(feed) !== -1){
-				return self.Globals.channels[x].channel;
+			if(channels[x].feed.indexOf(feed) !== -1){
+				return channels[x].channel;
 			}
 		}
 		return false;
 	}, // getChanName()
 
 	getChan: function(channel) {
-		for(var x in self.Globals.channels){
-			if(self.Globals.channels[x].feed === channel){
+		var channelList = self.Globals.channels
+		for(var x in channelList){
+			if(channelList[x].feed === channel){
 				return x;
 			}
 		}
@@ -1093,7 +1105,7 @@ var RedditTV = Class.extend({
 			.html($list);
 
 		// Populate with ads
-		if (self.Globals.ads && self.Globals.ads.videos.length > 0) {
+		if (this_chan.feed.match('/sponsor/').length == 0 && self.Globals.ads && self.Globals.ads.videos.length > 0) {
 			var adNum = 0;
 
 			$('#video-list .thumbnail').each(function(i) {
@@ -1686,6 +1698,34 @@ var RedditTV = Class.extend({
 
 		return videos;
 	}, // formatAdVideos()
+
+	formatSponsoredChannels: function(channels) {
+		for(c in channels){
+			channels[c] = {
+				channel: channels[c].channel.toLowerCase(),
+				feed: '/sponsor/'+channels[c].channel.toLowerCase().replace(/[^\w]/, ''),
+				thumbnail: channels[c].thumbnail,
+				owner: 'sponsor',
+				videos: self.formatSponsoredChannelVideos(JSON.parse(channels[c].video_list)),
+			}
+		}
+		return channels;
+	},
+
+	formatSponsoredChannelVideos: function(videos) {
+		$.each(videos, function(i, video_url) {
+			var domain  = video_url.replace(/^https?:\/\/(?:www\.)?(.*?)\/.*$/, '$1'),
+			    created = self.createEmbed(video_url, domain);
+
+			videos[i] = {};
+			videos[i].id = created.id;
+			videos[i].media = { 'oembed': { 'thumbnail_url': created.thumbnail } };
+			videos[i].media_embed = { 'content': created.embed };
+			videos[i].domain = domain;
+		});
+
+		return videos;
+	},
 
 	stripHTML: function(s) {
 		return s.replace(/[&<>"'\/]/g, '');

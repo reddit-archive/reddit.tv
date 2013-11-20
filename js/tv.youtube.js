@@ -75,6 +75,7 @@ var youtube = {
         }
         
         if(ID){
+            data.id = ID;
             data.embed = "&lt;object width=\"600\" height=\"338\"&gt;&lt;param name=\"movie\" value=\"http://www.youtube.com/v/"
             +ID+"?version=3&amp;feature=oembed"+time+"\"&gt;&lt;/param&gt;&lt;param name=\"allowFullScreen\" value=\"true\"&gt;&lt;/param&gt;&lt;param name=\"allowscriptaccess\" value=\"always\"&gt;&lt;/param&gt;&lt;embed src=\"http://www.youtube.com/v/"+ID+"?version=3&amp;feature=oembed"+time+"\" type=\"application/x-shockwave-flash\" width=\"600\" height=\"338\" allowscriptaccess=\"always\" allowfullscreen=\"true\"&gt;&lt;/embed&gt;&lt;/object&gt;";
             data.thumbnail = "http://i2.ytimg.com/vi/"+ID+"/hqdefault.jpg";

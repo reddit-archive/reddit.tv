@@ -40,6 +40,7 @@
 Globals = {
   channels: <?php echo default_value($settings->default_channels_json, '[]'); ?>,
   recommended_channels: <?php echo default_value($settings->recommended_channels_json, '[]'); ?>,
+  sponsored_channels: <?php echo getSponsoredChannels(); ?>
 };
 </script>
 <script src="js/tv.js" type="text/javascript"></script>

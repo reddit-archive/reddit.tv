@@ -31,6 +31,21 @@ function getChannels() {
 	}
 }
 
+function getSponsoredChannels() {
+	$sponsored_channel = R::getAll('
+		SELECT id, title as channel, video_list, image_url as thumbnail
+		FROM sponsoredchannel
+		WHERE status = 1
+		AND start_date <= NOW()
+		AND end_date >= NOW()
+		ORDER BY start_date DESC
+		LIMIT 1
+	  '
+	);
+
+	return json_encode($sponsored_channel);
+}
+
 function jsonError($error) {
 	die(json_encode(Array('error' => $error)));
 }
