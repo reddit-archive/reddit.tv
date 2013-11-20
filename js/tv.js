@@ -1105,7 +1105,7 @@ var RedditTV = Class.extend({
 			.html($list);
 
 		// Populate with ads
-		if (this_chan.feed.match('/sponsor/').length == 0 && self.Globals.ads && self.Globals.ads.videos.length > 0) {
+		if ( !this_chan.feed.match('/sponsor/') && self.Globals.ads && self.Globals.ads.videos.length > 0 ) {
 			var adNum = 0;
 
 			$('#video-list .thumbnail').each(function(i) {
