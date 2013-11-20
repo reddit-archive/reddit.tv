@@ -106,11 +106,13 @@
       };
 
       Plugin.prototype.setGlobals = function() {
+        this.globals.initializing = true;
         this.globals.animated = this.options.animateOnInit;
         return this.globals.dragging = false;
       };
 
       Plugin.prototype.afterInit = function() {
+        this.globals.initializing = false;
         return this.globals.animated = this.options.animated;
       };
 
@@ -254,7 +256,7 @@
             placeholder_class = options.placeholderClass;
             $child = $child.siblings("." + placeholder_class);
           }
-          if ( options.ignore && !$child.is(options.ignore) ) {
+          if ( globals.initializing || ( options.ignore && !$child.is(options.ignore) ) ) {
               if (animated && !is_dragged_child) {
                 $child.stop(true, false).animate(attributes, animation_speed, function() {});
               } else {
@@ -540,10 +542,12 @@
             }
             if (target_position === parsed_children.length) {
               $target = parsed_children[target_position - 1].el;
-              $selected.insertAfter($target);
+              if (options.ignore && !$target.is(options.ignore))
+                $selected.insertAfter($target);
             } else {
               $target = parsed_children[target_position].el;
-              $selected.insertBefore($target);
+              if (options.ignore && !$target.is(options.ignore))
+                $selected.insertBefore($target);
             }
           } else {
             if (total_positions === 1) {
