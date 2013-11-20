@@ -162,7 +162,7 @@ function getAds() {
 function getSponsoredChannel() {
 
 	$sponsored_channel = R::getAll('
-		SELECT id, title, sponsor_name, image_url, autoplay, video_list
+		SELECT *
 		FROM sponsoredchannel
 		WHERE status = 1
 		AND start_date <= NOW()

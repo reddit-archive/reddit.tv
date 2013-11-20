@@ -1,45 +1,50 @@
 <?php
 
-define('BASE_PATH', dirname(realpath(__FILE__)) . '/../');
-define('UPLOAD_PATH', dirname(realpath(__FILE__)) . '/../uploads/');
-define('UPLOAD_URL', 'uploads/');
-
-//Example Script, saves Hello World to the database.
-
-//First, we need to include redbean
-require_once(dirname(__FILE__).'/rb.php');
-
-//Second, we need to setup the database
-
-//If you work on Mac OSX or Linux (or another UNIX like system)
-//You can simply use this line:
-
-if(!empty($_SERVER['RDS_HOSTNAME'])){
-	$dbhost = $_SERVER['RDS_HOSTNAME'];
-	$dbport = $_SERVER['RDS_PORT'];
-	$dbname = $_SERVER['RDS_DB_NAME'];
-
-	$username = $_SERVER['RDS_USERNAME'];
-	$password = $_SERVER['RDS_PASSWORD'];
-
-	R::setup("mysql:host=$dbhost;port=$dbport;
-    	dbname=$dbname",$username,$password);
+if(file_exists(dirname(realpath(__FILE__)) . '/config-local.php')){
+	require_once(dirname(realpath(__FILE__)) . '/config-local.php');
 }
-else{
-	R::setup('sqlite:'.realpath(dirname(__FILE__)).'/database.s3db');
-	//R::setup('database.txt'); -- for other systems
-}
+else {
+	define('BASE_PATH', dirname(realpath(__FILE__)) . '/../');
+	define('UPLOAD_PATH', dirname(realpath(__FILE__)) . '/../uploads/');
+	define('UPLOAD_URL', 'uploads/');
 
-if(class_exists('Memcache')){
-	// Connection constants
-	define('MEMCACHED_HOST', 'reddittvdev.0ohhtp.cfg.usw1.cache.amazonaws.com');
-	define('MEMCACHED_PORT', '11211');
-	 
-	// Connection creation
-	$memcache = new Memcache;
-	$cacheAvailable = $memcache->connect(MEMCACHED_HOST, MEMCACHED_PORT);
-} else {
-	$cacheAvailable = false;
+	//Example Script, saves Hello World to the database.
+
+	//First, we need to include redbean
+	require_once(dirname(__FILE__).'/rb.php');
+
+	//Second, we need to setup the database
+
+	//If you work on Mac OSX or Linux (or another UNIX like system)
+	//You can simply use this line:
+
+	if(!empty($_SERVER['RDS_HOSTNAME'])){
+		$dbhost = $_SERVER['RDS_HOSTNAME'];
+		$dbport = $_SERVER['RDS_PORT'];
+		$dbname = $_SERVER['RDS_DB_NAME'];
+
+		$username = $_SERVER['RDS_USERNAME'];
+		$password = $_SERVER['RDS_PASSWORD'];
+
+		R::setup("mysql:host=$dbhost;port=$dbport;
+	    	dbname=$dbname",$username,$password);
+	}
+	else{
+		R::setup('sqlite:'.realpath(dirname(__FILE__)).'/database.s3db');
+		//R::setup('database.txt'); -- for other systems
+	}
+
+	if(class_exists('Memcache')){
+		// Connection constants
+		define('MEMCACHED_HOST', 'reddittvdev.0ohhtp.cfg.usw1.cache.amazonaws.com');
+		define('MEMCACHED_PORT', '11211');
+		 
+		// Connection creation
+		$memcache = new Memcache;
+		$cacheAvailable = $memcache->connect(MEMCACHED_HOST, MEMCACHED_PORT);
+	} else {
+		$cacheAvailable = false;
+	}
 }
 
 ?>

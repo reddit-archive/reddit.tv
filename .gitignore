@@ -7,3 +7,4 @@ lib
 .DS_Store
 database.s3db
 .elasticbeanstalk/
+config-local.php
