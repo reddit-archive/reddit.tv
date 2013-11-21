@@ -49,6 +49,7 @@ var RedditTV = Class.extend({
 			videos: [],
 			user_channels: [],
 			channel_sorting: [],
+			video_minimum: 10,
 			cur_video: 0,
 			cur_chan: {},
 			cur_chan_req: null,
@@ -87,6 +88,8 @@ var RedditTV = Class.extend({
 				};
 			}
 		}
+
+		$('#video-list').hide();
 
 		self.loadSettings();
 		self.setBindings();
@@ -694,7 +697,8 @@ var RedditTV = Class.extend({
 
 		
 		if(self.Globals.videos[this_chan.feed] === undefined){
-			self.redditApiCall('videos', { 'channel': this_chan, 'video_id': video_id }, function(data, local) {
+			self.redditApiCall('videos', { 'channel': this_chan, 'video_id': video_id },
+				function(data, local) {
 					var this_chan = local.channel,
 					    video_id  = local.video_id;
 
@@ -706,9 +710,10 @@ var RedditTV = Class.extend({
 							self.Globals.cur_video = 0;
 							self.loadVideo('first');
 						}
-					} else {
-						alert('No videos found in '+this_chan.channel);
 					}
+				},
+				function(jXHR, textStatus, errorThrown, local) {
+					self.tvError('Error loading channel.');
 				});
 		}else{
 			if(self.Globals.videos[this_chan.feed].video.length > 0){
@@ -719,17 +724,22 @@ var RedditTV = Class.extend({
 					self.Globals.cur_video = 0;
 					self.loadVideo('first');
 				}
-			}else{
-				alert('No videos loaded for '+this_chan.feed.slice(0,-5));
 			}
 		}
 	}, // loadChannel()
 
 	getFeedURI: function(channel_obj) {
-		var sorting = self.Globals.sorting.split(':');
-		var sortType = '';
-		var sortOption = '';
-		var uri;
+		var sorting    = self.Globals.sorting.split(':'),
+		    sortType   = '',
+		    sortOption = '',
+		    extras     = '',
+		    limit      = 100,
+		    uri;
+
+		if (channel_obj.video_count && channel_obj.video_count < self.Globals.video_minimum) {
+			limit = 1000;
+			if (channel_obj.last_id) extras = '&after=' + channel_obj.last_id;
+		}
 
 		if (sorting.length === 2) {
 
@@ -739,15 +749,17 @@ var RedditTV = Class.extend({
 
 		if (channel_obj.type === 'search' && sorting.length === 1) {
 
-			uri = channel_obj.feed + Globals.search_str + '&limit=100';
+			uri = channel_obj.feed + Globals.search_str + '&limit=' + limit;
 		}
 		else {
 
-			uri = channel_obj.feed + sortType + '.json?limit=100' + sortOption;
+			uri = channel_obj.feed + sortType + '.json?limit=' + limit + sortOption;
 			// Can we do this with searching? sortType seems in the way.
 			// uri = channel_obj.feed + sortType."/search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A1382227035..%29&restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
 
 		}
+
+		uri += extras;
 
 		console.log(uri);
 		return uri;
@@ -921,12 +933,17 @@ var RedditTV = Class.extend({
 				dataType: 'jsonp',
 				jsonp: 'jsonp',
 				timeout: 5000, // Server doesn't return JSON on error, have to rely on this.
-				context: data,
+				context: { 'action' : action, 'data' : data, 'successCallback' : successCallback, 'errorCallback' : errorCallback },
 				success: function(data, textStatus) {
-					var this_chan = this.channel;
+					var this_chan  = this.data.channel,
+					    chan_index = self.getChan(this_chan.feed);
 
-					self.Globals.videos[this_chan.feed] = {};
-					self.Globals.videos[this_chan.feed].video = []; //clear out stored videos
+					//clear out stored videos if not grabbing more videos
+					if (!this_chan.last_id) {
+						self.Globals.videos[this_chan.feed] = {};
+						self.Globals.videos[this_chan.feed].video = [];
+					}
+
 					for (var x in data.data.children) {
 						if (self.isVideo(data.data.children[x].data.domain) && (data.data.children[x].data.score > 1)) {
 							if ( self.isEmpty(data.data.children[x].data.media_embed) || data.data.children[x].data.domain === 'youtube.com' || data.data.children[x].data.domain === 'youtu.be' ){
@@ -942,16 +959,32 @@ var RedditTV = Class.extend({
 								self.Globals.videos[this_chan.feed].video.push(data.data.children[x].data);
 							}
 						}
+
+						this_chan.last_id = data.data.children[x].data.name;
 					}
 
 					//remove duplicates
 					self.Globals.videos[this_chan.feed].video = self.filterVideoDupes(self.Globals.videos[this_chan.feed].video);
-					this.videos = self.Globals.videos[this_chan.feed].video;
-					this.data = data;
+					this.data.videos = self.Globals.videos[this_chan.feed].video;
+					this.data.data = data;
 
-					if (!this.videos.length) return redditApiError(null, textStatus, null, this);
+					if (!this.data.videos.length) return redditApiError(null, textStatus, null, this.data);
 
-					successCallback(data, this);
+					if (this.data.videos.length < self.Globals.video_minimum) {
+						this_chan.page = (this_chan.page) ? this_chan.page + 1 : 2;
+						this_chan.video_count = this.data.videos.length;
+						self.Globals.channels[self.getChan(this_chan.feed)] = this_chan;
+
+						if (this_chan.page > 1 && this_chan.video_count == 0) {
+							self.tvError('No videos found in ' + this_chan.channel);
+						} else {
+							self.redditApiCall(this.action, this.data, this.successCallback, this.errorCallback);
+						}
+
+						return;
+					}
+
+					successCallback(data, this.data);
 
 					$('body').removeClass('video-loading');
 				}
@@ -1088,7 +1121,9 @@ var RedditTV = Class.extend({
 	openVideoList: function() {
 		// console.log('open video-list')
 		// videoList.open = true;
-		$('#video-list').addClass('slideInDown').removeClass('bounceOutUp');
+		if ( !$('#video-list').children().length ) return;
+
+		$('#video-list').show().addClass('slideInDown').removeClass('bounceOutUp');
 		$('#now-playing-title').addClass('active');
 	}, // openVideoList()
 
@@ -1163,10 +1198,11 @@ var RedditTV = Class.extend({
 			this_video = self.Globals.cur_video,
 			selected_video = this_video,
 			videos_size = 0,
+			sponsoredChannel = (this.owner == 'sponsor'),
 			thumbAnchor, newAnchor;
 
 		if (this_chan.feed) videos_size = Object.size(self.Globals.videos[this_chan.feed].video)-1;
-		if (!sponsored) sponsored = (self.Globals.cur_chan.owner == 'sponsor');
+		if (!sponsored) sponsored = sponsoredChannel;
 
 		// if (video === false) self.loadVideo('next');
 		/*if(!videoList.open) {
@@ -1290,7 +1326,7 @@ var RedditTV = Class.extend({
 
 			//set location hash
 			var parts, hash = document.location.hash;
-			if (sponsored) {
+			if (sponsored && !sponsoredChannel) {
 				hash = '';
 			} else {
 				if (!hash) {
@@ -1464,9 +1500,17 @@ var RedditTV = Class.extend({
 
 		$('body').addClass('video-loading');
 		if (!text) text = '';
-		$('#loading .what').html(text);
+		$('#loading').removeClass('error')
+			.find('.what').html(text);
 		if (background) $('#loading .tv .image').css({ 'background-image' : 'url(' + background + ')' });
 	}, // loadingAnimation()
+
+	tvError: function(text) {
+		$('#loading').addClass('error')
+			.find('.image')
+				.css('background-image', 'none')
+				.html('<h1>ERROR</h1><span>' + text + '</span>');
+	}, // tvError()
 
 	toggleAddChannel: function(instant) {
 		var vid  = $('#video-embed'),
