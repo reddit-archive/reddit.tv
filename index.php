@@ -106,7 +106,7 @@ Globals = {
   <div id="video-view">
     <div id="main-container" class="grid-container">
       <div id="loading">
-         <div class="text">loading<div class="what"></div></div>
+         <div class="text"><div class="loading">loading</div><div class="what"></div></div>
          <div class="tv"><div class="image"></div></div>
       </div>
       <div id="video-container">

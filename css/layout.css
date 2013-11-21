@@ -224,8 +224,16 @@ input.add-channel {
     height: 670px;
 }
 
-body.video-loading #loading {
+body.video-loading #loading, #loading.error {
     display: block;
+}
+
+#loading.error .text .loading, #loading.error .tv:after {
+    opacity: 0;
+}
+
+#loading.error .text .loading {
+    height: 0;
 }
 
 #loading .text {
@@ -238,6 +246,20 @@ body.video-loading #loading {
     font-size: 60px;
     line-height: 60px;
     text-shadow: -1px -1px 0 #252525, -2px -2px 0 #252525, 1px -1px 0 #252525, 2px -2px 0 #252525, 1px 1px 0 #252525, 2px 2px 0 #252525, -1px 1px 0 #252525, -2px 2px 0 #252525;
+}
+
+#loading .text .loading {
+    height: 60px;
+}
+
+#loading .text .loading, #loading .tv:after {
+    opacity: 1;
+
+    -webkit-transition: opacity 0.3s ease-in-out, height 0.3s 0.2s ease-in-out;
+       -moz-transition: opacity 0.3s ease-in-out, height 0.3s 0.2s ease-in-out;
+        -ms-transition: opacity 0.3s ease-in-out, height 0.3s 0.2s ease-in-out;
+         -o-transition: opacity 0.3s ease-in-out, height 0.3s 0.2s ease-in-out;
+            transition: opacity 0.3s ease-in-out, height 0.3s 0.2s ease-in-out;
 }
 
 #loading .what {
@@ -280,16 +302,32 @@ body.video-loading #loading {
     background-size: 150%;
 }
 
+#loading.error .tv .image {
+    background: #CEE3FD;
+}
+
+#loading.error .tv .image h1 {
+    color: #ef4b23;
+    font-size: 50px;
+    margin: 20px 0;
+}
+
+#loading:not(.error) .tv .image * {
+    display: none;
+}
+
 #loading .tv:after {
     content: '';
     z-index: 999;
     background: rgba(255, 255, 255, 1) url(../img/static-bg.png);
+    opacity: 1;
 
     -webkit-animation: tvstatic 5s linear infinite;
        -moz-animation: tvstatic 5s linear infinite;
          -o-animation: tvstatic 5s linear infinite;
             animation: tvstatic 5s linear infinite;
 }
+
 
 @-webkit-keyframes tvstatic {
     0% {
