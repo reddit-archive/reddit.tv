@@ -160,7 +160,7 @@
                 <b>Length:</b> <?php echo $video->start_date; ?> - <?php echo $video->end_date; ?> 
               </div>
               <div class="col-lg-3">
-                <div class="vid-thumbnail" style="background-image: url(../<?php echo $video->image_url; ?>);"></div>
+                <div class="vid-thumbnail" style="background-image: url(<?php echo $video->image_url; ?>);"></div>
               </div>
             </div>
 
@@ -299,7 +299,7 @@
               </div>
             </div>
             <div class="col-lg-3">
-              <div class="vid-thumbnail" style="background-image: url(../<?php echo $skin->image_url; ?> );"></div>
+              <div class="vid-thumbnail" style="background-image: url(<?php echo $skin->image_url; ?> );"></div>
             </div>
           </div>
 
@@ -468,7 +468,7 @@
               </div>
             </div>
             <div class="col-lg-3">
-              <div class="vid-thumbnail" style="background-image: url(../<?php echo $channel->image_url; ?> );"></div>
+              <div class="vid-thumbnail" style="background-image: url(<?php echo $channel->image_url; ?> );"></div>
             </div>
           </div>
 

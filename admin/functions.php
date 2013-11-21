@@ -61,8 +61,8 @@ function addEdit() {
 	$max_width = 0;
 	if ($type == 'videos') $max_width = 150;
 
-	$image = imageUpload($filename, $max_width);
-	if ($image) $db->image_url = UPLOAD_URL . $image;
+	$image_url = imageUpload($filename, $max_width);
+	if ($image_url) $db->image_url = $image_url;
 
 	if ($type == 'channels') $db->video_list = json_encode($_REQUEST['video_urls']);
 
@@ -156,14 +156,14 @@ function imageUpload($filename, $max_width = 0, $max_height = 0) {
 	$aws_s3_client = S3Client::factory();
 	$key = $filename.'.jpg';
 	$bucket = 'reddittv';
-	// printf("Creating a new object with key %s\n", $key);
+
 	$result = $aws_s3_client->putObject(array(
 	    'Bucket' => $bucket,
 	    'Key'    => $key,
-	    'Body'   => fopen(UPLOAD_PATH.$filename.'.jpg')
+	    'Body'   => fopen(UPLOAD_PATH.$filename.'.jpg', 'r')
 	));
 
-	return $result->ObjectURL;
+	return $result['ObjectURL'];
 }
 
 function pickFilename($arr=Array(), $ext='.jpg') {
