@@ -2,6 +2,10 @@
 
 require_once('lib/class.upload.php');
 
+// AWS Includes
+require '../vendor/autoload.php';
+use Aws\S3\S3Client;
+
 $db_name = '';
 
 function ajaxFunc() {
@@ -147,7 +151,19 @@ function imageUpload($filename, $max_width = 0, $max_height = 0) {
 		$img->Clean();
 	}
 
-	return $filename . '.jpg';
+
+	// Upload to S3
+	$aws_s3_client = S3Client::factory();
+	$key = $filename.'.jpg';
+	$bucket = 'reddittv';
+	// printf("Creating a new object with key %s\n", $key);
+	$result = $aws_s3_client->putObject(array(
+	    'Bucket' => $bucket,
+	    'Key'    => $key,
+	    'Body'   => fopen(UPLOAD_PATH.$filename.'.jpg')
+	));
+
+	return $result->ObjectURL;
 }
 
 function pickFilename($arr=Array(), $ext='.jpg') {
