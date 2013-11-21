@@ -62,8 +62,7 @@ function addEdit() {
 	if ($type == 'videos') $max_width = 150;
 
 	$image_url = imageUpload($filename, $max_width);
-	error_log("[S3 upload] ".$image_url);
-	if ($image) $db->image_url = $image_url;
+	if ($image_url) $db->image_url = $image_url;
 
 	if ($type == 'channels') $db->video_list = json_encode($_REQUEST['video_urls']);
 
@@ -164,7 +163,7 @@ function imageUpload($filename, $max_width = 0, $max_height = 0) {
 	    'Body'   => fopen(UPLOAD_PATH.$filename.'.jpg', 'r')
 	));
 
-	return $result->ObjectURL;
+	return $result['ObjectURL'];
 }
 
 function pickFilename($arr=Array(), $ext='.jpg') {
