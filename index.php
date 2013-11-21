@@ -10,6 +10,17 @@
 
 <link rel="shortcut icon" href="favicon.ico" />
 
+<meta property="og:type" content="website" />
+<meta itemprop="name" content="reddit.tv" />
+<meta itemprop="headline" content="" />
+<meta property="og:title" content="reddit.tv" />
+<meta itemprop="description" content="" />
+<meta property="og:description" content="" />
+<link itemprop="url" href="" />
+<meta property="og:url" content="" />
+<link itemprop="thumbnailUrl" href="" />
+<meta property="og:image" content="" />
+
 <!-- HTML5 Boilerplate -->
 
 
