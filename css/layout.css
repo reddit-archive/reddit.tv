@@ -393,6 +393,31 @@ body.video-loading #loading, #loading.error {
     position: relative;
 }
 
+#prev-button, #next-button {
+    color:#fff;
+    position:absolute;
+    top:calc(50% - 75px);
+}
+
+#prev-button img, #next-button img {
+    height:100px;
+    opacity:0.05;
+    transition: opacity 0.5s;
+    -webkit-transition: opacity 0.5s;
+}
+
+#prev-button img:hover, #next-button img:hover {
+    opacity:0.5;
+}
+
+#prev-button {
+    left: -100px;
+}
+
+#next-button {
+    right:-100px;
+}
+
 #video-container.sponsored #video-actions, #sponsored-actions {
     display: none;
 }

@@ -113,6 +113,8 @@ Globals = {
         <div id="video-embed" class="grid-100 mobile-grid-100">
 
         </div>
+        <a id="prev-button" href="javascript:void(0);"><img src="img/arrow-prev.png" /></a>
+        <a id="next-button" href="javascript:void(0);"><img src="img/arrow-next.png" /></a>
         <div id="video-meta">
           <div id="video-description" class="grid-70 mobile-grid-75">
             <span id="video-sponsored-label" class="sponsored">SPONSORED </span>
