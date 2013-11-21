@@ -7,6 +7,7 @@ else {
 	define('BASE_PATH', dirname(realpath(__FILE__)) . '/../');
 	define('UPLOAD_PATH', dirname(realpath(__FILE__)) . '/../uploads/');
 	define('UPLOAD_URL', 'uploads/');
+	define('AWS_BUCKET', 'reddittv');
 
 	//Example Script, saves Hello World to the database.
 

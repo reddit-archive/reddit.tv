@@ -155,10 +155,10 @@ function imageUpload($filename, $max_width = 0, $max_height = 0) {
 	// Upload to S3
 	$aws_s3_client = S3Client::factory();
 	$key = $filename.'.jpg';
-	$bucket = 'reddittv';
+	
 
 	$result = $aws_s3_client->putObject(array(
-	    'Bucket' => $bucket,
+	    'Bucket' => AWS_BUCKET,
 	    'Key'    => $key,
 	    'Body'   => fopen(UPLOAD_PATH.$filename.'.jpg', 'r')
 	));

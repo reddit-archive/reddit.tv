@@ -21,22 +21,17 @@
 <link itemprop="thumbnailUrl" href="" />
 <meta property="og:image" content="" />
 
-<!-- HTML5 Boilerplate -->
-
-
 <!-- Unsemantic Grid -->
-<!-- <link rel="stylesheet" href="./lib/unsemantic-grid/assets/stylesheets/demo.css" /> -->
 <!--[if (gt IE 8) | (IEMobile)]><!-->
   <link rel="stylesheet" href="./css/unsemantic-grid-responsive.css" />
 <!--<![endif]-->
 <!--[if (lt IE 9) & (!IEMobile)]>
-  <link rel="stylesheet" href="./css/ie.css" />
+  <link rel="stylesheet" href="./css/unsemantic-grid-ie.css" />
 <![endif]-->
 
 <link rel="stylesheet" href="css/layout.css" type="text/css" />
 <link rel="stylesheet" href="css/animate.css" type="text/css" />
 <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
-<link rel="alternate stylesheet" href="css/theme_dark.css" type="text/css" />
 <link rel="stylesheet" href="css/theme_light.css" type="text/css" id="theme" />
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic' rel='stylesheet' type='text/css'>
 
