@@ -10,6 +10,7 @@
 
 <link rel="shortcut icon" href="favicon.ico" />
 
+<!-- TODO Set up social media metadata for sharing -->
 <meta property="og:type" content="website" />
 <meta itemprop="name" content="reddit.tv" />
 <meta itemprop="headline" content="" />
@@ -21,21 +22,16 @@
 <link itemprop="thumbnailUrl" href="" />
 <meta property="og:image" content="" />
 
-<!-- HTML5 Boilerplate -->
-
-
 <!-- Unsemantic Grid -->
-<!-- <link rel="stylesheet" href="./lib/unsemantic-grid/assets/stylesheets/demo.css" /> -->
 <!--[if (gt IE 8) | (IEMobile)]><!-->
   <link rel="stylesheet" href="./css/unsemantic-grid-responsive.css" />
 <!--<![endif]-->
 <!--[if (lt IE 9) & (!IEMobile)]>
-  <link rel="stylesheet" href="./css/ie.css" />
+  <link rel="stylesheet" href="./css/unsemantic-grid-ie.css" />
 <![endif]-->
 
 <link rel="stylesheet" href="css/layout.css" type="text/css" />
 <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
-<link rel="alternate stylesheet" href="css/theme_dark.css" type="text/css" />
 <link rel="stylesheet" href="css/theme_light.css" type="text/css" id="theme" />
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic' rel='stylesheet' type='text/css'>
 
@@ -78,10 +74,10 @@ Globals = {
             <label class="btn btn-default icon-spam settings-sfw">
               <input type="checkbox"> SFW
             </label>
-            <!-- TODO: Make fullscreen using HTML5 fullscreen API
+            <?php /* TODO: Make fullscreen using HTML5 fullscreen API
             <label class="btn btn-default icon-expand settings-fill">
               <input type="checkbox"> Fill Screen
-            </label> -->
+            </label> */?>
 
             <div id="sorting" class="btn-group">
               <button type="button" class="btn btn-default icon-menu" data-toggle="dropdown">
@@ -127,7 +123,7 @@ Globals = {
         <a id="next-button" href="javascript:void(0);"><img src="img/arrow-next.png" /></a>
         <div id="video-meta">
           <div id="video-description" class="grid-70 mobile-grid-75">
-            <span id="video-sponsored-label" class="sponsored">SPONSORED </span>
+            <span id="video-sponsored-label" class="sponsored">SPONSORED </span> <?php /* TODO This sponsored label, before the title, should appear on ad videos */ ?>
             <span id="video-title"></span> 
           </div>
           <div id="sponsored-actions" class="grid-30 right-align">
@@ -185,7 +181,7 @@ Globals = {
 
   <footer>
     <div class="grid-container">
-      Privacy Policy, etc
+      Privacy Policy, etc <?php /* TODO Include privacy policy and copyright jams */ ?>
     </div>
   </footer>
 

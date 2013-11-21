@@ -45,13 +45,6 @@ $('form input').on('change keyup', function() {
 
 // Date range dropdown
 $('.campaign-length').daterangepicker({
-	/*ranges: {
-		'Today': [moment(), moment()],
-		'Until Tomorrow': [moment(), moment().add('days', 1)],
-		'This Week': [moment(), moment().add('days', 6)],
-		'This Month': [moment().startOf('month'), moment().endOf('month')],
-		'Last Month': [moment().subtract('month', 1).startOf('month'), moment().subtract('month', 1).endOf('month')]
-	},*/
 	startDate: moment(),
 	endDate: moment().add('month', 1),
 	showDropdowns: true,
@@ -137,6 +130,7 @@ $.each([ 'video', 'skin', 'channel' ], function( index, value ) {
 });
 
 // Edit buttons
+// Gets data from database, as page content is not complete
 $('.btn-edit').on('click', function() {
 	var pane = $(this).parents('.tab-pane'),
 	    form = pane.find('form'),
@@ -181,7 +175,7 @@ $('.btn-edit').on('click', function() {
 				form.find('.upload.vid-thumbnail')
 					.removeClass('error')
 					.addClass('prepped')
-					.css('background-image', 'url(../' + data.image_url + ')');
+					.css('background-image', 'url(' + data.image_url + ')');
 			}
 
 			if (data.video_list) {
@@ -216,13 +210,15 @@ $('.btn-edit').on('click', function() {
 			$('html, body').animate({ scrollTop: 0 }, 300);
 		},
 		error: function(jXHR, textStatus, errorThrown) {
+			// TODO Show visual error message
 			console.log('[ERROR] '+textStatus);
 			console.log('[ERROR] '+errorThrown);
 		}
 	});
-
-	// console.log(ajax);
 });
+
+
+// Sponsored channel video list functionality
 
 $('#add-channel-vid').click(function() {
 	var vidList = $('#channel-vidlist ul'),
@@ -272,6 +268,12 @@ $('button.btn-show-videos').click(function() {
 		$(this).removeClass(def).addClass(pri);
 	}
 });
+
+// End sponsored channel video list functionality
+
+
+// Settings page
+// Default channels
 
 var channelTypes = [ 'default', 'recommended' ];
 
@@ -357,7 +359,7 @@ $.each(channelTypes, function(i, channelType) {
 				channelMsg(channelType, msgStatus, msgTxt);
 
 				$.ajax({
-					url: window.location.origin + window.location.pathname.replace(/admin\/?$/, '') + 'db/api.php',
+					url: window.location.protocol + "//" + window.location.host + window.location.pathname.replace(/admin\/?$/, '') + 'db/api.php',
 					data: {
 					    'action' : 'channel_thumbnail',
 					    'feed'   : feed

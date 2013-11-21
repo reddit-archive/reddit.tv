@@ -20,7 +20,7 @@
   <!-- <link rel="stylesheet" href="../css/unsemantic-grid-responsive.css" /> -->
 <!--<![endif]-->
 <!--[if (lt IE 9) & (!IEMobile)]>
-  <link rel="stylesheet" href="../css/ie.css" />
+  <link rel="stylesheet" href="../css/unsemantic-grid-ie.css" />
 <![endif]-->
 
 <link rel="stylesheet" href="../css/layout.css" type="text/css" />
@@ -83,7 +83,6 @@
                 <input type="hidden" name="db_end_date" id="video_end_date" value="" />
                 <input id="video-length" type="text" class="form-control campaign-length" />
               </div>
-                  <!-- <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="reservation" id="reservation" /> -->
             </div>
             <div class="col-lg-2">
               <div id="video-thumbnail" class="upload vid-thumbnail">
