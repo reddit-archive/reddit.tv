@@ -1241,6 +1241,11 @@ var RedditTV = Class.extend({
 			return false;
 		}
 
+		if ( self.Globals.ads && self.Globals.ads.settings && self.Globals.ads.settings.start == 1 && ( video === 'first' || video === null ) ) {
+			sponsored = true;
+			$('#video-list a.thumbnail:first').addClass('focus');
+		}
+
 		if(selected_video !== this_video || video === 'first' || video === 0) {
 			self.Globals.cur_video = selected_video;
 			var video = ( sponsored && self.Globals.cur_chan.owner != 'sponsor' ) ? self.Globals.ads.videos[selected_video] : self.Globals.videos[this_chan.feed].video[selected_video];
