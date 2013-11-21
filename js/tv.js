@@ -92,8 +92,10 @@ var RedditTV = Class.extend({
 		self.setBindings();
 		self.displayChannels();
 
-		if (!self.Globals.current_anchor)
-			self.loadChannel(self.Globals.channels[0], null);
+		if (!self.Globals.current_anchor) {
+			var firstChannel = $('#channels a.channel:not(#add-channel-button):first');
+			if (firstChannel.length) self.loadChannel(self.getChanObj(firstChannel.data('feed')), null);
+		}
 	}, // init()
 
 	loadSettings: function() {
@@ -480,7 +482,7 @@ var RedditTV = Class.extend({
 
 		channels.shapeshift({
 			selector: 'a.channel',
-			ignore: '#add-channel-button, .sponsored',
+			ignore: '#add-channel-button, .sponsor',
 			align: 'center',
 			colWidth: 250,
 			columns: 4,
@@ -496,7 +498,7 @@ var RedditTV = Class.extend({
 
 	saveChannelOrder: function() {
 		var feeds = [];
-		$('#channels a.channel:not(#add-channel-button):not(.sponsored):not(.temp)').each(function() {
+		$('#channels a.channel:not(#add-channel-button):not(.sponsor):not(.temp)').each(function() {
 			feeds.push($(this).data('feed'));
 		});
 
@@ -504,7 +506,7 @@ var RedditTV = Class.extend({
 
 		if (self.Globals.channels.length > feeds.length) {
 			$.each(self.Globals.channels, function(i, chan) {
-				if (self.Globals.channel_sorting.indexOf(chan.feed) == -1)
+				if (chan.owner != 'sponsor' && self.Globals.channel_sorting.indexOf(chan.feed) == -1)
 					self.Globals.channel_sorting.push(chan.feed);
 			});
 		}
@@ -518,10 +520,14 @@ var RedditTV = Class.extend({
 			$channel_base = $('#channels a.channel:first'),
 			sorted = (self.Globals.channel_sorting.length);
 
+		$.each(self.Globals.channels, function(i, chan) {
+			if (chan.owner == 'sponsor' && chan.feed) self.displayChannel(chan);
+		});
+
 		var channels = (sorted) ? self.Globals.channel_sorting : self.Globals.channels;
 		$.each(channels, function(i, chan) {
 			chan = (sorted) ? self.getChanObj(chan) : chan;
-			if (chan.feed) self.displayChannel(chan);
+			if (chan.owner != 'sponsor' && chan.feed) self.displayChannel(chan);
 		});
 
     	self.bindChannelSorting();
@@ -563,9 +569,11 @@ var RedditTV = Class.extend({
 
 		if (chan.owner) {
 			chanAttr['data-owner'] = chan.owner;
-			$channel.addClass(chan.owner)
-				.find('.thumbnail')
-				.append('<span class="delete" title="Delete this channel">&times;</span>');
+			$channel.addClass(chan.owner);
+
+			if (chan.owner == 'user')
+				$channel.find('.thumbnail')
+					.append('<span class="delete" title="Delete this channel">&times;</span>');
 		}
 
 		$channel
@@ -575,7 +583,7 @@ var RedditTV = Class.extend({
 				.html(display_title);
 			// .removeClass('loading') // temp
 
-		if (added) {
+		if (added || chan.owner == 'sponsor') {
 			$channel.insertAfter('#add-channel-button');
 		} else {
 			$channel.appendTo('#channels');
@@ -1158,7 +1166,7 @@ var RedditTV = Class.extend({
 			thumbAnchor, newAnchor;
 
 		if (this_chan.feed) videos_size = Object.size(self.Globals.videos[this_chan.feed].video)-1;
-		if (!sponsored) sponsored = false;
+		if (!sponsored) sponsored = (self.Globals.cur_chan.owner == 'sponsor');
 
 		// if (video === false) self.loadVideo('next');
 		/*if(!videoList.open) {
@@ -1235,7 +1243,7 @@ var RedditTV = Class.extend({
 
 		if(selected_video !== this_video || video === 'first' || video === 0) {
 			self.Globals.cur_video = selected_video;
-			var video = (!sponsored) ? self.Globals.videos[this_chan.feed].video[selected_video] : self.Globals.ads.videos[selected_video];
+			var video = ( sponsored && self.Globals.cur_chan.owner != 'sponsor' ) ? self.Globals.ads.videos[selected_video] : self.Globals.videos[this_chan.feed].video[selected_video];
 
 			// scroll to thumbnail in video list and highlight it
 			$('#video-list .focus:not(.sponsored)').removeClass('focus');
