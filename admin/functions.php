@@ -1,6 +1,7 @@
 <?php
 
 require_once('lib/class.upload.php');
+require '../vendor/autoload.php';
 
 $db_name = '';
 
@@ -147,7 +148,18 @@ function imageUpload($filename, $max_width = 0, $max_height = 0) {
 		$img->Clean();
 	}
 
-	return $filename . '.jpg';
+
+	// Upload to S3
+	$key = $filename.'.jpg';
+	$bucket = 'reddittv';
+	// printf("Creating a new object with key %s\n", $key);
+	$result = $client->putObject(array(
+	    'Bucket' => $bucket,
+	    'Key'    => $key,
+	    'Body'   => fopen(UPLOAD_PATH.$filename.'.jpg')
+	));
+
+	return $result->ObjectURL;
 }
 
 function pickFilename($arr=Array(), $ext='.jpg') {
