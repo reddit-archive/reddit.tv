@@ -34,7 +34,6 @@
 <![endif]-->
 
 <link rel="stylesheet" href="css/layout.css" type="text/css" />
-<link rel="stylesheet" href="css/animate.css" type="text/css" />
 <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
 <link rel="alternate stylesheet" href="css/theme_dark.css" type="text/css" />
 <link rel="stylesheet" href="css/theme_light.css" type="text/css" id="theme" />
