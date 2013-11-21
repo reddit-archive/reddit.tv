@@ -124,6 +124,7 @@ var RedditTV = Class.extend({
 
 		if(channels_cookie !== null && channels_cookie !== self.Globals.user_channels){
 			self.Globals.user_channels = channels_cookie;
+			self.convertUserChannels();
 			self.Globals.channels = self.Globals.user_channels.concat(self.Globals.channels);
 		}
 	}, // loadSettings()
@@ -455,6 +456,20 @@ var RedditTV = Class.extend({
 
 		if (animate) channels.removeClass('animate');
 	}, // bindChannelSorting()
+
+	convertUserChannels: function() {
+		// Convert old reddit.tv user_channels cookie into new style one
+		var uc = self.Globals.user_channels;
+
+		if ( !uc.length ) return;
+		if ( uc[0].owner ) return;
+
+		for (var i in uc) {
+			self.Globals.user_channels[i].owner = 'user';
+		}
+
+		$.jStorage.set('user_channels', self.Globals.user_channels);
+	}, // convertUserChannels()
 
 	saveChannelOrder: function() {
 		var feeds = [];
