@@ -1052,40 +1052,20 @@ var RedditTV = Class.extend({
 					$('#main-container').removeClass('add-channel');
 				}*/
 
-				if(parts[1] === 'promo'){
-					if ( !self.Globals.ads.videos ) {
-						$(document).on('adsLoaded', function() {
-							var promoIndex = self.findVideoById(parts[2], '/promo');
-							self.loadVideo(promoIndex, true);
-						});
+				var feed     = '/' + parts[1] + '/' + parts[2],
+				    new_chan = { 'feed': feed },
+				    videoId  = parts[3];
+
+				if (videoId === undefined || videoId === null || videoId === '')
+					videoId = null;
+
+				if (self.Globals.cur_chan.feed != feed) {
+					self.loadChannel(new_chan, videoId);
+				} else {
+					if (self.Globals.videos[feed] !== undefined){
+						self.loadVideoById(videoId);
 					} else {
-						self.loadVideo(self.findVideoById(parts[2], '/sponsor'), true);
-					}
-				}else{
-					var feed = '/' + parts[1] + '/' + parts[2];
-					var new_chan_name = self.getChanName(feed);
-					if(!new_chan_name){
-						// addChannel(parts[2]);
-						new_chan_name = self.getChanName(feed);
-					}
-					var new_chan_num = self.getChan(new_chan_name);
-					var new_chan = { feed: '/' + parts[1] + '/' + parts[2] };
-					if(new_chan_name !== undefined && new_chan_num !== self.Globals.cur_chan){
-						if(parts[3] === undefined || parts[3] === null || parts[3] === ''){
-							console.log('[checkAnchor]', 'loadChannel 1');
-							self.loadChannel(new_chan, null);
-						}else{
-							console.log('[checkAnchor]', 'loadChannel', parts[3]);
-							self.loadChannel(new_chan, parts[3]);
-						}
-					}else{
-						if(self.Globals.videos[new_chan_num] !== undefined){
-							console.log('[checkAnchor]', 'loadVideoById');
-							self.loadVideoById(parts[3]);
-						}else{
-							console.log('[checkAnchor]', 'loadChannel');
-							self.loadChannel(new_chan, parts[3]);
-						}
+						self.loadChannel(new_chan, videoId);
 					}
 				}
 			}
@@ -1199,7 +1179,7 @@ var RedditTV = Class.extend({
 					thumbnail = self.thumbElement(ad, {feed: '/sponsor' }, rtv.Globals.ads.videos.indexOf(ad));
 					thumbnail.insertBefore($(this));
 					thumbnail.addClass('sponsored')
-						.attr('data-adNum', $('#video-list .sponsored.thumbnail').length - 1);
+						.attr('data-adNum', ad.index);
 
 					adNum = 1;
 				}
@@ -1810,6 +1790,7 @@ var RedditTV = Class.extend({
 			videos[i].media = { 'oembed': { 'thumbnail_url': (vid.image_url) ? vid.image_url : created.thumbnail } };
 			videos[i].media_embed = { 'content': created.embed };
 			videos[i].domain = domain;
+			videos[i].index = i;
 		});
 
 		return videos;
