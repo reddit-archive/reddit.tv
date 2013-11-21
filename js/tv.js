@@ -1459,7 +1459,6 @@ var RedditTV = Class.extend({
 		video = self.findVideoById(video_id, this_chan.feed);  //returns number typed
 
 		if(video !== false){
-			self.loadVideoList(this_chan);
 			self.loadVideo(Number(video));
 		}else{
 			//ajax request
