@@ -4,7 +4,7 @@ var RedditTV = Class.extend({
 
 		self.Globals = $.extend({}, {
 			/* Current URL for AJAX, etc */
-			current_url: window.location.origin + window.location.pathname,
+			current_url: window.location.protocol + '//' + window.location.host + window.location.pathname,
 
 			/* build uri for search type channels */
 			search_str: (function () {
@@ -1003,11 +1003,11 @@ var RedditTV = Class.extend({
 
 					if (!this.data.videos.length) return redditApiError(null, textStatus, null, this.data);
 
-					if (this.data.videos.length < self.Globals.video_minimum) {
+					if (data.data.children.length && this.data.videos.length < self.Globals.video_minimum) {
 						this_chan.page = (this_chan.page) ? this_chan.page + 1 : 2;
 						this_chan.video_count = this.data.videos.length;
 
-						if (this_chan.page > 1 && this_chan.video_count == 0) {
+						if (this_chan.page > 5 && this_chan.video_count == 0) {
 							self.tvError('No videos found in ' + this_chan.channel);
 						} else {
 							self.redditApiCall(this.action, this.data, this.successCallback, this.errorCallback);
