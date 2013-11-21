@@ -1,0 +1,5 @@
+AuthType Basic
+AuthName "Please enter valid adminstration credentials"
+#Set this to an absolute path htpasswd
+#AuthUserFile htpasswd
+Require valid-user
