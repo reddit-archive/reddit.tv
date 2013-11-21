@@ -22,6 +22,8 @@ function getChannels() {
 			  ' feed = ? LIMIT 1 ', array( $channel->feed )
 			);
 
+			$channels[$id]->owner = 'site';
+
 			if ( $thumb && $thumb->thumbnail_url != '' )
 				$channels[$id]->thumbnail = $thumb->thumbnail_url;
 		}

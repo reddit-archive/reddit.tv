@@ -10,10 +10,6 @@ body {
     -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
 }
 
-.sponsored {
-    color: #5f99cf;
-}
-
 .center-align { text-align:center; }
 .left-align { text-align: left; }
 .right-align { text-align: right; }
@@ -160,7 +156,7 @@ input.add-channel {
     background-size: calc(100% + 4px);
 }
 
-#video-list .thumbnail.promo {
+#video-list .thumbnail.sponsored {
     border: 2px solid #ef4b23;
     background-size: calc(100% + 4px);
 }
@@ -359,11 +355,11 @@ body.video-loading #loading {
     position: relative;
 }
 
-#video-container.promo #video-actions, #promo-actions {
+#video-container.sponsored #video-actions, #sponsored-actions {
     display: none;
 }
 
-#video-container.promo #promo-actions {
+#video-container.sponsored #sponsored-actions {
     display: block;
 }
 
@@ -425,7 +421,7 @@ body.video-loading #loading {
     font-weight: 300;
 }
 
-#video-actions, #promo-actions {
+#video-actions, #sponsored-actions {
     color:#5f99cf;
     font-weight: 600;
     font-size: 13px;
@@ -691,8 +687,13 @@ body.video-loading #loading {
     margin: 0;
 }
 
-#channels a.channel:not(#add-channel-button):not(.promo) .name {
+#channels a.channel:not(#add-channel-button):not(.sponsor) .name,
+#channels.ss-current-container a.channel {
     cursor: move;
+}
+
+#add-channel-button:focus, #channels a.sponsor.channel:focus {
+    outline: none;
 }
 
 #channels.animate, #channels.animate a.channel {
@@ -738,7 +739,6 @@ body.video-loading #loading {
 #channels a.channel {
     position: absolute;
 }
-
 
 #channels a.channel.user .thumbnail span.add {
     font-size: 24px;
@@ -818,6 +818,10 @@ body.video-loading #loading {
 
     transition: border 0.1s;
     -webkit-transition: border 0.1s;
+}
+
+.channels a.sponsor.channel:not(.focus):not(:hover) .thumbnail {
+    border-color: #ef4b23;
 }
 
 #add-channel-button .thumbnail {
