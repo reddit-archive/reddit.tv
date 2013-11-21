@@ -931,7 +931,7 @@ var RedditTV = Class.extend({
 						var moreVideos = true;
 					}
 
-					this_chan.owner = 'temp';
+					if (!this_chan.owner) this_chan.owner = 'temp';
 					if (!chan_index) chan_index = self.Globals.channels.length;
 					self.Globals.channels[chan_index] = this_chan;
 
