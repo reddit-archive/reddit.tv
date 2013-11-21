@@ -179,10 +179,10 @@ var RedditTV = Class.extend({
 			window.open($(this).attr('href'));
 		});
 		$('#next-button').click(function() {
-			loadVideo('next');
+			self.loadVideo('next');
 		});
 		$('#prev-button').click(function() {
-			loadVideo('prev');
+			self.loadVideo('prev');
 		});
 		$('#video-list').bind('mousewheel', function(event,delta){
 			// $(this).animate({ scrollLeft: this.scrollLeft - (delta * 30) }, 100);
