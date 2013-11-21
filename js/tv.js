@@ -697,7 +697,6 @@ var RedditTV = Class.extend({
 
 		uri += extras;
 
-		console.log(uri);
 		return uri;
 	}, // getFeedURI()
 
@@ -850,7 +849,7 @@ var RedditTV = Class.extend({
 		if (last_req !== null) last_req.abort();
 
 		var redditApiError = function(jXHR, textStatus, errorThrown, local) {
-			console.log(jXHR, textStatus, errorThrown);
+			console.log('[redditApiError]', jXHR, textStatus, errorThrown);
 			errorCallback(jXHR, textStatus, errorThrown, local);
 
 			$('body').removeClass('video-loading');
@@ -1589,7 +1588,6 @@ var RedditTV = Class.extend({
 			$.jStorage.set('user_channels', self.Globals.user_channels);
 
 			if ( tempChan ) {
-				console.log('adding temp chan', $('#channels a.channel[data-feed="' + feed + '"]'));
 				$('#channels a.channel[data-feed="' + feed + '"]')
 					.removeClass('temp')
 					.find('.thumbnail span.add')
