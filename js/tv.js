@@ -92,8 +92,8 @@ var RedditTV = Class.extend({
 		$('#video-list').hide();
 
 		self.loadSettings();
-		self.setBindings();
 		self.displayChannels();
+		self.setBindings();
 
 		if (!self.Globals.current_anchor) {
 			var firstChannel = $('#channels a.channel:not(#add-channel-button):first');
@@ -318,8 +318,8 @@ var RedditTV = Class.extend({
 						.removeClass('deleting')
 						.find('.thumbnail span.delete')
 							.attr({
-								className: 'add',
-								title: 'Add this channel permanently'
+								'class': 'add',
+								'title': 'Add this channel permanently'
 							})
 							.text('+');
 
@@ -356,6 +356,21 @@ var RedditTV = Class.extend({
 				$(this).find('.thumbnail .confirm').fadeOut(100, function() {
 					$(this).remove();
 				});
+			}
+		);
+
+		// Channel thumbnail delete onClicks
+		$('#channels').on(
+			'click',
+			'a.channel span.add',
+			function() {
+				var thumb  = $(this).parent(),
+				    anchor = $(this).parents('a.channel'),
+				    feed   = anchor.data('feed');
+
+				self.addChannel(feed);
+
+				return false;
 			}
 		);
 
@@ -554,6 +569,8 @@ var RedditTV = Class.extend({
 		}
 		console.log(chan);*/
 
+		if ( !chan.channel ) chan.channel = chan_title.replace(/^.*\//, '');
+
 		display_title = chan.channel.length > 20 ?
 			chan.channel.replace(/[aeiou]/gi,'').substr(0,20) :
 			chan.channel;
@@ -571,12 +588,20 @@ var RedditTV = Class.extend({
 			};
 
 		if (chan.owner) {
-			chanAttr['data-owner'] = chan.owner;
-			$channel.addClass(chan.owner);
+			var ownerClass = chan.owner;
+			if (chan.owner == 'temp') ownerClass += ' user';
+			$channel.addClass(ownerClass);
 
-			if (chan.owner == 'user')
+			chanAttr['data-owner'] = chan.owner;
+
+			var spanHtml = {
+				'user' : '<span class="delete" title="Delete this channel">&times;</span>',
+			    'temp' : '<span class="add" title="Add this channel permanently">+</span>'
+			};
+	
+			if (spanHtml[chan.owner])
 				$channel.find('.thumbnail')
-					.append('<span class="delete" title="Delete this channel">&times;</span>');
+					.append(spanHtml[chan.owner]);
 		}
 
 		$channel
@@ -587,7 +612,7 @@ var RedditTV = Class.extend({
 			// .removeClass('loading') // temp
 
 		if (added || chan.owner == 'sponsor') {
-			$channel.insertAfter('#add-channel-button');
+			$channel.insertAfter( $('#channels a.sponsor').or('#add-channel-button') );
 		} else {
 			$channel.appendTo('#channels');
 		}
@@ -640,6 +665,8 @@ var RedditTV = Class.extend({
 			}, 300);
 		}
 
+		return $channel;
+
 		// $('#channel>ul').prepend('<li id="channel-'+chan+'" title="'+title+'" '+class_str+'><img src="http://i2.ytimg.com/vi/NUkwaiJgDGY/hqdefault.jpg" />'+display_title+remove_str+'</li>');
 
 		/*$('#remove-'+chan).bind(
@@ -656,13 +683,17 @@ var RedditTV = Class.extend({
 		// console.log('[loadChannel]', channel, video_id);
 		var $video_embed = $('#video-embed'),
 			$video_title = $('#video-title'),
-			this_chan, title, getChan;
+			this_chan, title, getChan, anchor;
 
 		getChan = self.getChanObj(channel.feed);
 		this_chan = (getChan) ? getChan : channel;
 
-		// update promo state
-		$('#promo-channel li').removeClass('chan-selected');
+		anchor = $('#channels a.channel[data-feed="' + this_chan.feed + '"]');
+		if ( !anchor.length ) {
+			this_chan.owner = 'temp';
+			anchor = self.displayChannel(this_chan, true);
+		}
+		anchor.addClass('focus');
 
 		self.Globals.shuffled = [];
 		self.Globals.cur_chan = this_chan;
@@ -939,12 +970,14 @@ var RedditTV = Class.extend({
 					    chan_index = self.getChan(this_chan.feed);
 
 					//clear out stored videos if not grabbing more videos
-					if (!this_chan.last_id) {
+					if ( !this_chan.last_id || !self.Globals.videos[this_chan.feed] ) {
 						self.Globals.videos[this_chan.feed] = {};
 						self.Globals.videos[this_chan.feed].video = [];
 					}
 
 					for (var x in data.data.children) {
+						if ( !this_chan.channel ) this_chan.channel = data.data.children[x].data.subreddit;
+
 						if (self.isVideo(data.data.children[x].data.domain) && (data.data.children[x].data.score > 1)) {
 							if ( self.isEmpty(data.data.children[x].data.media_embed) || data.data.children[x].data.domain === 'youtube.com' || data.data.children[x].data.domain === 'youtu.be' ){
 								var created = self.createEmbed(data.data.children[x].data.url, data.data.children[x].data.domain);
@@ -973,7 +1006,6 @@ var RedditTV = Class.extend({
 					if (this.data.videos.length < self.Globals.video_minimum) {
 						this_chan.page = (this_chan.page) ? this_chan.page + 1 : 2;
 						this_chan.video_count = this.data.videos.length;
-						self.Globals.channels[self.getChan(this_chan.feed)] = this_chan;
 
 						if (this_chan.page > 1 && this_chan.video_count == 0) {
 							self.tvError('No videos found in ' + this_chan.channel);
@@ -981,8 +1013,12 @@ var RedditTV = Class.extend({
 							self.redditApiCall(this.action, this.data, this.successCallback, this.errorCallback);
 						}
 
-						return;
+						var moreVideos = true;
 					}
+
+					self.Globals.channels[self.getChan(this_chan.feed)] = this_chan;
+
+					if (moreVideos) return;
 
 					successCallback(data, this.data);
 
@@ -1682,24 +1718,47 @@ var RedditTV = Class.extend({
 	}, // populateAddChanVids()
 
 	addChannel: function(subreddit) {
-		var feed;
+		var feed, getChan, tempChan, c_data;
 
 		if (!subreddit) subreddit = self.stripHTML($('#channel-name').val());
 
 		feed = subreddit;
-		if ( !feed.match(/\//) ) feed = (subreddit.match(/\./)) ? '/domain/' + subreddit : '/r/' + subreddit;
+		if ( !feed.match(/\//) ) {
+			feed = (subreddit.match(/\./)) ? '/domain/' + subreddit : '/r/' + subreddit;
+		} else {
+			subreddit = subreddit.replace(/^.*\//, '');
+		}
 
-		if (!self.getChan(feed)) {
-			var c_data = { 'channel': subreddit, 'feed': feed, 'owner': 'user' };
+		getChan = self.getChanObj(feed);
+		tempChan = ( getChan && getChan.owner == 'temp' );
+
+		if ( !getChan || tempChan ) {
+			c_data = (getChan) ? getChan : { 'channel': subreddit, 'feed': feed };
+			c_data.owner = 'user';
+
 			self.Globals.channels.unshift(c_data);
 			self.Globals.user_channels.unshift(c_data);
 			
 			$.jStorage.set('user_channels', self.Globals.user_channels);
 
-			self.displayChannel(c_data, true);
-		}
+			if ( tempChan ) {
+				console.log('adding temp chan', $('#channels a.channel[data-feed="' + feed + '"]'));
+				$('#channels a.channel[data-feed="' + feed + '"]')
+					.removeClass('temp')
+					.find('.thumbnail span.add')
+						.attr({
+							'class': 'delete',
+							'title': 'Delete this channel'
+						})
+						.html('&times;');
+			} else {
+				self.displayChannel(c_data, true);
+			}
 
-		self.saveChannelOrder();
+			self.saveChannelOrder();
+
+			return true;
+		}
 
 		return false;
 	}, // addChannel()

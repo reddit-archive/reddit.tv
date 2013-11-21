@@ -782,7 +782,7 @@ body.video-loading #loading, #loading.error {
     font-size: 24px;
 }
 
-#channels a.channel.user:not(.ss-dragged-child):not(.deleting):hover .thumbnail span {
+#channels a.channel.user:not(.ss-dragged-child):not(.deleting):hover .thumbnail span, #channels a.channel.temp.user .thumbnail span {
     opacity: 1;
 }
 
