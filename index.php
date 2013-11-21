@@ -31,7 +31,7 @@
 <![endif]-->
 
 <link rel="stylesheet" href="css/layout.css" type="text/css" />
-<link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="css/theme_light.css" type="text/css" id="theme" />
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic' rel='stylesheet' type='text/css'>
 
