@@ -1016,7 +1016,9 @@ var RedditTV = Class.extend({
 						var moreVideos = true;
 					}
 
-					self.Globals.channels[self.getChan(this_chan.feed)] = this_chan;
+					this_chan.owner = 'temp';
+					if (!chan_index) chan_index = self.Globals.channels.length;
+					self.Globals.channels[chan_index] = this_chan;
 
 					if (moreVideos) return;
 
@@ -1608,6 +1610,7 @@ var RedditTV = Class.extend({
 	addChannelCheck: function() {
 		var msg     = $('#add-channel-message'),
 		    channel = $('#add-channel input.channel-name').val(),
+		    chanObj = self.getChan(channel),
 		    videos;
 
 		// I don't think any subreddits less than 3 characters exist, and return non-JSONP 404s which bug up $.ajax anyway
@@ -1616,7 +1619,7 @@ var RedditTV = Class.extend({
 		channel = (channel.match(/\./)) ? '/domain/' + channel : '/r/' + channel;
 		videos  = self.Globals.videos[channel];
 
-		if (self.getChan(channel)) {
+		if (chanObj && chanObj.owner != 'temp') {
 			msg.html('Channel already exists.');
 			return;
 		}
@@ -1657,7 +1660,7 @@ var RedditTV = Class.extend({
 						}
 					} else {
 						errorTxt = 'Error loading feed.';
-						if (local.channel.feed.match(/^\/r\//)) errorTxt += '.. Are you sure the <a href="http://reddit.com' + local.channel.feed + '" target="_blank">subreddit exists?</a>';
+						if (local.channel && local.channel.feed.match(/^\/r\//)) errorTxt += '.. Are you sure the <a href="http://reddit.com' + local.channel.feed + '" target="_blank">subreddit exists?</a>';
 					}
 
 					msg.html(errorTxt);
