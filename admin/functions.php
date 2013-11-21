@@ -1,7 +1,6 @@
 <?php
 
 require_once('lib/class.upload.php');
-require '../vendor/autoload.php';
 
 $db_name = '';
 
@@ -150,6 +149,10 @@ function imageUpload($filename, $max_width = 0, $max_height = 0) {
 
 
 	// Upload to S3
+	require '../vendor/autoload.php';
+	use Aws\S3\S3Client;
+	$client = S3Client::factory();
+
 	$key = $filename.'.jpg';
 	$bucket = 'reddittv';
 	// printf("Creating a new object with key %s\n", $key);
