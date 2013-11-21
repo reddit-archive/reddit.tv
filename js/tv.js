@@ -1363,11 +1363,14 @@ var RedditTV = Class.extend({
 
 			$('#video-title').html(videoTitle);
 			$('#video-comments-link').attr("href", redditlink);
-			$('#video-tweet-link').attr("href", "https://twitter.com/intent/tweet?original_referer="
-									+ window.location + "&tweet=" 
-									+ video.title_quot 
-									+ "&url="+redditlink);
-			$('#video-share-link').attr("href", redditlink);
+			$('#video-tweet-link').attr("href", "https://twitter.com/intent/tweet?text=" 
+									+ encodeURIComponent(video.title_quot)
+									+ "&url="+encodeURIComponent(window.location)
+									+ "&original_referrer="+encodeURIComponent(window.location));
+			$('#video-share-link').attr("href", "https://www.facebook.com/sharer/sharer.php?src=bm"
+									+ "&u="+encodeURIComponent(window.location)
+									+ "&t="+encodeURIComponent(video.title_quot)
+									+ "&v=3");
 			$video_embed.html(embed);
 			$('body').removeClass('video-loading');
 
