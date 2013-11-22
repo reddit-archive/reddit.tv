@@ -1,7 +1,5 @@
 <?php
 
-require_once('lib/class.upload.php');
-
 // AWS Includes
 require '../vendor/autoload.php';
 use Aws\S3\S3Client;
@@ -44,6 +42,7 @@ function addEdit() {
 	global $db_name;
 	$edit = isset($_POST['edit']);
 	$type = $_REQUEST['type'];
+	$errors = Array();
 
 	$db = ($edit) ? R::load($db_name, (int)$_POST['edit']) : R::dispense($db_name);
 
@@ -59,10 +58,18 @@ function addEdit() {
 	));
 
 	$max_width = 0;
-	if ($type == 'videos') $max_width = 150;
+	if ($type == 'videos') {
+		$max_width = 150;
+	} else if ($type == 'channels') {
+		$max_width = 230;
+	}
 
 	$image_url = imageUpload($filename, $max_width);
-	if ($image_url) $db->image_url = $image_url;
+	if ($image_url) {
+		$db->image_url = $image_url;
+	} else {
+		$errors[] = 'Image upload failed.';
+	}
 
 	if ($type == 'channels') $db->video_list = json_encode($_REQUEST['video_urls']);
 
@@ -74,7 +81,10 @@ function addEdit() {
 
 	$id = R::store($db);
 
-	jsonForAjax($db->export());
+	$returnArr = $db->export();
+	if (!empty($errors)) $returnArr['errors'] = $errors;
+
+	jsonForAjax($returnArr);
 }
 
 function jsonQuery() {
@@ -122,45 +132,61 @@ function imageUpload($filename, $max_width = 0, $max_height = 0) {
 		$b64 = preg_replace("/^data:.*?;base64,/", '', $_POST['b64_image']);
 		fwrite($handle, base64_decode($b64));
 		fclose($handle);
+		$img = $file;
+	} else {
+		if ($file['error'] > 0) return false;
+
+		$img = $file['tmp_name'];
 	}
 
-	$img = new Upload($file);
-	if (!$img->uploaded) return;
+	list($upload_w, $upload_h, $upload_type) = getimagesize($img);
 
-	// save uploaded image with a new name
-	$img->file_new_name_body = $filename;
-	$img->image_convert = 'jpg';
+	switch ($upload_type) {
+		case IMAGETYPE_GIF:
+			$gd_img = imagecreatefromgif($img);
+			break;
+		case IMAGETYPE_JPEG:
+			$gd_img = imagecreatefromjpeg($img);
+			break;
+		case IMAGETYPE_PNG:
+			$gd_img = imagecreatefrompng($img);
+			break;
+	}
+	if ($gd_img === false) return false;
+
+	$img_w = $upload_w;
+	$img_h = $upload_h;
+	$img_ar = $img_w / $img_h;
 
 	// resize if needed
 	if ($max_width > 0 || $max_height > 0) {
-		$img->image_resize = true;
 		if ($max_width > 0) {
-			$img->image_x = $max_width;
-			$img->image_ratio_y = true;
+			$img_w = $max_width;
+			$img_h = floor($max_width / $img_ar);
 		} else if ($max_height > 0) {
-			$img->image_ratio_x = true;
-			$img->image_y = $max_height;
+			$img_w = ceil($max_height * $img_ar);
+			$img_h = $max_height;
 		}
-	} 
-
-	$img->Process(UPLOAD_PATH);
-	if (!$img->processed) {
-		echo 'error : ' . $img->error;
-		echo 'image renamed "foo" copied';
-	} else {
-		$img->Clean();
 	}
 
+	$resized_img = tempnam('', '');
+
+	$gd_img_resized = imagecreatetruecolor($img_w, $img_h);
+	imagecopyresampled($gd_img_resized, $gd_img, 0, 0, 0, 0, $img_w, $img_h, $upload_w, $upload_h);
+	$jpg_created = imagejpeg($gd_img_resized, $resized_img, 90);
+	imagedestroy($gd_img);
+	imagedestroy($gd_img_resized);
+
+	if (!$jpg_created) return false;
 
 	// Upload to S3
 	$aws_s3_client = S3Client::factory();
 	$key = $filename.'.jpg';
-	
 
 	$result = $aws_s3_client->putObject(array(
 	    'Bucket' => AWS_BUCKET,
 	    'Key'    => $key,
-	    'Body'   => fopen(UPLOAD_PATH.$filename.'.jpg', 'r')
+	    'Body'   => fopen($resized_img, 'r')
 	));
 
 	return $result['ObjectURL'];
