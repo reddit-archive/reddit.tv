@@ -211,7 +211,6 @@ function pickFilename($arr=Array(), $ext='.jpg') {
 }
 
 function sanitize_file_name( $filename ) {
-	$filename_raw = $filename;
 	$special_chars = array("?", "[", "]", "/", "\\", "=", "<", ">", ":", ";", ",", "'", "\"", "&", "$", "#", "*", "(", ")", "|", "~", "`", "!", "{", "}");
 	$filename = str_replace($special_chars, '', $filename);
 	$filename = preg_replace('/[\s-]+/', '-', $filename);
