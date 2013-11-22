@@ -194,7 +194,7 @@ function sanitize_file_name( $filename ) {
 }
 
 function updateSettings() {
-	global $db_name;
+	$db_name = 'settings';
 
 	$item = R::load($db_name, 1);
 	foreach ($_POST as $key => $val) {
