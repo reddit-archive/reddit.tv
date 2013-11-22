@@ -8,3 +8,4 @@ lib
 database.s3db
 .elasticbeanstalk/
 config-local.php
+vendor/*

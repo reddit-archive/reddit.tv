@@ -36,13 +36,9 @@ else {
 	}
 
 	if(class_exists('Memcache')){
-		// Connection constants
-		define('MEMCACHED_HOST', 'reddittvdev.0ohhtp.cfg.usw1.cache.amazonaws.com');
-		define('MEMCACHED_PORT', '11211');
-		 
 		// Connection creation
 		$memcache = new Memcache;
-		$cacheAvailable = $memcache->connect(MEMCACHED_HOST, MEMCACHED_PORT);
+		$cacheAvailable = $memcache->connect($_SERVER['MEMCACHED_HOST'], $_SERVER['MEMCACHED_PORT']);
 	} else {
 		$cacheAvailable = false;
 	}
