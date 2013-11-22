@@ -664,7 +664,13 @@ var RedditTV = Class.extend({
 					}
 				},
 				function(jXHR, textStatus, errorThrown, local) {
-					self.tvError('Error loading channel.');
+					var this_chan = local.channel,
+					    error     = 'Error loading channel.';
+
+					if (this_chan.video_count === 0) 
+						error = 'No videos found in ' + this_chan.feed;
+
+					self.tvError(error);
 				});
 		}else{
 			if(self.Globals.videos[this_chan.feed].video.length > 0){
@@ -687,7 +693,7 @@ var RedditTV = Class.extend({
 		    limit      = 100,
 		    uri;
 
-		if (channel_obj.video_count && channel_obj.video_count < self.Globals.video_minimum) {
+		if (channel_obj.video_count < self.Globals.video_minimum) {
 			limit = 1000;
 			if (channel_obj.last_id) extras = '&after=' + channel_obj.last_id;
 		}
@@ -884,6 +890,9 @@ var RedditTV = Class.extend({
 					var this_chan  = this.data.channel,
 					    chan_index = self.getChan(this_chan.feed);
 
+					if ( !this_chan.video_count ) this_chan.video_count = 0;
+					this_chan.page = (this_chan.page) ? this_chan.page + 1 : 1;
+
 					//clear out stored videos if not grabbing more videos
 					if ( !this_chan.last_id || !self.Globals.videos[this_chan.feed] ) {
 						self.Globals.videos[this_chan.feed] = {};
@@ -916,24 +925,24 @@ var RedditTV = Class.extend({
 					this.data.videos = self.Globals.videos[this_chan.feed].video;
 					this.data.data = data;
 
-					if (!this.data.videos.length) return redditApiError(null, textStatus, null, this.data);
+					if (!this_chan.owner) this_chan.owner = 'temp';
+					if (!chan_index) chan_index = self.Globals.channels.length;
+					this_chan.video_count += this.data.videos.length;
+					self.Globals.channels[chan_index] = this_chan;
 
 					if (data.data.children.length && this.data.videos.length < self.Globals.video_minimum) {
-						this_chan.page = (this_chan.page) ? this_chan.page + 1 : 2;
-						this_chan.video_count = this.data.videos.length;
+						var moreVideos = true;
 
-						if (this_chan.page > 5 && this_chan.video_count == 0) {
-							self.tvError('No videos found in ' + this_chan.channel);
+						if (this_chan.page >= 5) {
+							if (this_chan.video_count == 0) {
+								redditApiError(null, textStatus, null, this.data);
+							} else {
+								moreVideos = false;
+							}
 						} else {
 							self.redditApiCall(this.action, this.data, this.successCallback, this.errorCallback);
 						}
-
-						var moreVideos = true;
 					}
-
-					if (!this_chan.owner) this_chan.owner = 'temp';
-					if (!chan_index) chan_index = self.Globals.channels.length;
-					self.Globals.channels[chan_index] = this_chan;
 
 					if (moreVideos) return;
 
