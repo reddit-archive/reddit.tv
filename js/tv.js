@@ -1334,6 +1334,8 @@ var RedditTV = Class.extend({
 		    video     = self.findVideoById(video_id, this_chan.feed);  //returns number typed
 
 		if(video !== false){
+			// TODO make sure ads are regenerated if the video list is already loaded
+			self.loadVideoList(this_chan);
 			self.loadVideo(Number(video));
 		}else{
 			//ajax request
