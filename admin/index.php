@@ -11,18 +11,6 @@
 
 <link rel="shortcut icon" href="../favicon.ico" />
 
-<!-- HTML5 Boilerplate -->
-
-
-<!-- Unsemantic Grid -->
-<!-- <link rel="stylesheet" href="./lib/unsemantic-grid/assets/stylesheets/demo.css" /> -->
-<!--[if (gt IE 8) | (IEMobile)]><!-->
-  <!-- <link rel="stylesheet" href="../css/unsemantic-grid-responsive.css" /> -->
-<!--<![endif]-->
-<!--[if (lt IE 9) & (!IEMobile)]>
-  <link rel="stylesheet" href="../css/unsemantic-grid-ie.css" />
-<![endif]-->
-
 <link rel="stylesheet" href="../css/layout.css" type="text/css" />
 <link rel="stylesheet" href="../css/animate.css" type="text/css" />
 <link rel="stylesheet" href="./css/bootstrap.min.css" type="text/css" />
