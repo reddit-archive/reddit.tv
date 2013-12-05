@@ -187,13 +187,13 @@ var RedditTV = Class.extend({
 					self.loadVideo('prev');
 					break;
 				case arrow.up:	case 75: // k
-					//self.chgChan('up');
+					self.changeChan('up');
 					break;
 				case arrow.right: case 76: // l
 					self.loadVideo('next');
 					break;
 				case arrow.down:  case 74: // j
-					//self.chgChan('down');
+					self.changeChan('down');
 					break;
 				case 32: // space
 					self.togglePlay();
@@ -1651,6 +1651,10 @@ var RedditTV = Class.extend({
 
 		return canDelete;
 	}, // removeChannel()
+
+	changeChan: function(direction) {
+		// TODO add back in Change Channel functionality with new channel sorting
+	}, // changeChan()
 
 	channelType: function(channel) {
 		return (subreddit.match(/(\/domain\/|\.)/)) ? 'domain' : 'subreddit';
