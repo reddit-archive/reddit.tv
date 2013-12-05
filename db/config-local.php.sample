@@ -31,6 +31,8 @@ R::setup("mysql:host=$dbhost;port=$dbport;
 // SQLite Setup
 // R::setup('sqlite:'.realpath(dirname(__FILE__)).'/database.s3db');
 
+// Free db from schema changes
+R::freeze(true);
 
 if(class_exists('Memcache')){
 	// Connection constants

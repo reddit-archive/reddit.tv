@@ -32,8 +32,10 @@ else {
 	}
 	else{
 		R::setup('sqlite:'.realpath(dirname(__FILE__)).'/database.s3db');
-		//R::setup('database.txt'); -- for other systems
 	}
+
+	// Free db from schema changes
+	R::freeze(true);
 
 	if(class_exists('Memcache')){
 		// Connection creation
