@@ -57,14 +57,20 @@ function getChannelThumbnail($feed){
 	$thumbnail_url = null;
 
 	if(preg_match("/\/domain\//u", $feed) > 0){
-		$uri = "http://www.reddit.com".$feed."/search/.json?timestamp%3A1382227035..%29&restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
+		$uri = "http://www.reddit.com".$feed."/search/.json?restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
 	}
 	else {
+		// TODO: figure out a proper timestamp time to use for that
 		$uri = "http://www.reddit.com".$feed."/search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A1382227035..%29&restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
 	}
-	$file = file($uri);
-	$channel_info = json_decode($file[0]);
 
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_URL, $uri);
+	curl_setopt($ch, CURLOPT_USERAGENT, 'reddit.tv Thumbnail Scraper');
+	$file = curl_exec($ch);
+
+	$channel_info = json_decode($file);
 	$entries = $channel_info->data->children;
 
 	for($x=0; $x<count($entries); $x++){
