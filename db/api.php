@@ -89,12 +89,19 @@ function getChannelThumbnail($feed){
 
 function getYoutubeThumbnail($id, $base64=false) {
 	$url = 'http://img.youtube.com/vi/' . $id . '/hqdefault.jpg';
-	$imginfo = getimagesize($url);
+
+	$ch = curl_init();
+	$temp = tempnam('/tmp', 'img');
+	$fh = fopen($temp, 'w+');
+
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_FILE, $fh);
+	curl_exec($ch);
+	curl_close($ch);
+
+	$img = file_get_contents($temp);
+	$imginfo = getimagesize($temp);
 	if ($base64) {
-		ob_start();
-		readfile($url);
-		$img = ob_get_contents();
-		ob_end_clean();
 		$dataUri = 'data:' . $imginfo['mime'] . ';base64,' . base64_encode($img);
 		$arr = Array(
 				'url' => $url,
@@ -105,7 +112,7 @@ function getYoutubeThumbnail($id, $base64=false) {
 		die();
 	} else {
 		header('Content-type: ' . $imginfo['mime']);
-		readfile($url);
+		echo $img;
 	}
 }
 
