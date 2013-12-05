@@ -81,7 +81,6 @@ function getChannelThumbnail($feed){
 				break;
 			}
 		}
-		$x++;
 	}
 
     return $thumbnail_url;
