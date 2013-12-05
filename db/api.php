@@ -146,7 +146,7 @@ function getAds() {
 	if (USE_SQLITE) {
 		$date_bounds = 'AND DATETIME(start_date) <= DATETIME("now") AND DATETIME(end_date) >= DATETIME("now")';
 	} else {
-		$date_bouds = 'AND start_date <= NOW() AND end_date >= NOW()';
+		$date_bounds = 'AND start_date <= NOW() AND end_date >= NOW()';
 	}
 
 	$sponsored_videos = R::getAll('
