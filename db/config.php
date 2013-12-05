@@ -8,18 +8,12 @@ else {
 	define('UPLOAD_PATH', dirname(realpath(__FILE__)) . '/../uploads/');
 	define('UPLOAD_URL', 'uploads/');
 	define('AWS_BUCKET', 'reddittv');
+	define('USE_SQLITE', false);
 
-	//Example Script, saves Hello World to the database.
-
-	//First, we need to include redbean
+	// Include RedbeanPHP
 	require_once(dirname(__FILE__).'/rb.php');
 
-	//Second, we need to setup the database
-
-	//If you work on Mac OSX or Linux (or another UNIX like system)
-	//You can simply use this line:
-
-	if(!empty($_SERVER['RDS_HOSTNAME'])){
+	if(!USE_SQLITE && !empty($_SERVER['RDS_HOSTNAME'])){
 		$dbhost = $_SERVER['RDS_HOSTNAME'];
 		$dbport = $_SERVER['RDS_PORT'];
 		$dbname = $_SERVER['RDS_DB_NAME'];
