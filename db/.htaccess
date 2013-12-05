@@ -1,0 +1,2 @@
+RewriteEngine on
+RewriteRule schema.(php|sql) - [F,L]

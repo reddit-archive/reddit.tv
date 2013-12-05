@@ -3,6 +3,9 @@
 
 include_once('config.php');
 
+//  Unfreeze db from schema changes
+R::freeze(false);
+
 /* 	Sponsored videos
 	Individual videos that appear between normal playing videos */
 $sponsored_video = R::dispense('sponsoredvideo');
@@ -21,8 +24,6 @@ $sponsored_video = R::dispense('sponsoredvideo');
 	$sponsored_video->skip_count = null;						// integer number of times skipped
 	$sponsored_video->cpm = null;								// float dollar value for CPM (optional)
 
-$sponsored_video_id = R::store($sponsored_video);
-
 
 /* 	Sponsored skins
 	Images that can replace UI areas on the site */
@@ -39,8 +40,6 @@ $sponsored_skin = R::dispense('sponsoredskin');
 	$sponsored_skin->view_count = null;							// integer number of times viewed
 	$sponsored_skin->view_target = null;						// integer goal for final view count
 	$sponsored_skin->cpm = null;								// float dollar value for CPM (optional)
-
-$sponsored_skin_id = R::store($sponsored_skin);
 
 
 /* 	Sponsored channels
@@ -60,8 +59,6 @@ $sponsored_channel = R::dispense('sponsoredchannel');
 	$sponsored_channel->view_target = null;						// integer number of times viewed
 	$sponsored_channel->skip_count = null;						// integer number of times skipped
 
-$sponsored_channel_id = R::store($sponsored_channel);
-
 
 /* 	Channels 
 	Statistics and meta information for normal Reddit.tv channels */
@@ -74,8 +71,6 @@ $channel = R::dispense('channel');
 	$channel->view_count = null;								// integer total count of videos viewed
 	$channel->skip_count = null;								// integer total count of videos skipped
 
-$channel_id = R::store($channel);
-
 /* 	Settings 
 	Settings for reddit.tv */
 $settings = R::dispense('settings');
@@ -84,7 +79,14 @@ $settings = R::dispense('settings');
 	$settings->ads_start_at = 3;					// integer index at which first ad is placed
 	$settings->ads_show_every = 5;					// integer show next ads every n videos
 
+// Comment out storing by default
+/*
+R::store($sponsored_video);
+R::store($sponsored_skin);
+R::store($sponsored_channel);
+R::store($channel);
 R::store($settings);
+*/
 
 
 // Wipe all tables from null data
@@ -92,13 +94,18 @@ $tables = Array(
 	'sponsoredvideo',
 	'sponsoredskin',
 	'sponsoredchannel',
-	'settings',
-	// 'channel',
+	'channel',
 );
 
+// Comment out wiping by default
+/*
 foreach ($tables as $table) {
 	$sql = 'DELETE FROM ' . $table;
 	R::exec($sql);
 }
+*/
+
+// Free db from schema changes
+R::freeze(true);
 
 ?>
