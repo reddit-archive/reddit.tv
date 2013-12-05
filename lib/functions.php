@@ -53,9 +53,7 @@ function jsonError($error) {
 }
 
 function jsonForAjax($arr) {
-	// Only return JSON for AJAX requests
-	echo json_encode($arr);
-	die();
+	die(json_encode($arr));
 }
 
 function default_value(&$var, $default) {
