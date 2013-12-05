@@ -61,8 +61,7 @@ function getChannelThumbnail($feed){
 		$uri = "http://www.reddit.com".$feed."/search/.json?restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
 	}
 	else {
-		// TODO: figure out a proper timestamp time to use for that
-		$uri = "http://www.reddit.com".$feed."/search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A1382227035..%29&restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
+		$uri = "http://www.reddit.com".$feed."/search/.json?q=%28and+%28or+site%3A%27youtube.com%27+site%3A%27vimeo.com%27+site%3A%27youtu.be%27%29+timestamp%3A".(time() - (30*24*60*60))."..%29&restrict_sr=on&sort=top&syntax=cloudsearch&limit=100";
 	}
 
 	$ch = curl_init();
