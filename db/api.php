@@ -23,7 +23,7 @@ switch($_GET['action']) {
 		//Reload the bean
 		$channel = R::findOne('channel', ' feed = ?', array($feed));
 
-		if(empty($channel) || empty($channel->thumbnail_url) || !empty($_GET['debug'])){
+		if(empty($channel) || empty($channel->thumbnail_url)){
 			if(empty($channel))
 				$channel = R::dispense('channel');
 			$channel->feed = $feed;
