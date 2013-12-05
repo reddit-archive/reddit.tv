@@ -181,7 +181,7 @@ Globals = {
 
   <footer>
     <div class="grid-container">
-      Privacy Policy, etc <?php /* TODO Include privacy policy and copyright jams */ ?>
+      Privacy Policy, etc <?php /* TODO Include privacy policy and copyright jams, Twitter attribution for Bootstrap */ ?>
     </div>
   </footer>
 
