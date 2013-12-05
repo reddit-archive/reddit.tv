@@ -6,6 +6,7 @@ include_once('config.php');
 switch($_GET['action']) {
 	case 'channel_thumbnail':
 		$feed = $_GET['feed'];
+		if ( !preg_match("/\/(r|domain)\//", $feed) ) jsonError('Invalid feed.');
 
 		if($cacheAvailable){
 			$thumbnail_url = $memcache->get("chthmb-$feed");
