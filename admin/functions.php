@@ -195,7 +195,8 @@ function imageUpload($filename, $max_width = 0, $max_height = 0) {
 function pickFilename($arr=Array(), $ext='.jpg') {
 	$arr = array_filter($arr);
 	foreach ($arr as $key => $val) {
-		$arr[$key] = sanitize_file_name($val);
+		$sanitized = sanitize_file_name($val);
+		$arr[$key] = ($sanitized) ? $sanitized : uniqid();
 	}
 
 	$filename = implode('_', $arr);
