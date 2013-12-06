@@ -422,14 +422,14 @@ var RedditTV = Class.extend({
 
 		$('header').mouseenter(function(){
 			self.Globals.videoListMouse = true;
-			setTimeout(self.videoListOpenTimeout, 500);
+			self.Globals.videoListOpenTimeout = window.setTimeout(self.videoListOpenTimeout, 500);
 		});
 		$('#settings').mouseenter(function(){
 			self.Globals.videoListMouse = false;
 		});
 		$('header').mouseleave(function(){
 			self.Globals.videoListMouse = false;
-			setTimeout(self.videoListCloseTimeout, 1000);
+			self.Globals.videoListCloseTimeout = window.setTimeout(self.videoListCloseTimeout, 1000);
 		});
 	}, // setBindings()
 
@@ -1045,6 +1045,7 @@ var RedditTV = Class.extend({
 	}, // getChanObj()
 
 	videoListCloseTimeout: function() {
+		window.clearTimeout(self.Globals.videoListCloseTimeout);
 		if (self.Globals.videoListMouse == false)
 			self.closeVideoList();
 	}, // videoListCloseTimeout()
@@ -1066,11 +1067,15 @@ var RedditTV = Class.extend({
 	openVideoList: function() {
 		if ( !$('#video-list').children().length ) return;
 
+		window.clearTimeout(self.Globals.videoListCloseTimeout);
+
 		$('#video-list').show().addClass('slideInDown').removeClass('bounceOutUp');
 		$('#now-playing-title').addClass('active');
 	}, // openVideoList()
 
 	closeVideoList: function() {
+		window.clearTimeout(self.Globals.videoListOpenTimeout);
+
 		$('#video-list').addClass('bounceOutUp').removeClass('slideInDown');
 		$('#vid-list-tooltip').hide();
 		$('#now-playing-title').removeClass('active');
@@ -1130,7 +1135,7 @@ var RedditTV = Class.extend({
 			self.videoListScrollbar();
 		}
 
-		setTimeout(self.closeVideoList, 2000);
+		self.Globals.videoListCloseTimeout = window.setTimeout(self.closeVideoList, 2000);
 	}, // loadVideoList()
 
 	loadVideo: function(video, sponsored) {
@@ -1144,11 +1149,10 @@ var RedditTV = Class.extend({
 		if (this_chan.feed) videos_size = Object.size(self.Globals.videos[this_chan.feed].video)-1;
 		if (!sponsored) sponsored = sponsoredChannel;
 
-		// TODO Determine if video list is open so it can briefly show between videos
-		/*if(!videoList.open) {
+		if( $('#video-list').hasClass('bounceOutUp') ) { // Video list isn't open
 			self.openVideoList();
-			setTimeout(self.videoListCloseTimeout, 2000);
-		}*/
+			self.Globals.videoListCloseTimeout = setTimeout(self.videoListCloseTimeout, 2000);
+		}
 
 		if(self.Globals.shuffle){
 			if(self.Globals.shuffled.length === 0){
