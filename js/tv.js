@@ -685,13 +685,21 @@ var RedditTV = Class.extend({
 		}
 	}, // loadChannel()
 
-	getFeedURI: function(channel_obj) {
-		var sorting    = self.Globals.sorting.split(':'),
+	getFeedURI: function(req) {
+		var domain     = 'http://www.reddit.com',
+		    sorting    = self.Globals.sorting.split(':'),
 		    sortType   = '',
 		    sortOption = '',
 		    extras     = '',
 		    limit      = 100,
-		    uri;
+		    channel_obj, uri;
+
+		if (typeof req == 'string') { // video ID
+			uri = '/by_id/t3_' + req + '.json';
+			return domain + uri;
+		} else {
+			channel_obj = req;
+		}
 
 		if (channel_obj.video_count < self.Globals.video_minimum) {
 			limit = 1000;
@@ -718,7 +726,7 @@ var RedditTV = Class.extend({
 
 		uri += extras;
 
-		return uri;
+		return domain + uri;
 	}, // getFeedURI()
 
 	isVideo: function(video_domain) {
@@ -846,7 +854,7 @@ var RedditTV = Class.extend({
 		var apiData = $.extend({ 'action' : action }, (typeof data != 'object') ? {} : data );
 
 		if ( !$.isFunction(successCallback) ) successCallback = function(){};
-		if ( !$.isFunction(errorCallback) )	errorCallback	= function(){};
+		if ( !$.isFunction(errorCallback) )   errorCallback   = function(){};
 
 		$.ajax({
 			url: self.Globals.current_url + 'db/api.php',
@@ -863,30 +871,27 @@ var RedditTV = Class.extend({
 	}, // apiCall()
 
 	redditApiCall: function(action, data, successCallback, errorCallback) {
-		if ( !$.isFunction(successCallback) ) successCallback = function(){};
-		if ( !$.isFunction(errorCallback) )	errorCallback	= function(){};
+		var last_req = self.Globals.cur_chan_req,
+		    successFuncs, redditApiError;
 
-		var last_req = self.Globals.cur_chan_req;
+		if ( !$.isFunction(successCallback) ) successCallback = function(){};
+		if ( !$.isFunction(errorCallback) )   errorCallback   = function(){};
+
 		if (last_req !== null) last_req.abort();
 
-		var redditApiError = function(jXHR, textStatus, errorThrown, local) {
-			console.log('[redditApiError]', jXHR, textStatus, errorThrown);
-			errorCallback(jXHR, textStatus, errorThrown, local);
+		successFuncs = {
+			'video' : function(data, textStatus) {
+					var this_chan = this.data.channel,
+					    video     = data.data.children[0].data;
 
-			$('body').removeClass('video-loading');
-		}
+					if ( !self.isEmpty(video.media_embed) && self.isVideo(video.media.type) ) {
+						self.Globals.videos[this_chan.feed].video.splice(0, 0, video);
+					}
 
-		if (action == 'videos') {
-			var video_id  = data.video_id,
-			    this_chan = data.channel;
-
-			self.Globals.cur_chan_req = $.ajax({
-				url: 'http://www.reddit.com' + self.getFeedURI(this_chan),
-				dataType: 'jsonp',
-				jsonp: 'jsonp',
-				timeout: 5000, // Server doesn't return JSON on error, have to rely on this.
-				context: { 'action' : action, 'data' : data, 'successCallback' : successCallback, 'errorCallback' : errorCallback },
-				success: function(data, textStatus) {
+					self.loadVideoList(this_chan);
+					self.loadVideo('first');
+				},
+			'videos' : function(data, textStatus) {
 					var this_chan  = this.data.channel,
 					    chan_index = self.getChan(this_chan.feed);
 
@@ -950,6 +955,30 @@ var RedditTV = Class.extend({
 
 					$('body').removeClass('video-loading');
 				}
+		}; // successFuncs{}
+
+		redditApiError = function(jXHR, textStatus, errorThrown, local) {
+			console.log('[redditApiError]', jXHR, textStatus, errorThrown);
+			errorCallback(jXHR, textStatus, errorThrown, local);
+
+			$('body').removeClass('video-loading');
+		};
+
+		if (action == 'video' || action == 'videos') {
+			var video_id       = data.video_id,
+			    this_chan      = data.channel,
+			    defaultSuccess = successFuncs[action],
+			    uri_req;
+
+			uri_req = (action == 'video') ? video_id : this_chan;
+
+			self.Globals.cur_chan_req = $.ajax({
+				url: self.getFeedURI(uri_req),
+				dataType: 'jsonp',
+				jsonp: 'jsonp',
+				timeout: 5000, // Server doesn't return JSON on error, have to rely on this.
+				context: { 'action' : action, 'data' : data, 'successCallback' : successCallback, 'errorCallback' : errorCallback },
+				success: defaultSuccess
 			});
 		} // action == videos
 
@@ -1347,33 +1376,14 @@ var RedditTV = Class.extend({
 			self.loadVideoList(this_chan);
 			self.loadVideo(Number(video));
 		}else{
-			//ajax request
-			var last_req = self.Globals.cur_vid_req;
-			if(last_req !== null){
-				last_req.abort();
-			}
+			self.redditApiCall('video', { 'channel': this_chan, 'video_id': video_id },
+				function() {},
+				function(jXHR, textStatus, errorThrown, local) {
+					var this_chan = local.channel,
+					    error     = 'Error loading video.';
 
-			// TODO Incorporate into redditApiCall function
-			Globals.cur_vid_req = $.ajax({
-				url: "http://www.reddit.com/by_id/t3_"+video_id+".json",
-				dataType: "jsonp",
-				jsonp: "jsonp",
-				success: function(data) {
-					var video = data.data.children[0].data;
-					if (!self.isEmpty(video.media_embed) && self.isVideo(video.media.type)) {
-						self.Globals.videos[this_chan.feed].video.splice(0, 0, video);
-					}
-
-					self.loadVideoList(this_chan);
-					self.loadVideo('first');
-				},
-				error: function (jXHR, textStatus, errorThrown) {
-					if (textStatus !== 'abort') {
-
-						alert('Could not load data. Is reddit down?');
-					}
-				}
-			});
+					self.tvError(error);
+				});
 		}
 	}, // loadVideoById()
 
