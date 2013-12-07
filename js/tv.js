@@ -226,7 +226,7 @@ var RedditTV = Class.extend({
 				self.Globals.videoListMouse = false;
 
 				if ( $(this).hasClass('sponsored') ) {
-					self.loadVideo(parseInt($(this).attr('data-adNum')), true);
+					self.loadVideo(parseInt($(this).attr('data-adNum')), $(this).attr('data-unique'));
 				}
 			}
 		);
@@ -1111,7 +1111,10 @@ var RedditTV = Class.extend({
 					thumbnail = self.thumbElement(ad, {feed: '/sponsor' }, rtv.Globals.ads.videos.indexOf(ad));
 					thumbnail.insertBefore($(this));
 					thumbnail.addClass('sponsored')
-						.attr('data-adNum', ad.index);
+						.attr({
+							'data-adNum' : ad.index,
+							'data-unique'    : parseInt(Math.random()*10000)
+						});
 
 					adNum = 1;
 				}
@@ -1233,9 +1236,12 @@ var RedditTV = Class.extend({
 			var video = ( sponsored && self.Globals.cur_chan.owner != 'sponsor' ) ? self.Globals.ads.videos[selected_video] : self.Globals.videos[this_chan.feed].video[selected_video];
 
 			// scroll to thumbnail in video list and highlight it
-			$('#video-list .focus:not(.sponsored)').removeClass('focus');
-			// TODO Focus and scroll to promo somehow, needs unique ID
-			if (!sponsored) $('#video-list-thumb-' + selected_video).addClass('focus');
+			// $('#video-list .focus').removeClass('focus');
+			if (sponsored) {
+				if ( !isNaN(parseInt(sponsored)) ) $('#video-list a.sponsored[data-id="' + sponsored + '"]').addClass('focus');
+			} else {
+				$('#video-list-thumb-' + selected_video).addClass('focus');
+			}
 			$('#video-list:not(.scrollbar)').stop(true,true).scrollTo('.focus', { duration:1000, offset:-280 });
 			if ($('#video-list').hasClass('scrollbar')) { // Only do this for the jScrollPane-esque thing
 				var focused	  = $('#video-list .focus'),
