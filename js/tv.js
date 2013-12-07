@@ -1509,12 +1509,19 @@ var RedditTV = Class.extend({
 
 	addChannelCheck: function() {
 		var msg     = $('#add-channel-message'),
-		    channel = $('#add-channel input.channel-name').val(),
+		    input   = $('#add-channel input.channel-name'),
+		    channel = input.val(),
+		    oldChan = channel,
 		    chanObj = self.getChan(channel),
 		    videos;
 
+		// Strip out /r/ etc if anyone adds it
+		if (channel.match(/\//)) channel = channel.replace(/^.*\//, '');
+
 		// I don't think any subreddits less than 3 characters exist, and return non-JSONP 404s which bug up $.ajax anyway
 		if (channel.length < 3 || $('#add-channel').hasClass('loading')) return;
+
+		if (channel != oldChan) input.val(channel).data('val', channel);
 
 		channel = (channel.match(/\./)) ? '/domain/' + channel : '/r/' + channel;
 		videos  = self.Globals.videos[channel];
@@ -1604,7 +1611,7 @@ var RedditTV = Class.extend({
 	}, // populateAddChanVids()
 
 	addChannel: function(subreddit) {
-		var feed, getChan, tempChan, c_data;
+		var feed, getChan, tempChan, c_data, chanThumb;
 
 		if (!subreddit) subreddit = self.stripHTML($('#channel-name').val());
 
@@ -1627,9 +1634,9 @@ var RedditTV = Class.extend({
 			
 			$.jStorage.set('user_channels', self.Globals.user_channels);
 
-			if ( tempChan ) {
-				$('#channels a.channel[data-feed="' + feed + '"]')
-					.removeClass('temp')
+			chanThumb = $('#channels a.channel[data-feed="' + feed + '"]');
+			if ( tempChan && chanThumb.length ) {
+				chanThumb.removeClass('temp')
 					.find('.thumbnail span.add')
 						.attr({
 							'class': 'delete',
