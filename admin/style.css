@@ -22,6 +22,10 @@ header {
     margin: 0;
 }
 
+.alert {
+  margin: 20px 0;
+}
+
 div.adminTabs {
     height: 50px;
 }

@@ -210,7 +210,7 @@ $('.btn-edit').on('click', function() {
 			$('html, body').animate({ scrollTop: 0 }, 300);
 		},
 		error: function(jXHR, textStatus, errorThrown) {
-			// TODO Show visual error message
+			siteMsg('danger', 'Error with edit: '+'errorThrown');
 			console.log('[ERROR] '+textStatus);
 			console.log('[ERROR] '+errorThrown);
 		}
@@ -601,4 +601,11 @@ function youtubeThumb(id, ele) {
 function channelMsg(channelType, status, msg) {
 	$('#' + channelType + '-channels-message').removeClass().addClass('alert alert-' + status)
 		.text(msg);
+}
+
+function siteMsg(status, msg) {
+	$('#content').prepend("<div class=\"alert alert-"+status+" fade in\">"+
+      "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">×</button>"+
+      "<span class=\"alert-text\">"+msg+"</span>"+
+    "</div>");
 }
