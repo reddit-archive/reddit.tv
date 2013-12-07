@@ -54,11 +54,7 @@ body {
     color: #5f99cf;
 }
 
-#video-title {
-    color: #5f99cf;
-}
-
-#video-title a {
+#video-title, #video-title a {
     color: #fff;
 }
 
