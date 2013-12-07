@@ -74,10 +74,6 @@ Globals = {
             <label class="btn btn-default icon-spam settings-sfw">
               <input type="checkbox"> SFW
             </label>
-            <?php /* TODO: Make fullscreen using HTML5 fullscreen API
-            <label class="btn btn-default icon-expand settings-fill">
-              <input type="checkbox"> Fill Screen
-            </label> */?>
 
             <div id="sorting" class="btn-group">
               <button type="button" class="btn btn-default icon-menu" data-toggle="dropdown">
