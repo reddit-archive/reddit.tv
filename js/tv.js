@@ -186,11 +186,11 @@ var RedditTV = Class.extend({
 				case arrow.left:  case 72: // h
 					self.loadVideo('prev');
 					break;
-				case arrow.up:	case 75: // k
-					self.changeChan('up');
-					break;
 				case arrow.right: case 76: // l
 					self.loadVideo('next');
+					break;
+				case arrow.up:	case 75: // k
+					self.changeChan('up');
 					break;
 				case arrow.down:  case 74: // j
 					self.changeChan('down');
@@ -612,6 +612,8 @@ var RedditTV = Class.extend({
 			$video_title = $('#video-title'),
 			this_chan, title, getChan, anchor;
 
+		if (!video_id) video_id = null;
+
 		getChan = self.getChanObj(channel.feed);
 		this_chan = (getChan) ? getChan : channel;
 
@@ -697,9 +699,9 @@ var RedditTV = Class.extend({
 		if (typeof req == 'string') { // video ID
 			uri = '/by_id/t3_' + req + '.json';
 			return domain + uri;
-		} else {
-			channel_obj = req;
 		}
+
+		channel_obj = req;
 
 		if (channel_obj.video_count < self.Globals.video_minimum) {
 			limit = 1000;
@@ -1674,7 +1676,26 @@ var RedditTV = Class.extend({
 	}, // removeChannel()
 
 	changeChan: function(direction) {
-		// TODO add back in Change Channel functionality with new channel sorting
+		var curChan  = $('#channels a.channel.focus:first'),
+		    chan     = false,
+		    feed;
+
+		if (direction == 'up') {
+			chan = curChan.prev();
+		} else if (direction == 'down') {
+			chan = curChan.next();
+		}
+
+		if (!chan) return false;
+
+		feed = chan.data('feed');
+
+		if (!feed) return false;
+
+		chan.click();
+		document.location.href = chan.attr('href');
+
+		return true;
 	}, // changeChan()
 
 	channelType: function(channel) {
