@@ -210,7 +210,7 @@ $('.btn-edit').on('click', function() {
 			$('html, body').animate({ scrollTop: 0 }, 300);
 		},
 		error: function(jXHR, textStatus, errorThrown) {
-			siteMsg('danger', 'Error with edit: '+'errorThrown');
+			siteMsg('danger', 'Error with edit: '+errorThrown);
 			console.log('[ERROR] '+textStatus);
 			console.log('[ERROR] '+errorThrown);
 		}
