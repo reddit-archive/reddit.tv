@@ -1087,11 +1087,13 @@ var RedditTV = Class.extend({
 	}, // closeVideoList()
 
 	loadVideoList: function(chan) {
-		var cur_chan = self.Globals.cur_chan,
-		    this_chan = chan,
-			$list = $('<span></span>');
+		var $video_list = $('#video-list'),
+		    this_chan   = chan,
+			$list       = $('<span></span>');
 
-		if (this_chan == cur_chan && $('#video-list').children().length ) return true;
+		if (this_chan.feed == $video_list.data('feed')) return true;
+
+		$video_list.data('feed', this_chan.feed);
 
 		for(var i in self.Globals.videos[this_chan.feed].video) {
 			var this_video = self.Globals.videos[this_chan.feed].video[i];
