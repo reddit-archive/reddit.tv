@@ -1246,20 +1246,22 @@ var RedditTV = Class.extend({
 			} else {
 				$('#video-list-thumb-' + selected_video).addClass('focus');
 			}
-			$('#video-list:not(.scrollbar)').stop(true,true).scrollTo('.focus', { duration:1000, offset:-280 });
+			$('#video-list:not(.scrollbar)').stop(true,true).scrollTo('.focus', { duration:1000, offset:-325 });
 			if ($('#video-list').hasClass('scrollbar')) { // Only do this for the jScrollPane-esque thing
-				var focused	  = $('#video-list .focus'),
+				var focused      = $('#video-list .focus'),
 					focusedLeft  = (focused.length) ? focused.position().left : 0,
-					spanMargin	= parseInt($('#video-list > span').css('margin-left')),
-					scrollMargin = (spanMargin - focusedLeft < -280) ? Math.round(spanMargin - focusedLeft + 280) : 0;
+					span         = $('#video-list > span'),
+					spanMargin   = parseInt(span.css('margin-left')),
+					scrollMargin = (spanMargin - focusedLeft < -325) ? Math.round(spanMargin - focusedLeft + 325) : 0,
+					handlePos;
 
 				if (Math.abs(scrollMargin) - 150 >= $('#video-list > span').width() - $(document).width())
 					scrollMargin = -Math.abs($('#video-list > span').width() - $(document).width());
 
-				$('#video-list > span').stop(true,true).animate({ marginLeft: scrollMargin + 'px'}, 1000, function() {
-					// TODO reset handle position
-					// $('#video-list-scrollbar .ui-slider-handle')
-				});
+				handlePos = (Math.abs(scrollMargin) / span.width() * 100).toFixed(2);
+
+				span.stop(true,true).animate({ marginLeft: scrollMargin + 'px'}, 1000);
+				$('#video-list-scrollbar .ui-slider-handle').stop(true,true).animate({ left: handlePos + '%' }, 1000);
 			}
 
 			// enable/disable nav-buttons at end/beginning of playlist
