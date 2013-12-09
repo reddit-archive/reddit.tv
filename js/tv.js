@@ -1315,7 +1315,6 @@ var RedditTV = Class.extend({
 			embed = self.prepEmbed(embed, 'size');
 			$('#video-container').toggleClass('sponsored', sponsored);
 
-			// TODO Remove these links from sponsored channel videos
 			var redditlink = 'http://reddit.com'+$.unescapifyHTML(video.permalink);
 
 			var videoTitle = '<a href="' + redditlink + '" target="_blank"'

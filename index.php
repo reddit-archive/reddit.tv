@@ -119,7 +119,7 @@ Globals = {
         <a id="next-button" href="javascript:void(0);"><img src="img/arrow-next.png" /></a>
         <div id="video-meta">
           <div id="video-description" class="grid-70 mobile-grid-75">
-            <span id="video-sponsored-label" class="sponsored">SPONSORED </span> <?php /* TODO This sponsored label, before the title, should appear on ad videos */ ?>
+            <span id="video-sponsored-label" class="sponsored">SPONSORED </span>
             <span id="video-title"></span> 
           </div>
           <div id="sponsored-actions" class="grid-30 right-align">
