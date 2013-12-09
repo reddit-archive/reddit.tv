@@ -1240,9 +1240,9 @@ var RedditTV = Class.extend({
 			var video = ( sponsored && self.Globals.cur_chan.owner != 'sponsor' ) ? self.Globals.ads.videos[selected_video] : self.Globals.videos[this_chan.feed].video[selected_video];
 
 			// scroll to thumbnail in video list and highlight it
-			// $('#video-list .focus').removeClass('focus');
+			$('#video-list a.thumbnail').removeClass('focus');
 			if (sponsored) {
-				if ( !isNaN(parseInt(sponsored)) ) $('#video-list a.sponsored[data-id="' + sponsored + '"]').addClass('focus');
+				if ( !isNaN(parseInt(sponsored)) ) $('#video-list a.sponsored[data-unique="' + sponsored + '"]').addClass('focus');
 			} else {
 				$('#video-list-thumb-' + selected_video).addClass('focus');
 			}
@@ -1388,7 +1388,6 @@ var RedditTV = Class.extend({
 		    video     = self.findVideoById(video_id, this_chan.feed);  //returns number typed
 
 		if(video !== false){
-			// TODO make sure ads are regenerated if the video list is already loaded
 			self.loadVideoList(this_chan);
 			self.loadVideo(Number(video));
 		}else{
@@ -1438,7 +1437,6 @@ var RedditTV = Class.extend({
 		if (background) $('#loading .tv .image').css({ 'background-image' : 'url(' + background + ')' });
 	}, // loadingAnimation()
 
-	// TODO Style this a bit better
 	tvError: function(text) {
 		$('#loading').addClass('error')
 			.find('.image')
@@ -1702,7 +1700,7 @@ var RedditTV = Class.extend({
 
 		if (!feed) return false;
 
-		chan.click();
+		chan.trigger('click');
 		document.location.href = chan.attr('href');
 
 		return true;
