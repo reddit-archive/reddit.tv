@@ -1084,8 +1084,12 @@ var RedditTV = Class.extend({
 	}, // closeVideoList()
 
 	loadVideoList: function(chan) {
-		var this_chan = chan,
+		var cur_chan = self.Globals.cur_chan,
+		    this_chan = chan,
 			$list = $('<span></span>');
+
+		if (this_chan == cur_chan && $('#video-list').children().length ) return true;
+
 		for(var i in self.Globals.videos[this_chan.feed].video) {
 			var this_video = self.Globals.videos[this_chan.feed].video[i];
 			$thumbnail = self.thumbElement(this_video, this_chan, i);
