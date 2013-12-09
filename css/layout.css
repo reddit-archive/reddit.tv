@@ -426,6 +426,10 @@ body.video-loading #loading, #loading.error {
     display: block;
 }
 
+#video-container.sponsored #video-sponsored-label {
+    display: block;
+}
+
 #video-container, #add-channel {
     height: 670px;
     max-height: 670px;
