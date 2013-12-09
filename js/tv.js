@@ -669,7 +669,7 @@ var RedditTV = Class.extend({
 					var this_chan = local.channel,
 					    error     = 'Error loading channel.';
 
-					if (this_chan.video_count === 0) 
+					if (this_chan && this_chan.video_count === 0) 
 						error = 'No videos found in ' + this_chan.feed;
 
 					self.tvError(error);
