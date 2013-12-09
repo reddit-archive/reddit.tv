@@ -221,9 +221,10 @@ var RedditTV = Class.extend({
 			'click',
 			'.thumbnail',
 			function() {
-				$(this).addClass('focus');
-				self.closeVideoList();
+				$(this).addClass('focus').blur();
 				self.Globals.videoListMouse = false;
+				self.Globals.videoListCloseTimeout = window.setTimeout(self.closeVideoList, 1000);
+
 
 				if ( $(this).hasClass('sponsored') ) {
 					self.loadVideo(parseInt($(this).attr('data-adNum')), $(this).attr('data-unique'));
@@ -1076,6 +1077,8 @@ var RedditTV = Class.extend({
 	}, // openVideoList()
 
 	closeVideoList: function() {
+		if ( $('#video-list').hasClass('scrolling') ) return;
+
 		window.clearTimeout(self.Globals.videoListOpenTimeout);
 
 		$('#video-list').addClass('bounceOutUp').removeClass('slideInDown');
