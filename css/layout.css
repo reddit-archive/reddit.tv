@@ -428,7 +428,7 @@ body.video-loading #loading, #loading.error {
 
 #video-container.sponsored #video-sponsored-label {
     display: block;
-    color:#fff;
+    color:#428bca;
     float:left;
     margin-right: 15px;
 }

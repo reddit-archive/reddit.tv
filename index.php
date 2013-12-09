@@ -123,7 +123,6 @@ Globals = {
             <span id="video-title"></span> 
           </div>
           <div id="sponsored-actions" class="grid-30 right-align">
-            SPONSORED
           </div>
           <div id="video-actions" class="grid-30 right-align">
             <a id="video-comments-link" href="" target="_blank">COMMENTS</a> | <a id="video-tweet-link" href="" target="_blank">TWEET</a> | <a id="video-share-link" href="" target="_blank">SHARE</a>
