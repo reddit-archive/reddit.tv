@@ -33,7 +33,7 @@ $sponsored_skin = R::dispense('sponsoredskin');
 	$sponsored_skin->start_date = '0000-00-00 00:00:00';		// datetime campaign begins
 	$sponsored_skin->end_date = '0000-00-00 00:00:00';			// datetime campaign ends
 	$sponsored_skin->status = 0;							    // integer 0 = 'draft' | 1 = 'ready' / 'active' | 2 = 'ended' | 3 = 'deleted'
-	$sponsored_skin->position = null;							// string location of placement TODO: name placements ''
+	$sponsored_skin->position = null;							// string location of placement
 	$sponsored_skin->image_url = null;						    // string image URL for creative
 	$sponsored_skin->sponsor_name = null;						// string sponsor name
 	$sponsored_skin->title = null;								// string title (optional)
