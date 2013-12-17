@@ -54,17 +54,17 @@ body {
     color: #5f99cf;
 }
 
-#video-title {
-    color: #5f99cf;
+#video-title, #video-title a {
+    color: #fff;
 }
 
-#video-title a {
-    color: #5f99cf;
+#video-title a:hover {
+  text-decoration: underline;
 }
 
 #video-list {
-    border: 2px solid lightgray;
-    background-color: #A2AEBA;
+    border-bottom:2px solid rgba(55,55,55,0.8);
+    background-color: rgba(33,33,33,0.8);
 }
 
 #video-list img {
@@ -145,5 +145,5 @@ a.nav-button:hover {
 }
 
 .loading {
-    background-image: url('../img/loading_light.gif');
+    /*background-image: url('../img/loading_light.gif');*/
 }

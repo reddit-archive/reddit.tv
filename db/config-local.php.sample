@@ -1,0 +1,43 @@
+<?php
+
+define('BASE_PATH', dirname(realpath(__FILE__)) . '/../');
+define('UPLOAD_PATH', dirname(realpath(__FILE__)) . '/../uploads/');
+define('UPLOAD_URL', 'uploads/');
+define('AWS_BUCKET', 'reddittv');
+define('USE_SQLITE', false);
+
+// Include RedbeanPHP
+require_once(dirname(__FILE__).'/rb.php');
+
+if (USE_SQLITE) {
+	// SQLite Setup
+	R::setup('sqlite:'.realpath(dirname(__FILE__)).'/database.s3db');
+} else {
+	// MySQL Setup
+	$dbhost = '';
+	$dbport = '';
+	$dbname = '';
+
+	$username = '';
+	$password = '';
+
+	R::setup("mysql:host=$dbhost;port=$dbport;
+		dbname=$dbname",$username,$password);
+}
+
+// Free db from schema changes
+R::freeze(true);
+
+if(class_exists('Memcache')){
+	// Connection constants
+	define('MEMCACHED_HOST', '');
+	define('MEMCACHED_PORT', '');
+	 
+	// Connection creation
+	$memcache = new Memcache;
+	$cacheAvailable = $memcache->connect(MEMCACHED_HOST, MEMCACHED_PORT);
+} else {
+	$cacheAvailable = false;
+}
+
+?>
