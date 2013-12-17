@@ -176,7 +176,7 @@ Globals = {
 
   <footer>
     <div class="grid-container">
-      Privacy Policy, etc <?php /* TODO Include privacy policy and copyright jams, Twitter attribution for Bootstrap */ ?>
+      Use of this site constitutes acceptance of our <a href="http://www.reddit.com/help/useragreement">User Agreement (updated)</a> and <a href="http://www.reddit.com/help/privacypolicy">Privacy Policy</a>. © 2013 reddit Inc. All rights reserved.
     </div>
   </footer>
 
