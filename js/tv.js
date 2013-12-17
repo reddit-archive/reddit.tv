@@ -156,7 +156,8 @@ var RedditTV = Class.extend({
 		$('#next-button, #prev-button').click(function() {
 			var direction = (this.id == 'next-button') ? 'next' : 'prev';
 
-			self.gaEventTrack('Videos', 'Skip', self.curVideoTitle());
+			self.gaEventTrack('Video', 'Skip', self.curVideoTitle());
+			self.gaEventTrack('Channel', 'Skip', self.cur_chan.feed);
 
 			self.loadVideo(direction);
 		});
