@@ -16,7 +16,7 @@ var youtube = {
 
     stateListener: function(state){
 
-        if (Globals.cur_chan === -1) {
+        if (rtv.Globals.cur_chan === -1) {
 
             if (state === 0) {
 
@@ -30,9 +30,9 @@ var youtube = {
             return;
         }
 
-        if(Globals.auto){ //global scope
+        if(rtv.Globals.auto){ //global scope
             if(state === 0){
-                loadVideo('next');  //tv.js
+                rtv.loadVideo('next');  //tv.js
             }else if(state === -1){
                 youtube.togglePlay();
             }else if(state === 1){
@@ -47,7 +47,7 @@ var youtube = {
 
     errorListener: function(error){
         consoleLog('youtube error received: '+error);
-        loadVideo('next');
+        rtv.loadVideo('next');
     },
 
     createEmbed: function(url){
@@ -75,6 +75,7 @@ var youtube = {
         }
         
         if(ID){
+            data.id = ID;
             data.embed = "&lt;object width=\"600\" height=\"338\"&gt;&lt;param name=\"movie\" value=\"http://www.youtube.com/v/"
             +ID+"?version=3&amp;feature=oembed"+time+"\"&gt;&lt;/param&gt;&lt;param name=\"allowFullScreen\" value=\"true\"&gt;&lt;/param&gt;&lt;param name=\"allowscriptaccess\" value=\"always\"&gt;&lt;/param&gt;&lt;embed src=\"http://www.youtube.com/v/"+ID+"?version=3&amp;feature=oembed"+time+"\" type=\"application/x-shockwave-flash\" width=\"600\" height=\"338\" allowscriptaccess=\"always\" allowfullscreen=\"true\"&gt;&lt;/embed&gt;&lt;/object&gt;";
             data.thumbnail = "http://i2.ytimg.com/vi/"+ID+"/hqdefault.jpg";

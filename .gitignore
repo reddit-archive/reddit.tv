@@ -1,0 +1,11 @@
+.floo*
+.sublime*
+*bak
+*.bak
+lib
+!admin/lib/
+.DS_Store
+database.s3db
+.elasticbeanstalk/
+config-local.php
+vendor/*
