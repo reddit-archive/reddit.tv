@@ -521,6 +521,7 @@ var RedditTV = Class.extend({
 		display_title = chan.channel.length > 20 ?
 			chan.channel.replace(/[aeiou]/gi,'').substr(0,20) :
 			chan.channel;
+		display_title = chan.channel; // Let's not shorten the titles that way right now
 
 		var chanAttr = {
 				href: '#' + chan.feed,
