@@ -186,7 +186,8 @@ function imageUpload($filename, $max_width = 0, $max_height = 0) {
 	$result = $aws_s3_client->putObject(array(
 	    'Bucket' => AWS_BUCKET,
 	    'Key'    => $key,
-	    'Body'   => fopen($resized_img, 'r')
+	    'Body'   => fopen($resized_img, 'r'),
+	    'ACL'    => 'public-read',
 	));
 
 	return $result['ObjectURL'];
