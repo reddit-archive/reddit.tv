@@ -915,7 +915,7 @@ var RedditTV = Class.extend({
 					for (var x in data.data.children) {
 						if ( !this_chan.channel ) this_chan.channel = data.data.children[x].data.subreddit;
 
-						if (self.isVideo(data.data.children[x].data.domain) && (data.data.children[x].data.score > 1)) {
+						if (self.isVideo(data.data.children[x].data.domain) && (data.data.children[x].data.score > 0)) {
 							if ( self.isEmpty(data.data.children[x].data.media_embed) || data.data.children[x].data.domain === 'youtube.com' || data.data.children[x].data.domain === 'youtu.be' ){
 								var created = self.createEmbed(data.data.children[x].data.url, data.data.children[x].data.domain);
 								if (created !== false) {
