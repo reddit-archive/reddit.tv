@@ -7,7 +7,7 @@ else {
 	define('BASE_PATH', dirname(realpath(__FILE__)) . '/../');
 	define('UPLOAD_PATH', dirname(realpath(__FILE__)) . '/../uploads/');
 	define('UPLOAD_URL', 'uploads/');
-	define('AWS_BUCKET', 'static.reddit.tv');
+	define('AWS_BUCKET', $_SERVER['S3_BUCKET']);
 	define('USE_SQLITE', false);
 
 	// Include RedbeanPHP
