@@ -12,8 +12,8 @@ USE `reddittv`;
 DROP TABLE IF EXISTS `channel`;
 CREATE TABLE IF NOT EXISTS `channel` (
   `id`            int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `created_on`    datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime created in database',
-  `updated_on`    datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime updated in database',
+  `created_on`    datetime NOT NULL COMMENT 'datetime created in database',
+  `updated_on`    datetime NOT NULL COMMENT 'datetime updated in database',
   `title`         varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '''''' COMMENT 'string title of channel',
   `feed`          varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '''''' COMMENT 'string feed for channel',
   `thumbnail_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '''''' COMMENT 'string thumbnail URL',
@@ -38,10 +38,10 @@ INSERT INTO `settings` (`id`, `default_channels`, `recommended_channels`, `ads_s
 DROP TABLE IF EXISTS `sponsoredchannel`;
 CREATE TABLE IF NOT EXISTS `sponsoredchannel` (
   `id`           int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `created_on`   datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime created in database',
-  `updated_on`   datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime updated in database',
-  `start_date`   datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime campaign begins',
-  `end_date`     datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime campaign ends',
+  `created_on`   datetime NOT NULL COMMENT 'datetime created in database',
+  `updated_on`   datetime NOT NULL COMMENT 'datetime updated in database',
+  `start_date`   datetime NOT NULL COMMENT 'datetime campaign begins',
+  `end_date`     datetime NOT NULL COMMENT 'datetime campaign ends',
   `status`       tinyint(1) NOT NULL DEFAULT '0' COMMENT 'integer 0 = ''draft'' | 1 = ''ready'' / ''active'' | 2 = ''ended'' | 3 = ''deleted''',
   `image_url`    text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'string image URL for creative',
   `sponsor_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'string sponsor name',
@@ -57,10 +57,10 @@ CREATE TABLE IF NOT EXISTS `sponsoredchannel` (
 DROP TABLE IF EXISTS `sponsoredskin`;
 CREATE TABLE IF NOT EXISTS `sponsoredskin` (
   `id`           int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `created_on`   datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime created in database',
-  `updated_on`   datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime updated in database',
-  `start_date`   datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime campaign begins',
-  `end_date`     datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime campaign ends',
+  `created_on`   datetime NOT NULL COMMENT 'datetime created in database',
+  `updated_on`   datetime NOT NULL COMMENT 'datetime updated in database',
+  `start_date`   datetime NOT NULL COMMENT 'datetime campaign begins',
+  `end_date`     datetime NOT NULL COMMENT 'datetime campaign ends',
   `status`       tinyint(1) NOT NULL DEFAULT '0' COMMENT 'integer 0 = ''draft'' | 1 = ''ready'' / ''active'' | 2 = ''ended'' | 3 = ''deleted''',
   `position`     varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'video_background' COMMENT 'string location of placement: ''header'' ''video_background'' ''channel_background''',
   `image_url`    text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'string image URL for creative',
@@ -75,10 +75,10 @@ CREATE TABLE IF NOT EXISTS `sponsoredskin` (
 DROP TABLE IF EXISTS `sponsoredvideo`;
 CREATE TABLE IF NOT EXISTS `sponsoredvideo` (
   `id`               int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `created_on`       datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime created in database',
-  `updated_on`       datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime updated in database',
-  `start_date`       datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime campaign begins',
-  `end_date`         datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime campaign ends',
+  `created_on`       datetime NOT NULL COMMENT 'datetime created in database',
+  `updated_on`       datetime NOT NULL COMMENT 'datetime updated in database',
+  `start_date`       datetime NOT NULL COMMENT 'datetime campaign begins',
+  `end_date`         datetime NOT NULL COMMENT 'datetime campaign ends',
   `status`           tinyint(1) NOT NULL DEFAULT '0' COMMENT 'integer 0 = ''draft'' | 1 = ''ready'' / ''active'' | 2 = ''ended'' | 3 = ''deleted''',
   `video_url`        text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'string location of video',
   `video_embed_code` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'string video embed code',
