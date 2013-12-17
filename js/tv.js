@@ -1324,6 +1324,9 @@ var RedditTV = Class.extend({
 
 			var redditlink = 'http://reddit.com'+$.unescapifyHTML(video.permalink);
 
+			self.gaEventTrack('Video', 'Play', self.curVideoTitle());
+			self.gaEventTrack('Channel', 'Video Play', self.curVideoTitle());
+
 			var videoTitle = '<a href="' + redditlink + '" target="_blank"'
 									+ ' title="' + video.title_quot + '">'
 									+ video.title_unesc + '</a>';
