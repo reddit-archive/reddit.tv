@@ -153,11 +153,12 @@ var RedditTV = Class.extend({
 		$('#settings #hax a').click(function() {
 			window.open($(this).attr('href'));
 		});
-		$('#next-button').click(function() {
-			self.loadVideo('next');
-		});
-		$('#prev-button').click(function() {
-			self.loadVideo('prev');
+		$('#next-button, #prev-button').click(function() {
+			var direction = (this.id == 'next-button') ? 'next' : 'prev';
+
+			self.gaEventTrack('Videos', 'Skip', self.curVideoTitle());
+
+			self.loadVideo(direction);
 		});
 		$('#video-list').bind('mousewheel', function(event,delta){
 			this.scrollLeft -= (delta * 30);
@@ -665,6 +666,8 @@ var RedditTV = Class.extend({
 							self.loadVideo('first');
 						}
 					}
+
+					self.gaEventTrack('Channel', 'Load', this_chan.feed);
 				},
 				function(jXHR, textStatus, errorThrown, local) {
 					var this_chan = local.channel,
@@ -684,6 +687,8 @@ var RedditTV = Class.extend({
 					self.Globals.cur_video = 0;
 					self.loadVideo('first');
 				}
+
+				self.gaEventTrack('Channel', 'Load', this_chan.feed);
 			}
 		}
 	}, // loadChannel()
@@ -1290,7 +1295,7 @@ var RedditTV = Class.extend({
 			//set location hash
 			var parts, hash = document.location.hash;
 			if (sponsored && !sponsoredChannel) {
-				hash = '';
+				hash = '/ad/' + video.index;
 			} else {
 				if (!hash) {
 					var feed = this_chan.feed;
@@ -1301,9 +1306,9 @@ var RedditTV = Class.extend({
 					parts = anchor.split("/"); // #/r/videos/id
 					hash = '/'+parts[1]+'/'+parts[2]+'/'+video.id;
 				}
+				window.location.hash = hash;
 			}
-			self.Globals.current_anchor = hash;
-			window.location.hash = hash;
+			self.Globals.current_anchor = '#' + hash;
 
 			self.gaHashTrack();
 
@@ -1665,6 +1670,8 @@ var RedditTV = Class.extend({
 
 			self.saveChannelOrder();
 
+			self.gaEventTrack('Channel', 'Add', feed);
+
 			return true;
 		}
 
@@ -1758,7 +1765,7 @@ var RedditTV = Class.extend({
 			}
 		}
 		return channels;
-	},
+	}, // formatSponsoredChannels()
 
 	formatSponsoredChannelVideos: function(videos) {
 		$.each(videos, function(i, video_url) {
@@ -1773,7 +1780,21 @@ var RedditTV = Class.extend({
 		});
 
 		return videos;
-	},
+	}, // formatSponsoredChannelVideos()
+
+	curVideoTitle: function() {
+		var sponsored = $('#video-container').hasClass('sponsored'),
+		    title     = self.Globals.current_anchor.replace(/^#/, ''),
+		    video     = self.Globals.videos[self.Globals.cur_chan.feed].video[self.Globals.cur_video];
+
+		if (sponsored) {
+			title += ' - ' + $('#video-title').text();
+		} else {
+			if (video) title += ' - ' + video.title;
+		}
+
+		return title;
+	}, // curVideoTitle()
 
 	stripHTML: function(s) {
 		return s.replace(/[&<>"'\/]/g, '');
@@ -1782,6 +1803,12 @@ var RedditTV = Class.extend({
 	gaHashTrack: function() {
 		if(!_gaq) return;
 		_gaq.push(['_trackPageview',location.pathname + location.hash]);
+	},
+
+	gaEventTrack: function(category, action, label) {
+		if(!_gaq || !category || !action || !label) return;
+
+		_gaq.push(['_trackEvent', category, action, label]);
 	},
 
 	escape: function(string) {
