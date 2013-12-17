@@ -635,6 +635,8 @@ var RedditTV = Class.extend({
 		title = channel.feed.split("/");
 		title = "/"+title[1]+"/"+title[2];
 
+		self.gaEventTrack('Channel', 'Play', channel.feed);
+
 		$video_title.html('Loading '+title+' ...');
 		var thumbId = video_id;
 		if (!thumbId) {
@@ -1319,6 +1321,9 @@ var RedditTV = Class.extend({
 
 			var redditlink = 'http://reddit.com'+$.unescapifyHTML(video.permalink);
 
+			self.gaEventTrack('Video', 'Play', video.title_quot);
+			self.gaEventTrack('Channel', 'Video Play', video.title_quot);
+
 			var videoTitle = '<a href="' + redditlink + '" target="_blank"'
 									+ ' title="' + video.title_quot + '">'
 									+ video.title_unesc + '</a>';
@@ -1782,6 +1787,11 @@ var RedditTV = Class.extend({
 	gaHashTrack: function() {
 		if(!_gaq) return;
 		_gaq.push(['_trackPageview',location.pathname + location.hash]);
+	},
+
+	gaEventTrack: function(object, action, description) {
+		if(!_gaq) return;
+		_gaq.push(['_trackEvent', object, action, description]);
 	},
 
 	escape: function(string) {
