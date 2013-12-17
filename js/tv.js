@@ -69,8 +69,10 @@ var RedditTV = Class.extend({
 			$(document).trigger('adsLoaded');
 		});
 
+		if (!self.Globals.channels) self.Globals.channels = [];
+
 		// Load sponsored channel
-		var sponsored_channels = self.Globals.sponsored_channels
+		var sponsored_channels = self.Globals.sponsored_channels;
 		if(sponsored_channels.length >= 1){
 			self.Globals.sponsored_channels = self.formatSponsoredChannels(sponsored_channels);
 			self.Globals.channels = self.Globals.channels.concat(sponsored_channels);
@@ -386,7 +388,8 @@ var RedditTV = Class.extend({
 			self.Globals.addChannelCheck = window.setTimeout(self.addChannelCheck, 500);
 		});
 
-		$.each(self.Globals.recommended_channels, function(i, channel) {
+		var recs = (!self.Globals.recommended_channels) ? [] : self.Globals.recommended_channels;
+		$.each(recs, function(i, channel) {
 			var anchor, thumb, name;
 
 			if (i >= 8) return; // Only display the first 8
@@ -522,6 +525,7 @@ var RedditTV = Class.extend({
 		display_title = chan.channel.length > 20 ?
 			chan.channel.replace(/[aeiou]/gi,'').substr(0,20) :
 			chan.channel;
+		display_title = chan.channel; // Let's not shorten the titles that way right now
 
 		var chanAttr = {
 				href: '#' + chan.feed,
@@ -1164,7 +1168,7 @@ var RedditTV = Class.extend({
 			selected_video = this_video,
 			videos_size = 0,
 			sponsoredChannel = (this.owner == 'sponsor'),
-			thumbAnchor, newAnchor;
+			thumbAnchor, newAnchor, isAdVideo, video;
 
 		if (this_chan.feed) videos_size = Object.size(self.Globals.videos[this_chan.feed].video)-1;
 		if (!sponsored) sponsored = sponsoredChannel;
@@ -1247,8 +1251,9 @@ var RedditTV = Class.extend({
 		}
 
 		if ( (selected_video !== this_video && !sponsored || sponsored) || video === 'first' || video === 0) {
-			self.Globals.cur_video = selected_video;
-			var video = ( sponsored && self.Globals.cur_chan.owner != 'sponsor' ) ? self.Globals.ads.videos[selected_video] : self.Globals.videos[this_chan.feed].video[selected_video];
+			isAdVideo = ( sponsored && self.Globals.cur_chan.owner != 'sponsor' );
+			self.Globals.cur_video = (isAdVideo) ? 0 : selected_video;
+			video = (isAdVideo) ? self.Globals.ads.videos[selected_video] : self.Globals.videos[this_chan.feed].video[selected_video];
 
 			// scroll to thumbnail in video list and highlight it
 			$('#video-list a.thumbnail').removeClass('focus');

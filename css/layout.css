@@ -922,6 +922,8 @@ body.video-loading #loading, #loading.error {
     padding-top: 7px;
     background: #fff;
     border-radius: 0 0 5px 5px;
+    max-height: 30px;
+    overflow: hidden;
 }
 
 /* Media queries */
