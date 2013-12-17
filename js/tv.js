@@ -1163,7 +1163,7 @@ var RedditTV = Class.extend({
 			selected_video = this_video,
 			videos_size = 0,
 			sponsoredChannel = (this.owner == 'sponsor'),
-			thumbAnchor, newAnchor;
+			thumbAnchor, newAnchor, isAdVideo, video;
 
 		if (this_chan.feed) videos_size = Object.size(self.Globals.videos[this_chan.feed].video)-1;
 		if (!sponsored) sponsored = sponsoredChannel;
@@ -1246,8 +1246,9 @@ var RedditTV = Class.extend({
 		}
 
 		if ( (selected_video !== this_video && !sponsored || sponsored) || video === 'first' || video === 0) {
-			self.Globals.cur_video = selected_video;
-			var video = ( sponsored && self.Globals.cur_chan.owner != 'sponsor' ) ? self.Globals.ads.videos[selected_video] : self.Globals.videos[this_chan.feed].video[selected_video];
+			isAdVideo = ( sponsored && self.Globals.cur_chan.owner != 'sponsor' );
+			self.Globals.cur_video = (isAdVideo) ? 0 : selected_video;
+			video = (isAdVideo) ? self.Globals.ads.videos[selected_video] : self.Globals.videos[this_chan.feed].video[selected_video];
 
 			// scroll to thumbnail in video list and highlight it
 			$('#video-list a.thumbnail').removeClass('focus');
