@@ -159,7 +159,7 @@ var RedditTV = Class.extend({
 			var direction = (this.id == 'next-button') ? 'next' : 'prev';
 
 			self.gaEventTrack('Video', 'Skip', self.curVideoTitle());
-			self.gaEventTrack('Channel', 'Skip', self.cur_chan.feed);
+			self.gaEventTrack('Channel', 'Skip', self.Globals.cur_chan.feed);
 
 			self.loadVideo(direction);
 		});
