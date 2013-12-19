@@ -609,7 +609,9 @@
                   if ($thumb) $thumb_url = $thumb->thumbnail_url;
               ?>
                   <li class="channel col-lg-3" data-feed="<?php echo $channel->feed; ?>">
-                    <div class="thumbnail"<?php if ($thumb_url != '') : ?> style="background-image: url(<?php echo $thumb_url; ?>);"<?php endif; ?>></div>
+                    <div class="thumbnail"<?php if ($thumb_url != '') : ?> style="background-image: url(<?php echo $thumb_url; ?>);"<?php endif; ?>>
+                      <div class="sponsored"><label><span>Sponsored</span><input type="checkbox" <?php if ($channel->owner == 'sponsor') : ?>checked="checked"<?php endif; ?>/></label></div>
+                    </div>
                     <span class="name" spellcheck="false" contenteditable="true"><?php echo $channel->channel; ?></span>
                   </li>
               <?php endforeach; ?>
