@@ -449,7 +449,7 @@ var RedditTV = Class.extend({
 
 		channels.shapeshift({
 			selector: 'a.channel',
-			ignore: '#add-channel-button, .sponsor',
+			ignore: '#add-channel-button',
 			align: 'center',
 			colWidth: 250,
 			columns: 4,
@@ -479,7 +479,8 @@ var RedditTV = Class.extend({
 
 	saveChannelOrder: function() {
 		var feeds = [];
-		$('#channels a.channel:not(#add-channel-button):not(.sponsor):not(.temp)').each(function() {
+
+		$('#channels a.channel:not(#add-channel-button):not(.temp)').each(function() {
 			feeds.push($(this).data('feed'));
 		});
 
@@ -487,7 +488,7 @@ var RedditTV = Class.extend({
 
 		if (self.Globals.channels.length > feeds.length) {
 			$.each(self.Globals.channels, function(i, chan) {
-				if (chan.owner != 'sponsor' && self.Globals.channel_sorting.indexOf(chan.feed) == -1)
+				if (self.Globals.channel_sorting.indexOf(chan.feed) == -1)
 					self.Globals.channel_sorting.push(chan.feed);
 			});
 		}
@@ -496,17 +497,24 @@ var RedditTV = Class.extend({
 	}, // saveChannelOrder()
 
 	displayChannels: function() {
-		var $channel_base = $('#channels a.channel:first'),
-			sorted = (self.Globals.channel_sorting.length);
+		var sorted = (self.Globals.channel_sorting.length),
+			added  = [],
+			lastSponsor;
 
 		$.each(self.Globals.channels, function(i, chan) {
-			if (chan.owner == 'sponsor' && chan.feed) self.displayChannel(chan);
+			if (chan.feed && chan.feed.match(/^\/sponsor\//) && self.Globals.channel_sorting.indexOf(chan.feed) == -1) {
+				self.displayChannel(chan, 'sponsor');
+				added.push(chan.feed);
+			}
 		});
 
 		var channels = (sorted) ? self.Globals.channel_sorting : self.Globals.channels;
 		$.each(channels, function(i, chan) {
 			chan = (sorted) ? self.getChanObj(chan) : chan;
-			if (chan.owner != 'sponsor' && chan.feed) self.displayChannel(chan);
+			if (chan.feed && added.indexOf(chan.feed) == -1) {
+				self.displayChannel(chan);
+				added.push(chan.feed);
+			}
 		});
 
     	self.bindChannelSorting();
@@ -556,8 +564,8 @@ var RedditTV = Class.extend({
 			.find('.name')
 				.html(display_title);
 
-		if (added || chan.owner == 'sponsor') {
-			$channel.insertAfter( $('#channels a.sponsor').or('#add-channel-button') );
+		if (added) {
+			$channel.insertAfter('#add-channel-button');
 		} else {
 			$channel.appendTo('#channels');
 		}
@@ -597,7 +605,7 @@ var RedditTV = Class.extend({
 			);
 		}
 
-		if (added) {
+		if (added == true) {
 			self.bindChannelSorting(true);
 			$channel.css({
 				scale   : 0,
