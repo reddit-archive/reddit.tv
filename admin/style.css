@@ -333,6 +333,14 @@ div.show-videos ol.videos {
   display: inline;
 }
 
+#add-channel-button, #add-channel-button .name {
+  cursor: default !important;
+}
+
+#add-channel-button .name {
+  border: none !important;
+}
+
 /*!
  * Stylesheet for the Date Range Picker, for use with Bootstrap 3.x
  *

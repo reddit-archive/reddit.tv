@@ -598,6 +598,10 @@
           </div>
 
           <div class="channels clearfix">
+            <li id="add-channel-button" class="channel col-lg-3">
+              <div class="thumbnail"></div>
+              <span class="name">Add Channel</span>
+            </li>
             <ul class="list-unstyled">
               <?php
                 $default_channels = json_decode($settings->default_channels);
