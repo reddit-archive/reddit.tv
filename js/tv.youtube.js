@@ -4,6 +4,7 @@
 var player;
 var youtube = {
     obj: null, //will hold the current youtube embed
+    api_ready: false,
 
     togglePlay: function(){
         //unstarted (-1), ended (0), playing (1), 
@@ -15,7 +16,8 @@ var youtube = {
         }
     },
 
-    stateListener: function(state){
+    stateListener: function(event){
+        var state = event.data;
 
         if (rtv.Globals.cur_chan === -1) {
 
@@ -89,13 +91,32 @@ var youtube = {
 
     // prepares embed code for js api access
     prepEmbed: function(embed) {
-        var js_str = 'version=3&enablejsapi=1&playerapiid=ytplayer&origin=*';
+        var js_str = 'version=3&enablejsapi=1&playerapiid=ytplayer';
 
         embed = embed.replace(/version\=3/gi, js_str);        
         embed = embed.replace(/\<embed/i,'<embed id="ytplayer"');
         embed = embed.replace(/\<iframe/i,'<iframe id="ytplayer"');
         
         return embed;
+    },
+
+    onPlayerReady: function(event) {
+        console.log('onPlayerReady', event);
+        youtube.stateListener({ data: -1 });
+    },
+
+    createPlayer: function() {
+        if (!youtube.api_ready) return false;
+
+        youtube.obj = new YT.Player('ytplayer', {
+            events: {
+                'onError': youtube.errorListener,
+                'onReady': youtube.onPlayerReady,
+                'onStateChange': youtube.stateListener
+            }
+        });
+
+        return true;
     }
 };
 
@@ -103,24 +124,6 @@ var youtube = {
  *  youtube listener - called by youtube flash/html5 when present
  *  MUST REMAIN IN GLOBAL SCOPE
  */
-function onYouTubePlayerReady(playerId) {
-    console.log('onYouTubePlayerReady');
-    youtube.obj = new YT.Player('ytplayer', {
-        events: {
-            'onReady': youtube.errorListener,
-            'onStateChange': youtube.stateListener
-        }
-    });
-    youtube.stateListener(-1);
+function onYouTubeIframeAPIReady() {
+    youtube.api_ready = true;
 }
-
-// function onYouTubeIframeAPIReady() {
-//     console.log('onYouTubeIframeAPIReady');
-//     youtube.obj = new YT.Player('ytplayer', {
-//         events: {
-//             'onReady': youtube.errorListener,
-//             'onStateChange': youtube.stateListener
-//         }
-//     });
-//     youtube.stateListener(-1);
-// }

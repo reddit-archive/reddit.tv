@@ -1358,7 +1358,7 @@ var RedditTV = Class.extend({
 									+ "&v=3");
 			$video_embed.html(embed);
 			$('body').removeClass('video-loading');
-			onYouTubePlayerReady();
+			if (video.domain == 'youtube.com') youtube.createPlayer();
 
 			self.addListeners(video.domain);
 
