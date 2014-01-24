@@ -37,8 +37,10 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
 <script src="js/plugins.js" type="text/javascript"></script>
+
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
 
+<script src="https://www.youtube.com/player_api" type="text/javascript"></script>
 <script src="js/tv.youtube.js" type="text/javascript"></script>
 <script src="js/tv.vimeo.js" type="text/javascript"></script>
 
