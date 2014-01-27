@@ -451,7 +451,6 @@ var RedditTV = Class.extend({
 			selector: 'a.channel',
 			ignore: '#add-channel-button',
 			align: 'center',
-			colWidth: 250,
 			columns: 4,
 			minColumns: 4,
 			gutterX: 0,
