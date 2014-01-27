@@ -97,7 +97,7 @@ var youtube = {
 
     // prepares embed code for js api access
     prepEmbed: function(embed) {
-        var js_str = 'version=3&enablejsapi=1&playerapiid=ytplayer';
+        var js_str = 'version=3&enablejsapi=1&playerapiid=ytplayer&wmode=opaque&wmode=transparent';
 
         embed = embed.replace(/version\=3/gi, js_str);        
         embed = embed.replace(/\<embed/i,'<embed id="ytplayer"');
