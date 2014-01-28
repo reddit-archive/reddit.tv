@@ -336,6 +336,12 @@ var RedditTV = Class.extend({
 			}
 		);
 
+		// Header click to open/close
+		$('#header-container').on('click', function(event) {
+			if ( !$(event.target).parents('#settings').length ) // Click isn't in settings panel
+				self.toggleVideoList();
+		});
+
 		// VidList tooltips
 		$('#video-list').on(
 			'mouseenter mouseleave',
