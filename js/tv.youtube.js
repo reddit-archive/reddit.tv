@@ -6,12 +6,6 @@ var youtube = {
     obj: null, //will hold the current youtube embed
     api_ready: false,
 
-    isiPad: function(){
-        if(navigator.userAgent.match(/iPad/i) != null)
-            return true;
-        return false;
-    },
-
     togglePlay: function(){
         //unstarted (-1), ended (0), playing (1), 
         //paused (2), buffering (3), video cued (5)
@@ -107,7 +101,7 @@ var youtube = {
     },
 
     onPlayerReady: function(event) {
-        if(!youtube.isiPad())
+        if(!rtv.isiPad())
             youtube.stateListener({ data: -1 });
     },
 
