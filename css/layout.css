@@ -606,6 +606,10 @@ body.video-loading #loading, #loading.error {
     display: block;
 }
 
+html.os-iPad .ipad-hide {
+    display: none;
+}
+
 #add-channel {
     display: none;
     color: #999;
