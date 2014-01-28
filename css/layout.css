@@ -74,6 +74,13 @@ input.add-channel {
     text-align: center;
 }
 
+#video-list.animated.clicked {
+    -webkit-animation-duration: 0.5s;
+       -moz-animation-duration: 0.5s;
+         -o-animation-duration: 0.5s;
+            animation-duration: 0.5s;
+}
+
 #video-list.scrollbar {
     overflow-x: hidden !important;
 }
