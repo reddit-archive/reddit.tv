@@ -1866,7 +1866,11 @@ var RedditTV = Class.extend({
 		return ('' + string).replace(htmlEscaper, function(match) {
 			return htmlEscapes[match];
 		});
-	} // escape() [stolen from _.js]
+	}, // escape() [stolen from _.js]
+
+    isiPad: function() {
+        return (navigator.userAgent.match(/iPad/i) != null);
+    }, // isiPad
 });
 
 var rtv;
