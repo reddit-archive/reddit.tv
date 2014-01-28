@@ -75,10 +75,16 @@ input.add-channel {
 }
 
 #video-list.animated.clicked {
-    -webkit-animation-duration: 0.5s;
-       -moz-animation-duration: 0.5s;
-         -o-animation-duration: 0.5s;
-            animation-duration: 0.5s;
+    -webkit-animation-duration: 0.75s;
+       -moz-animation-duration: 0.75s;
+         -o-animation-duration: 0.75s;
+            animation-duration: 0.75s;
+}
+#video-list.animated.clicked.slideInDown {
+    -webkit-animation-duration: 0.25s;
+       -moz-animation-duration: 0.25s;
+         -o-animation-duration: 0.25s;
+            animation-duration: 0.25s;
 }
 
 #video-list.scrollbar {
@@ -1073,10 +1079,65 @@ body { /* Addresses a small issue in webkit: http://bit.ly/NEdoDq */
 }
 
 .slideInDown {
+    -webkit-animation-duration: 0.5s;
+       -moz-animation-duration: 0.5s;
+         -o-animation-duration: 0.5s;
+            animation-duration: 0.5s;
     -webkit-animation-name: slideInDown;
-    -moz-animation-name: slideInDown;
-    -o-animation-name: slideInDown;
-    animation-name: slideInDown;
+       -moz-animation-name: slideInDown;
+         -o-animation-name: slideInDown;
+            animation-name: slideInDown;
+}
+
+@-webkit-keyframes vidSlideInDown {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(-100px);
+    }
+
+    100% {
+        -webkit-transform: translateY(0);
+    }
+}
+
+@-moz-keyframes vidSlideInDown {
+    0% {
+        opacity: 0;
+        -moz-transform: translateY(-100px);
+    }
+
+    100% {
+        -moz-transform: translateY(0);
+    }
+}
+
+@-o-keyframes vidSlideInDown {
+    0% {
+        opacity: 0;
+        -o-transform: translateY(-100px);
+    }
+
+    100% {
+        -o-transform: translateY(0);
+    }
+}
+
+@keyframes vidSlideInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+#video-list.slideInDown {
+    -webkit-animation-name: vidSlideInDown;
+    -moz-animation-name: vidSlideInDown;
+    -o-animation-name: vidSlideInDown;
+    animation-name: vidSlideInDown;
 }
 
 @-webkit-keyframes bounceOutUp {
