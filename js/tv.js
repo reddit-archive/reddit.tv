@@ -1117,6 +1117,8 @@ var RedditTV = Class.extend({
 		var vidList = $('#video-list');
 		if (clicked) {
 			vidList.addClass('clicked');
+			window.clearTimeout(self.Globals.videoListOpenTimeout);
+			window.clearTimeout(self.Globals.videoListCloseTimeout);
 		} else {
 			vidList.removeClass('clicked');
 		}
