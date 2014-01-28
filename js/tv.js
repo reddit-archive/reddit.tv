@@ -93,6 +93,8 @@ var RedditTV = Class.extend({
 			var firstChannel = $('#channels a.channel:not(#add-channel-button):first');
 			if (firstChannel.length) self.loadChannel(self.getChanObj(firstChannel.data('feed')), null);
 		}
+
+		if (self.isiPad) $('html').addClass('os-iPad');
 	}, // init()
 
 	loadSettings: function() {
