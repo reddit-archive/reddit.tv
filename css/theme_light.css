@@ -18,6 +18,20 @@
   #gutter-2 {
     display: none;
   }
+
+  #video-embed {
+    width: auto;
+    padding: 0px;
+  }
+
+  #main-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  #channels {
+    width: auto;
+  }
 }
 
 #gutter-1 {
