@@ -48,6 +48,46 @@ function getSponsoredChannels() {
 	return json_encode($sponsored_channel);
 }
 
+function getSkins() {
+	$skins = Array(
+		'header'  => '',
+		'video'   => '',
+		'channel' => '',
+		);
+
+	$sponsored_skins = R::getAll('
+		SELECT id, position, image_url
+		FROM sponsoredskin
+		WHERE status = 1
+		AND start_date <= NOW()
+		AND end_date >= NOW()
+		ORDER BY start_date DESC
+		LIMIT 1
+	  '
+	);
+
+	foreach ($sponsored_skins as $skin) {
+		$skins[ $skin['position'] ] = $skin['image_url'];
+	}
+
+	return $skins;
+}
+
+function printSkinCss() {
+	$skins = getSkins();
+	?>
+<style type="text/css" id="skin-css">
+<?php
+	if ($skins['header'] != '') :
+?>
+	#header { background-image: url('<?php echo $skins['header']; ?>'); }
+<?php
+	endif;
+?>
+</style>
+	<?php
+}
+
 function jsonError($error) {
 	die(json_encode(Array('error' => $error)));
 }
