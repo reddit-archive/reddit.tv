@@ -83,9 +83,23 @@ function printSkinCss() {
 	#header { background-image: url('<?php echo $skins['header']; ?>'); }
 <?php
 	endif;
+
+	if ($skins['video'] != '') :
+?>
+	#video-view { background-image: url('<?php echo $skins['video']; ?>'); }
+<?php
+	endif;
+
+	if ($skins['channel'] != '') :
+?>
+	#channel-container { background-image: url('<?php echo $skins['channel']; ?>'); }
+<?php
+	endif;
 ?>
 </style>
 	<?php
+
+	return $skins;
 }
 
 function jsonError($error) {
