@@ -34,7 +34,7 @@
 <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="css/theme_light.css" type="text/css" id="theme" />
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic' rel='stylesheet' type='text/css'>
-<?php printSkinCss(); ?>
+<?php $skins = printSkinCss(); ?>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
 <script src="js/plugins.js" type="text/javascript"></script>
@@ -58,7 +58,7 @@ Globals = {
 <body>
   <header>
     <div id="header-container">
-      <div id="header" class="grid-container">
+      <div id="header" class="grid-container<?php if ($skins['header'] != '') : ?> skinned<?php endif; ?>">
         <div id="logo" class="grid-25">
           <a href="/"><img src="img/logo.png" /></a>
         </div>
@@ -108,7 +108,7 @@ Globals = {
     </div> <!-- /#header-container -->
     <div id="video-list" class="animated"></div>
   </header>
-  <div id="video-view">
+  <div id="video-view"<?php if ($skins['video'] != '') : ?> class="skinned"<?php endif; ?>>
     <div id="main-container" class="grid-container">
       <div id="loading">
          <div class="text"><div class="loading">loading</div><div class="what"></div></div>
@@ -170,11 +170,13 @@ Globals = {
     </div>
   </div>
 
-  <div id="channels" class="channels grid-container">
-    <a id="add-channel-button" class="grid-25 channel" href="#add-channel">
-      <div class="thumbnail"></div>
-      <span class="name">Add Channel</span>
-    </a>
+  <div id="channels-container"<?php if ($skins['channel'] != '') : ?> class="skinned"<?php endif; ?>>
+    <div id="channels" class="channels grid-container">
+      <a id="add-channel-button" class="grid-25 channel" href="#add-channel">
+        <div class="thumbnail"></div>
+        <span class="name">Add Channel</span>
+      </a>
+    </div>
   </div>
 
   <footer>
