@@ -93,6 +93,8 @@ var RedditTV = Class.extend({
 			var firstChannel = $('#channels a.channel:not(#add-channel-button):first');
 			if (firstChannel.length) self.loadChannel(self.getChanObj(firstChannel.data('feed')), null);
 		}
+
+		if (self.isiPad) $('html').addClass('os-iPad');
 	}, // init()
 
 	loadSettings: function() {
@@ -336,6 +338,12 @@ var RedditTV = Class.extend({
 			}
 		);
 
+		// Header click to open/close
+		$('#header-container').on('click', function(event) {
+			if ( !$(event.target).parents('#settings').length ) // Click isn't in settings panel
+				self.toggleVideoList(true);
+		});
+
 		// VidList tooltips
 		$('#video-list').on(
 			'mouseenter mouseleave',
@@ -451,7 +459,6 @@ var RedditTV = Class.extend({
 			selector: 'a.channel',
 			ignore: '#add-channel-button',
 			align: 'center',
-			colWidth: 250,
 			columns: 4,
 			minColumns: 4,
 			gutterX: 0,
@@ -1076,17 +1083,19 @@ var RedditTV = Class.extend({
 			self.openVideoList();
 	}, // videoListOpenTimeout()
 
-	toggleVideoList: function() {
+	toggleVideoList: function(clicked) {
 		if($('#video-list').hasClass('bounceOutUp')) {
-			self.openVideoList();
+			self.openVideoList(clicked);
 		}
 		else {
-			self.closeVideoList();
+			self.closeVideoList(clicked);
 		}
 	}, // toggleVideoList()
 
-	openVideoList: function() {
+	openVideoList: function(clicked) {
 		if ( !$('#video-list').children().length ) return;
+
+		self.videoListClicked(clicked);
 
 		window.clearTimeout(self.Globals.videoListCloseTimeout);
 
@@ -1094,8 +1103,10 @@ var RedditTV = Class.extend({
 		$('#now-playing-title').addClass('active');
 	}, // openVideoList()
 
-	closeVideoList: function() {
+	closeVideoList: function(clicked) {
 		if ( $('#video-list').hasClass('scrolling') ) return;
+
+		self.videoListClicked(clicked);
 
 		window.clearTimeout(self.Globals.videoListOpenTimeout);
 
@@ -1103,6 +1114,17 @@ var RedditTV = Class.extend({
 		$('#vid-list-tooltip').hide();
 		$('#now-playing-title').removeClass('active');
 	}, // closeVideoList()
+
+	videoListClicked: function(clicked) {
+		var vidList = $('#video-list');
+		if (clicked) {
+			vidList.addClass('clicked');
+			window.clearTimeout(self.Globals.videoListOpenTimeout);
+			window.clearTimeout(self.Globals.videoListCloseTimeout);
+		} else {
+			vidList.removeClass('clicked');
+		}
+	},
 
 	loadVideoList: function(chan) {
 		var $video_list = $('#video-list'),
@@ -1358,6 +1380,7 @@ var RedditTV = Class.extend({
 									+ "&v=3");
 			$video_embed.html(embed);
 			$('body').removeClass('video-loading');
+			if (video.domain == 'youtube.com') youtube.createPlayer();
 
 			self.addListeners(video.domain);
 
@@ -1845,7 +1868,11 @@ var RedditTV = Class.extend({
 		return ('' + string).replace(htmlEscaper, function(match) {
 			return htmlEscapes[match];
 		});
-	} // escape() [stolen from _.js]
+	}, // escape() [stolen from _.js]
+
+    isiPad: function() {
+        return (navigator.userAgent.match(/iPad/i) != null);
+    }, // isiPad
 });
 
 var rtv;

@@ -37,8 +37,10 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
 <script src="js/plugins.js" type="text/javascript"></script>
+
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
 
+<script src="https://www.youtube.com/player_api" type="text/javascript"></script>
 <script src="js/tv.youtube.js" type="text/javascript"></script>
 <script src="js/tv.vimeo.js" type="text/javascript"></script>
 
@@ -66,7 +68,7 @@ Globals = {
         <div id="settings">
           <div class="buttons btn-group" data-toggle="buttons">
             <label class="btn btn-default icon-next settings-auto">
-              <input type="checkbox"> Auto Play/Advance
+              <input type="checkbox"> Auto <span class="ipad-hide">Play/</span>Advance
             </label>
             <label class="btn btn-default icon-shuffle settings-shuffle">
               <input type="checkbox"> Shuffle

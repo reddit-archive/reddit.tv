@@ -1,8 +1,10 @@
 /*
  *  youtube singleton oh yeah! 
  */
+var player;
 var youtube = {
     obj: null, //will hold the current youtube embed
+    api_ready: false,
 
     togglePlay: function(){
         //unstarted (-1), ended (0), playing (1), 
@@ -14,7 +16,8 @@ var youtube = {
         }
     },
 
-    stateListener: function(state){
+    stateListener: function(event){
+        var state = event.data;
 
         if (rtv.Globals.cur_chan === -1) {
 
@@ -76,8 +79,9 @@ var youtube = {
         
         if(ID){
             data.id = ID;
-            data.embed = "&lt;object width=\"600\" height=\"338\"&gt;&lt;param name=\"movie\" value=\"http://www.youtube.com/v/"
-            +ID+"?version=3&amp;feature=oembed"+time+"\"&gt;&lt;/param&gt;&lt;param name=\"allowFullScreen\" value=\"true\"&gt;&lt;/param&gt;&lt;param name=\"allowscriptaccess\" value=\"always\"&gt;&lt;/param&gt;&lt;embed src=\"http://www.youtube.com/v/"+ID+"?version=3&amp;feature=oembed"+time+"\" type=\"application/x-shockwave-flash\" width=\"600\" height=\"338\" allowscriptaccess=\"always\" allowfullscreen=\"true\"&gt;&lt;/embed&gt;&lt;/object&gt;";
+            // data.embed = "&lt;object width=\"600\" height=\"338\"&gt;&lt;param name=\"movie\" value=\"http://www.youtube.com/v/"
+            // +ID+"?version=3&amp;feature=oembed"+time+"\"&gt;&lt;/param&gt;&lt;param name=\"allowFullScreen\" value=\"true\"&gt;&lt;/param&gt;&lt;param name=\"allowscriptaccess\" value=\"always\"&gt;&lt;/param&gt;&lt;embed src=\"http://www.youtube.com/v/"+ID+"?version=3&amp;feature=oembed"+time+"\" type=\"application/x-shockwave-flash\" width=\"600\" height=\"338\" allowscriptaccess=\"always\" allowfullscreen=\"true\"&gt;&lt;/embed&gt;&lt;/object&gt;";
+            data.embed = "&lt;iframe width=\"600\" height=\"338\" src=\"https://www.youtube.com/embed/"+ID+"?version=3\" frameborder=\"0\" allowfullscreen&gt;&lt;/iframe&gt;";
             data.thumbnail = "http://i2.ytimg.com/vi/"+ID+"/hqdefault.jpg";
             return data;
         }else{
@@ -87,13 +91,32 @@ var youtube = {
 
     // prepares embed code for js api access
     prepEmbed: function(embed) {
-        var js_str = 'version=3&enablejsapi=1&playerapiid=ytplayer';
+        var js_str = 'version=3&enablejsapi=1&playerapiid=ytplayer&wmode=opaque&wmode=transparent';
 
         embed = embed.replace(/version\=3/gi, js_str);        
         embed = embed.replace(/\<embed/i,'<embed id="ytplayer"');
         embed = embed.replace(/\<iframe/i,'<iframe id="ytplayer"');
         
         return embed;
+    },
+
+    onPlayerReady: function(event) {
+        if(!rtv.isiPad())
+            youtube.stateListener({ data: -1 });
+    },
+
+    createPlayer: function() {
+        if (!youtube.api_ready) return false;
+
+        youtube.obj = new YT.Player('ytplayer', {
+            events: {
+                'onError': youtube.errorListener,
+                'onReady': youtube.onPlayerReady,
+                'onStateChange': youtube.stateListener
+            }
+        });
+
+        return true;
     }
 };
 
@@ -101,9 +124,6 @@ var youtube = {
  *  youtube listener - called by youtube flash/html5 when present
  *  MUST REMAIN IN GLOBAL SCOPE
  */
-function onYouTubePlayerReady(playerId) {
-    youtube.obj = document.getElementById("ytplayer");
-    youtube.obj.addEventListener("onStateChange", "youtube.stateListener", true);
-    youtube.obj.addEventListener("onError", "youtube.errorListener", true);
-    youtube.stateListener(-1);
+function onYouTubeIframeAPIReady() {
+    youtube.api_ready = true;
 }
