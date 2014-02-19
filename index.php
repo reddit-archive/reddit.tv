@@ -57,8 +57,8 @@ Globals = {
 </head>
 <body>
   <header>
-    <div id="header-container">
-      <div id="header" class="grid-container<?php if ($skins['header'] != '') : ?> skinned<?php endif; ?>">
+    <div id="header-container"<?php if ($skins['video'] != '') : ?> class="skinned"<?php endif; ?>>
+      <div id="header" class="grid-container">
         <div id="logo" class="grid-25">
           <a href="/"><img src="img/logo.png" /></a>
         </div>

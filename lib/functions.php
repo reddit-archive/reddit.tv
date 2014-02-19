@@ -62,7 +62,7 @@ function getSkins() {
 		AND start_date <= NOW()
 		AND end_date >= NOW()
 		ORDER BY start_date DESC
-		LIMIT 1
+		LIMIT 10
 	  '
 	);
 
@@ -80,7 +80,7 @@ function printSkinCss() {
 <?php
 	if ($skins['header'] != '') :
 ?>
-	#header { background-image: url('<?php echo $skins['header']; ?>'); }
+	#header-container { background-image: url('<?php echo $skins['header']; ?>'); }
 <?php
 	endif;
 
@@ -92,7 +92,7 @@ function printSkinCss() {
 
 	if ($skins['channel'] != '') :
 ?>
-	#channel-container { background-image: url('<?php echo $skins['channel']; ?>'); }
+	#channels-container { background-image: url('<?php echo $skins['channel']; ?>'); }
 <?php
 	endif;
 ?>
