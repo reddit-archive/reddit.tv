@@ -237,6 +237,10 @@ input.add-channel {
     height: 670px;
 }
 
+#video-view.skinned #loading {
+    background: transparent;
+}
+
 body.video-loading #loading, #loading.error {
     display: block;
 }
