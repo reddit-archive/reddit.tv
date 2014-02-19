@@ -188,6 +188,13 @@
       <div class="tab-pane" id="skins">
         <h1>Sponsored Skins</h1>
 
+        <h5 class="">
+          <b>Templates:</b>&nbsp;&nbsp;
+          <a href="./skins/reddittv_header_skin_template.psd">Header Background</a> (<a href="./skins/reddittv_header_skin_template_instructions.psd">Instructions</a>)&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          <a href="./skins/reddittv_video_skin_template.psd">Video Background</a> (<a href="./skins/reddittv_video_skin_template_instructions.psd">Instructions</a>)&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          <a href="./skins/reddittv_channel_skin_template.psd">Channel Background</a> (<a href="./skins/reddittv_channel_skin_template_instructions.psd">Instructions</a>)
+        </h5>
+
         <form action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
           <input type="hidden" name="type" value="skins" />
           <div class="form-group row">
