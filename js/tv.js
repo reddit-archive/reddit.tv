@@ -178,6 +178,7 @@ var RedditTV = Class.extend({
 			
 			self.Globals.sorting = $(this).attr('href').replace(/^.*#sort=/, '')
 			self.Globals.videos = [];
+			$('#video-list').removeData('feed');
 			self.loadChannel(self.Globals.cur_chan, null);
 
 			return false;
