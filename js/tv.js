@@ -761,6 +761,21 @@ var RedditTV = Class.extend({
 		return (self.Globals.domains.indexOf(video_domain) !== -1);
 	},
 
+	//http://stackoverflow.com/questions/962802/is-it-correct-to-use-javascript-array-sort-method-for-shuffling/962890#962890
+	shuffleArray: function(array) {
+		var tmp, current, top = array.length;
+		if(top){
+			while(--top) {
+				current = Math.floor(Math.random() * (top + 1));
+				tmp = array[current];
+				array[current] = array[top];
+				array[top] = tmp;
+			}
+		}
+		return array;
+	},
+
+
 	isEmpty: function(obj) {
 		for(var prop in obj) {
 			if(obj.hasOwnProperty(prop)){
@@ -1192,6 +1207,14 @@ var RedditTV = Class.extend({
 		self.Globals.videoListCloseTimeout = window.setTimeout(self.closeVideoList, 2000);
 	}, // loadVideoList()
 
+	shuffleChan: function(chan) {
+		self.Globals.shuffled = [];
+		for(var x in self.Globals.videos[chan.feed].video){
+			self.Globals.shuffled.push(x);
+		}
+		self.Globals.shuffled = self.shuffleArray(self.Globals.shuffled);
+	},
+
 	loadVideo: function(video, sponsored) {
 		var this_chan = self.Globals.cur_chan,
 			this_video = self.Globals.cur_video,
@@ -1427,7 +1450,7 @@ var RedditTV = Class.extend({
 	}, // thumbElement()
 
 	getVideoKey: function(key){
-		if(self.Globals.shuffle && self.Globals.shuffled.length === Globals.videos[self.Globals.cur_chan.feed].video.length){
+		if(self.Globals.shuffle && self.Globals.shuffled.length === self.Globals.videos[self.Globals.cur_chan.feed].video.length){
 			return self.Globals.shuffled[key];
 		} else {
 			return key;
