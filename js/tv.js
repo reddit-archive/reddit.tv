@@ -178,7 +178,7 @@ var RedditTV = Class.extend({
 			
 			self.Globals.sorting = $(this).attr('href').replace(/^.*#sort=/, '')
 			self.Globals.videos = [];
-			loadChannel(self.Globals.channels[self.Globals.cur_chan], null);
+			self.loadChannel(self.Globals.cur_chan, null);
 
 			return false;
 		});
@@ -736,7 +736,7 @@ var RedditTV = Class.extend({
 
 		if (sorting.length === 2) {
 
-			sortType = sorting[0] + '/';
+			sortType = '/' + sorting[0] + '/';
 			sortOption = '&t=' + sorting[1];
 		}
 
