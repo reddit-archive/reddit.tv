@@ -105,13 +105,13 @@ var RedditTV = Class.extend({
 			sorting_cookie = $.jStorage.get('channel_sorting');
 
 		if(auto_cookie !== null && auto_cookie !== self.Globals.auto){
-			self.Globals.auto = (auto_cookie === 'true') ? true : false;
+			self.Globals.auto = (auto_cookie && auto_cookie !== 'false') ? true : false;
 		}
 		if(shuffle_cookie !== null && shuffle_cookie !== self.Globals.shuffle){
-			self.Globals.shuffle = (shuffle_cookie === 'true') ? true : false;
+			self.Globals.shuffle = (shuffle_cookie && shuffle_cookie !== 'false') ? true : false;
 		}
 		if(sfw_cookie !== null && sfw_cookie !== self.Globals.sfw){
-			self.Globals.sfw = (sfw_cookie === 'true') ? true : false;
+			self.Globals.sfw = (sfw_cookie && sfw_cookie !== 'false') ? true : false;
 		}
 		$('#sorting a[href="#sort=' + self.Globals.sorting + '"]').addClass('active');
 
