@@ -1051,7 +1051,7 @@ var RedditTV = Class.extend({
 		if (videoId === undefined || videoId === null || videoId === '')
 			videoId = null;
 
-		if (self.Globals.cur_chan.feed != feed) {
+		if (videoId === null || self.Globals.cur_chan.feed != feed) {
 			self.loadChannel(new_chan, videoId);
 		} else {
 			if (self.Globals.videos[feed] !== undefined){
