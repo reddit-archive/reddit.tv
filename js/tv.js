@@ -1221,7 +1221,7 @@ var RedditTV = Class.extend({
 			this_video = self.Globals.cur_video,
 			selected_video = this_video,
 			videos_size = 0,
-			sponsoredChannel = (this.owner == 'sponsor'),
+			sponsoredChannel = (self.Globals.cur_chan.owner == 'sponsor'),
 			thumbAnchor, newAnchor, isAdVideo, video;
 
 		if (this_chan.feed) videos_size = Object.size(self.Globals.videos[this_chan.feed].video)-1;
