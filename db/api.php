@@ -6,6 +6,7 @@ include_once('config.php');
 switch($_GET['action']) {
 	case 'channel_thumbnail':
 		$feed = $_GET['feed'];
+		//XXX: Further feed validation is in order.
 		if ( !preg_match("/\/(r|domain)\//", $feed) ) jsonError('Invalid feed.');
 
 		if($cacheAvailable){
@@ -15,8 +16,7 @@ switch($_GET['action']) {
 				$channel->feed = $feed;
 				$channel->thumbnail_url = $thumbnail_url;
 				$channel->data_source = 'memcache';
-				echo json_encode(array($channel));
-				die();
+				jsonForAjax(array($channel));
 			}
 		}
 
@@ -40,8 +40,7 @@ switch($_GET['action']) {
 		if($cacheAvailable)
 			$memcache->add("chthmb-$feed", $channel->thumbnail_url, false, 1800);
 
-		echo json_encode(R::exportAll($channel));
-		die();
+		jsonForAjax(R::exportAll($channel));
 		break;
 	case 'youtube_thumbnail':
 		getYoutubeThumbnail($_GET['id'], isset($_GET['base64']));
@@ -106,8 +105,7 @@ function getYoutubeThumbnail($id, $base64=false) {
 				'image' => $dataUri
 			);
 
-		echo json_encode($arr);
-		die();
+		jsonForAjax($arr);
 	} else {
 		header('Content-type: ' . $imginfo['mime']);
 		echo $img;

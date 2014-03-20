@@ -49,11 +49,13 @@ function getSponsoredChannels() {
 }
 
 function jsonError($error) {
-	die(json_encode(Array('error' => $error)));
+	jsonForAjax(Array('error' => $error));
 }
 
 function jsonForAjax($arr) {
-	die(json_encode($arr));
+	header('X-Content-Type-Options: nosniff');
+	header('Content-Type: application/json');
+	die(json_encode($arr, JSON_HEX_TAG));
 }
 
 function default_value(&$var, $default) {

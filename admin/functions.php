@@ -105,8 +105,9 @@ function jsonError($error) {
 function jsonForAjax($arr) {
 	// Only return JSON for AJAX requests
 	if (isset($_REQUEST['ajax'])) {
-		echo json_encode($arr);
-		die();
+		header('X-Content-Type-Options: nosniff');
+		header('Content-Type: application/json');
+		die(json_encode($arr, JSON_HEX_TAG));
 	}
 }
 
