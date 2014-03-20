@@ -411,6 +411,7 @@ $.each(channelTypes, function(i, channelType) {
 		feed = JSON.stringify(feed);
 
 		postData = {
+			'csrf_token': window.CSRF_TOKEN,
 			'ajax' : true,
 			'type' : 'settings',
 		};

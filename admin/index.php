@@ -17,6 +17,9 @@
 <link rel="stylesheet" href="./style.css" type="text/css" />
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic' rel='stylesheet' type='text/css'>
 
+<script type="text/javascript">
+    window.CSRF_TOKEN = <?= json_encode(CSRF_TOKEN, JSON_HEX_TAG) ?>;
+</script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.min.js" type="text/javascript"></script>
 <script src="js/jquery-ui.min.js" type="text/javascript"></script>
@@ -53,6 +56,7 @@
 
         <form action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
           <input type="hidden" name="type" value="videos" />
+          <input type="hidden" name="csrf_token" value="<?= htmlentities(CSRF_TOKEN) ?>" />
           <div class="form-group row">
             <div class="col-lg-5">
               <div class="row">
@@ -190,6 +194,7 @@
 
         <form action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
           <input type="hidden" name="type" value="skins" />
+          <input type="hidden" name="csrf_token" value="<?= htmlentities(CSRF_TOKEN) ?>" />
           <div class="form-group row">
             <div class="col-lg-5">
               <div class="row">
@@ -338,6 +343,7 @@
 
         <form action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
           <input type="hidden" name="type" value="channels" />
+          <input type="hidden" name="csrf_token" value="<?= htmlentities(CSRF_TOKEN) ?>" />
           <div class="form-group row">
             <div class="col-lg-5">
               <div class="row">
@@ -528,6 +534,7 @@
         <hr />
         <form id="general-settings" action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
           <input type="hidden" name="type" value="settings" />
+          <input type="hidden" name="csrf_token" value="<?= htmlentities(CSRF_TOKEN) ?>" />
           <div class="form-group row">
             <div class="col-lg-4">
               <div class="input-group">
@@ -578,6 +585,7 @@
         <h3>Default Channels</h3>
         <form id="default-channels" action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
           <input type="hidden" name="type" value="default-channels" />
+          <input type="hidden" name="csrf_token" value="<?= htmlentities(CSRF_TOKEN) ?>" />
           <div class="form-group row control-group">
             <div class="col-lg-6">
               <div class="input-group">
@@ -632,6 +640,7 @@
         <h3>Recommended Channels</h3>
         <form id="recommended-channels" action="" enctype="multipart/form-data" method="post" class="well form-horizontal" role="form">
           <input type="hidden" name="type" value="recommended-channels" />
+          <input type="hidden" name="csrf_token" value="<?= htmlentities(CSRF_TOKEN) ?>" />
           <div class="form-group row control-group">
             <div class="col-lg-6">
               <div class="input-group">

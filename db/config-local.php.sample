@@ -6,6 +6,10 @@ define('UPLOAD_URL', 'uploads/');
 define('AWS_BUCKET', 'reddittv');
 define('USE_SQLITE', false);
 
+// Since user auth is done via .htpasswd, there's no need to support per-user 
+// CSRF tokens. Replace this when / if user auth gets added to admin panel.
+define('CSRF_TOKEN', 'REPLACE_ME');
+
 // Include RedbeanPHP
 require_once(dirname(__FILE__).'/rb.php');
 

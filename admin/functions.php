@@ -31,10 +31,14 @@ function ajaxFunc() {
 
 	if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'get') {
 		jsonQuery();
-	} else if ($_REQUEST['type'] == 'settings') {
-		updateSettings();
 	} else {
-		addEdit();
+		checkCsrfToken();
+		
+		if ($_REQUEST['type'] == 'settings') {
+			updateSettings();
+		} else {
+			addEdit();
+		}
 	}
 }
 
@@ -100,6 +104,9 @@ function jsonQuery() {
 
 function jsonError($error) {
 	jsonForAjax(Array('error' => $error));
+	
+	// Die even if not an AJAX request, should this call error_log() ?
+	die(); 
 }
 
 function jsonForAjax($arr) {
@@ -211,6 +218,28 @@ function pickFilename($arr=Array(), $ext='.jpg') {
 	}
 
 	return $filename;
+}
+
+function checkCsrfToken() {
+	if(!constant_time_compare(CSRF_TOKEN, $_POST['csrf_token'])) {
+		jsonError('Invalid CSRF token');
+	}
+}
+
+// based on version from utils.py
+function constant_time_compare($expected, $actual)
+{
+    $actual_len = strlen($actual);
+    $expected_len = strlen($expected);
+    $res = $actual_len ^ $expected_len;
+
+    if ($expected_len > 0) {
+        for ($i = 0; $i < $actual_len; ++$i) {
+            $res |= ord($expected[$i % $expected_len]) ^ ord($actual[$i]);
+        }
+    }
+
+    return $res === 0;
 }
 
 function sanitize_file_name( $filename ) {
