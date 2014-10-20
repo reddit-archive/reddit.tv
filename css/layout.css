@@ -18,6 +18,7 @@ header {
     position: relative;
     border-bottom: 1px solid rgba(0,0,0,0.5);
     z-index: 3;
+    background: transparent none center top no-repeat;
 }
 
 #header-container {
@@ -31,7 +32,6 @@ header .grid-container {
 
 footer {
     background: #e5e5e5;
-    margin-top: 30px;
     height: 50px;
     line-height: 50px;
     text-align: center;
@@ -235,6 +235,10 @@ input.add-channel {
     left: 20px;
     width: 980px;
     height: 670px;
+}
+
+#video-view.skinned #loading {
+    background: transparent;
 }
 
 body.video-loading #loading, #loading.error {
@@ -471,9 +475,8 @@ body.video-loading #loading, #loading.error {
 }
 
 #video-view {
-    background-color: #252525;
+    background: #252525 none center top no-repeat;
     min-height:670px;
-    margin-bottom: 30px;
     overflow: hidden;
     position: relative;
     z-index: 1;
@@ -815,6 +818,11 @@ html.os-iPad .ipad-hide {
         -ms-transition: all 0.1s ease-in-out;
          -o-transition: all 0.1s ease-in-out;
             transition: all 0.1s ease-in-out;
+}
+
+#channels-container {
+    background: transparent none center top no-repeat;
+    padding: 30px 0;
 }
 
 #channels {
