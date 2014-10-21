@@ -475,8 +475,7 @@ body.video-loading #loading, #loading.error {
 }
 
 #video-view {
-    background: #252525 none center top no-repeat;
-    background-repeat: repeat;
+    background: #252525 none center top repeat;
     min-height:670px;
     overflow: hidden;
     position: relative;
