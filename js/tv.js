@@ -70,12 +70,12 @@ var RedditTV = Class.extend({
 		});
 
 		if (!self.Globals.channels) self.Globals.channels = [];
+		if (!self.Globals.sponsored_channels) self.Globals.sponsored_channels = [];
 
 		// Load sponsored channel
 		var sponsored_channels = self.Globals.sponsored_channels;
 		if(sponsored_channels.length >= 1){
 			self.Globals.sponsored_channels = self.formatSponsoredChannels(sponsored_channels);
-			self.Globals.channels = self.Globals.channels.concat(sponsored_channels);
 			for(c in sponsored_channels){
 				self.Globals.videos[sponsored_channels[c].feed] = {
 					video: sponsored_channels[c].videos
@@ -504,27 +504,33 @@ var RedditTV = Class.extend({
 	}, // saveChannelOrder()
 
 	displayChannels: function() {
-		var sorted = (self.Globals.channel_sorting.length),
-			added  = [],
-			lastSponsor;
-
-		$.each(self.Globals.channels, function(i, chan) {
-			if (chan.feed && chan.feed.match(/^\/sponsor\//) && self.Globals.channel_sorting.indexOf(chan.feed) == -1) {
-				self.displayChannel(chan, 'sponsor');
-				added.push(chan.feed);
-			}
-		});
-
+		var sorted = (self.Globals.channel_sorting.length);
+		var sponsoredChannels = self.Globals.sponsored_channels;
 		var channels = (sorted) ? self.Globals.channel_sorting : self.Globals.channels;
+		
+		if (sorted) channels = $.map(channels, function(feed) {
+			return self.getChanObj(feed);
+		});
+
+		$.each(sponsoredChannels, function(i, chan) {
+			var n = 2 + i * 4;
+			channels.splice(n, 0, chan);
+		});
+
 		$.each(channels, function(i, chan) {
-			chan = (sorted) ? self.getChanObj(chan) : chan;
-			if (chan.feed && added.indexOf(chan.feed) == -1) {
+			if (!chan.feed) {
+				return;
+			}
+			if (chan.feed.match(/^\/sponsor\//) &&
+					channels.indexOf(chan) == -1) {
+				self.displayChannel(chan, 'sponsor');
+			}
+			else {
 				self.displayChannel(chan);
-				added.push(chan.feed);
 			}
 		});
 
-    	self.bindChannelSorting();
+    self.bindChannelSorting();
 	}, // displayChannels()
 
 	displayChannel: function(chan, added) {
