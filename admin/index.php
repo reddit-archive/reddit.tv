@@ -621,17 +621,27 @@
               <?php
                 $default_channels = json_decode($settings->default_channels);
                 foreach ($default_channels as $channel) :
-                  $thumb_url = '';
-                  $thumb = R::findOne('channel',
-                    ' feed = ? LIMIT 1 ', array( $channel->feed )
-                  );
-                  if ($thumb) $thumb_url = $thumb->thumbnail_url;
+                  $name = isset($channel->channel) ? $channel->channel : null;
+                  if (!$name) {
+                    continue;
+                  }
+                  $feed = isset($channel->feed) ? $channel->feed : '';
+                  $owner = isset($channel->owner) ? $channel->owner : 'site';
+
+                  $thumb = null;
+                  if ($feed) {
+                    $thumb = R::findOne('channel',
+                      ' feed = ? LIMIT 1 ', array( $channel->feed )
+                    );
+                  }
+
+                  $thumb_url = $thumb ? $thumb->thumbnail_url : '';
               ?>
-                  <li class="channel col-lg-3" data-feed="<?php echo $channel->feed; ?>">
+                  <li class="channel col-lg-3" data-feed="<?php echo $feed; ?>">
                     <div class="thumbnail"<?php if ($thumb_url != '') : ?> style="background-image: url(<?php echo $thumb_url; ?>);"<?php endif; ?>>
-                      <div class="sponsored"><label><span>Sponsored</span><input type="checkbox" <?php if ($channel->owner == 'sponsor') : ?>checked="checked"<?php endif; ?>/></label></div>
+                      <div class="sponsored"><label><span>Sponsored</span><input type="checkbox" <?php if ($owner == 'sponsor') : ?>checked="checked"<?php endif; ?>/></label></div>
                     </div>
-                    <span class="name" spellcheck="false" contenteditable="true"><?php echo $channel->channel; ?></span>
+                    <span class="name" spellcheck="false" contenteditable="true"><?php echo $name; ?></span>
                   </li>
               <?php endforeach; ?>
             </ul>
@@ -672,15 +682,24 @@
               <?php
                 $recommended_channels = json_decode($settings->recommended_channels);
                 foreach ($recommended_channels as $channel) :
-                  $thumb_url = '';
-                  $thumb = R::findOne('channel',
-                    ' feed = ? LIMIT 1 ', array( $channel->feed )
-                  );
-                  if ($thumb) $thumb_url = $thumb->thumbnail_url;
+                  $name = isset($channel->channel) ? $channel->channel : null;
+                  if (!$name) {
+                    continue;
+                  }
+                  $feed = isset($channel->feed) ? $channel->feed : '';
+
+                  $thumb = null;
+                  if ($feed) {
+                    $thumb = R::findOne('channel',
+                      ' feed = ? LIMIT 1 ', array( $channel->feed )
+                    );
+                  }
+
+                  $thumb_url = $thumb ? $thumb->thumbnail_url : '';
               ?>
-                  <li class="channel col-lg-3" data-feed="<?php echo $channel->feed; ?>">
+                  <li class="channel col-lg-3" data-feed="<?php echo $feed; ?>">
                     <div class="thumbnail"<?php if ($thumb_url != '') : ?> style="background-image: url(<?php echo $thumb_url; ?>);"<?php endif; ?>></div>
-                    <span class="name" spellcheck="false" contenteditable="true"><?php echo $channel->channel; ?></span>
+                    <span class="name" spellcheck="false" contenteditable="true"><?php echo $name; ?></span>
                   </li>
               <?php endforeach; ?>
             </ul>
