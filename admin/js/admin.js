@@ -395,13 +395,16 @@ $.each(channelTypes, function(i, channelType) {
 	$('#' + channelType + '-channels').on('submit', function() {
 		var feed = [],
 		    postData;
-
 		$('#' + channelType + '-channels li.channel').each(function() {
-			var chan = $(this),
-			    data = {
-					'channel' : chan.find('.name').text(),
-					'feed'    : chan.attr('data-feed')
-				};
+			var chan = $(this);
+			var data = {
+				'channel' : chan.find('.name').text(),
+				'feed'    : chan.attr('data-feed'),
+			};
+
+			if (typeof data.feed === 'undefined') {
+				return;
+			}
 
 			if (chan.find('.sponsored input').is(':checked')) data.owner = 'sponsor';
 
