@@ -486,9 +486,12 @@ var RedditTV = Class.extend({
 
 	saveChannelOrder: function() {
 		var feeds = [];
-
+		var feed;
 		$('#channels a.channel:not(#add-channel-button):not(.temp)').each(function() {
-			feeds.push($(this).data('feed'));
+			feed = $(this).data('feed');
+			if (!feed.match(/^\/sponsor\//)) {
+				feeds.push(feed);
+			}
 		});
 
 		self.Globals.channel_sorting = feeds;
@@ -521,13 +524,7 @@ var RedditTV = Class.extend({
 			if (!chan.feed) {
 				return;
 			}
-			if (chan.feed.match(/^\/sponsor\//) &&
-					channels.indexOf(chan) == -1) {
-				self.displayChannel(chan, 'sponsor');
-			}
-			else {
-				self.displayChannel(chan);
-			}
+			self.displayChannel(chan);
 		});
 
     self.bindChannelSorting();
