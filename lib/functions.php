@@ -18,14 +18,18 @@ function getChannels() {
 		$db_table = $type . '_channels';
 		$channels = json_decode($settings->{$db_table});
 		foreach ($channels as $id => $channel) {
-			$thumb = R::findOne('channel',
-			  ' feed = ? LIMIT 1 ', array( $channel->feed )
-			);
+			if (isset($channel->feed)) {
+				$thumb = R::findOne('channel',
+				  ' feed = ? LIMIT 1 ', array( $channel->feed )
+				);
+				if ( $thumb && $thumb->thumbnail_url != '' ) {
+					$channels[$id]->thumbnail = $thumb->thumbnail_url;
+				}
+			}
 
-			if (!$channels[$id]->owner) $channels[$id]->owner = 'site';
-
-			if ( $thumb && $thumb->thumbnail_url != '' )
-				$channels[$id]->thumbnail = $thumb->thumbnail_url;
+			if (!isset($channels[$id]->owner) || !$channels[$id]->owner) {
+				$channels[$id]->owner = 'site';
+			} 
 		}
 
 		$settings_name = $type . '_channels_json';
