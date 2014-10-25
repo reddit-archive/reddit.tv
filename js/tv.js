@@ -69,13 +69,17 @@ var RedditTV = Class.extend({
 			$(document).trigger('adsLoaded');
 		});
 
-		if (!self.Globals.channels) self.Globals.channels = [];
+		if (!self.Globals.channels) {
+			self.Globals.channels = [];
+		}
+		if (!self.Globals.sponsored_channels) {
+			self.Globals.sponsored_channels = [];
+		}
 
 		// Load sponsored channel
 		var sponsored_channels = self.Globals.sponsored_channels;
 		if(sponsored_channels.length >= 1){
 			self.Globals.sponsored_channels = self.formatSponsoredChannels(sponsored_channels);
-			self.Globals.channels = self.Globals.channels.concat(sponsored_channels);
 			for(c in sponsored_channels){
 				self.Globals.videos[sponsored_channels[c].feed] = {
 					video: sponsored_channels[c].videos
@@ -486,9 +490,12 @@ var RedditTV = Class.extend({
 
 	saveChannelOrder: function() {
 		var feeds = [];
-
+		var feed;
 		$('#channels a.channel:not(#add-channel-button):not(.temp)').each(function() {
-			feeds.push($(this).data('feed'));
+			feed = $(this).data('feed');
+			if (!feed.match(/^\/sponsor\//)) {
+				feeds.push(feed);
+			}
 		});
 
 		self.Globals.channel_sorting = feeds;
@@ -504,27 +511,29 @@ var RedditTV = Class.extend({
 	}, // saveChannelOrder()
 
 	displayChannels: function() {
-		var sorted = (self.Globals.channel_sorting.length),
-			added  = [],
-			lastSponsor;
-
-		$.each(self.Globals.channels, function(i, chan) {
-			if (chan.feed && chan.feed.match(/^\/sponsor\//) && self.Globals.channel_sorting.indexOf(chan.feed) == -1) {
-				self.displayChannel(chan, 'sponsor');
-				added.push(chan.feed);
-			}
-		});
-
+		var sorted = (self.Globals.channel_sorting.length);
+		var sponsoredChannels = self.Globals.sponsored_channels;
 		var channels = (sorted) ? self.Globals.channel_sorting : self.Globals.channels;
-		$.each(channels, function(i, chan) {
-			chan = (sorted) ? self.getChanObj(chan) : chan;
-			if (chan.feed && added.indexOf(chan.feed) == -1) {
-				self.displayChannel(chan);
-				added.push(chan.feed);
-			}
+		
+		if (sorted) {
+			channels = $.map(channels, function(feed) {
+				return self.getChanObj(feed);
+			});
+		}
+
+		$.each(sponsoredChannels, function(i, chan) {
+			var n = 2 + i * 4;
+			channels.splice(n, 0, chan);
 		});
 
-    	self.bindChannelSorting();
+		$.each(channels, function(i, chan) {
+			if (!chan.feed) {
+				return;
+			}
+			self.displayChannel(chan);
+		});
+
+		self.bindChannelSorting();
 	}, // displayChannels()
 
 	displayChannel: function(chan, added) {
