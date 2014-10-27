@@ -1879,7 +1879,7 @@ var RedditTV = Class.extend({
 function shuffleArray(arr) {
 	var i, temp, j;
 	for (var i = 0, l = arr.length; i < l; i++) {
-		j = ~~(Math.random() * (i + 1));
+		j = Math.floor(Math.random() * (i + 1));
 		temp = arr[i];
 		arr[i] = arr[j];
 		arr[j] = temp;
