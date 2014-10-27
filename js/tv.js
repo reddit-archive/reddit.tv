@@ -1804,7 +1804,7 @@ var RedditTV = Class.extend({
 				videos: self.formatSponsoredChannelVideos(JSON.parse(channels[c].video_list)),
 			}
 		}
-		return channels;
+		return shuffleArray(channels);
 	}, // formatSponsoredChannels()
 
 	formatSponsoredChannelVideos: function(videos) {
@@ -1874,6 +1874,21 @@ var RedditTV = Class.extend({
         return (navigator.userAgent.match(/iPad/i) != null);
     }, // isiPad
 });
+
+// http://www.codinghorror.com/blog/2007/12/the-danger-of-naivete.html
+function shuffleArray(arr) {
+	var i
+	var j;
+	var l;
+	var temp;
+	for (i = 0, l = arr.length; i < l; i++) {
+		j = Math.floor(Math.random() * (i + 1));
+		temp = arr[i];
+		arr[i] = arr[j];
+		arr[j] = temp;
+	}
+	return arr;
+}
 
 var rtv;
 $(document).ready(function() {

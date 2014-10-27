@@ -41,7 +41,6 @@ function getSponsoredChannels() {
 		AND start_date <= NOW()
 		AND end_date >= NOW()
 		ORDER BY start_date DESC
-		LIMIT 1
 	  '
 	);
 
