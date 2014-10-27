@@ -69,8 +69,12 @@ var RedditTV = Class.extend({
 			$(document).trigger('adsLoaded');
 		});
 
-		if (!self.Globals.channels) self.Globals.channels = [];
-		if (!self.Globals.sponsored_channels) self.Globals.sponsored_channels = [];
+		if (!self.Globals.channels) {
+			self.Globals.channels = [];
+		}
+		if (!self.Globals.sponsored_channels) {
+			self.Globals.sponsored_channels = [];
+		}
 
 		// Load sponsored channel
 		var sponsored_channels = self.Globals.sponsored_channels;
@@ -511,9 +515,11 @@ var RedditTV = Class.extend({
 		var sponsoredChannels = self.Globals.sponsored_channels;
 		var channels = (sorted) ? self.Globals.channel_sorting : self.Globals.channels;
 		
-		if (sorted) channels = $.map(channels, function(feed) {
-			return self.getChanObj(feed);
-		});
+		if (sorted) {
+			channels = $.map(channels, function(feed) {
+				return self.getChanObj(feed);
+			});
+		}
 
 		$.each(sponsoredChannels, function(i, chan) {
 			var n = 2 + i * 4;
@@ -527,7 +533,7 @@ var RedditTV = Class.extend({
 			self.displayChannel(chan);
 		});
 
-    self.bindChannelSorting();
+		self.bindChannelSorting();
 	}, // displayChannels()
 
 	displayChannel: function(chan, added) {
