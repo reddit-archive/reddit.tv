@@ -1877,8 +1877,10 @@ var RedditTV = Class.extend({
 
 // http://www.codinghorror.com/blog/2007/12/the-danger-of-naivete.html
 function shuffleArray(arr) {
-	var i, temp, j;
-	for (var i = 0, l = arr.length; i < l; i++) {
+	var i
+	var j;
+	var temp;
+	for (i = 0, l = arr.length; i < l; i++) {
 		j = Math.floor(Math.random() * (i + 1));
 		temp = arr[i];
 		arr[i] = arr[j];
