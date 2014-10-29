@@ -109,13 +109,13 @@ var RedditTV = Class.extend({
 			sorting_cookie = $.jStorage.get('channel_sorting');
 
 		if(auto_cookie !== null && auto_cookie !== self.Globals.auto){
-			self.Globals.auto = (auto_cookie === 'true') ? true : false;
+			self.Globals.auto = (auto_cookie && auto_cookie !== 'false') ? true : false;
 		}
 		if(shuffle_cookie !== null && shuffle_cookie !== self.Globals.shuffle){
-			self.Globals.shuffle = (shuffle_cookie === 'true') ? true : false;
+			self.Globals.shuffle = (shuffle_cookie && shuffle_cookie !== 'false') ? true : false;
 		}
 		if(sfw_cookie !== null && sfw_cookie !== self.Globals.sfw){
-			self.Globals.sfw = (sfw_cookie === 'true') ? true : false;
+			self.Globals.sfw = (sfw_cookie && sfw_cookie !== 'false') ? true : false;
 		}
 		$('#sorting a[href="#sort=' + self.Globals.sorting + '"]').addClass('active');
 
@@ -182,7 +182,8 @@ var RedditTV = Class.extend({
 			
 			self.Globals.sorting = $(this).attr('href').replace(/^.*#sort=/, '')
 			self.Globals.videos = [];
-			loadChannel(self.Globals.channels[self.Globals.cur_chan], null);
+			$('#video-list').removeData('feed');
+			self.loadChannel(self.Globals.cur_chan, null);
 
 			return false;
 		});
@@ -745,7 +746,7 @@ var RedditTV = Class.extend({
 
 		if (sorting.length === 2) {
 
-			sortType = sorting[0] + '/';
+			sortType = '/' + sorting[0] + '/';
 			sortOption = '&t=' + sorting[1];
 		}
 
@@ -769,6 +770,21 @@ var RedditTV = Class.extend({
 	isVideo: function(video_domain) {
 		return (self.Globals.domains.indexOf(video_domain) !== -1);
 	},
+
+	//http://stackoverflow.com/questions/962802/is-it-correct-to-use-javascript-array-sort-method-for-shuffling/962890#962890
+	shuffleArray: function(array) {
+		var tmp, current, top = array.length;
+		if(top){
+			while(--top) {
+				current = Math.floor(Math.random() * (top + 1));
+				tmp = array[current];
+				array[current] = array[top];
+				array[top] = tmp;
+			}
+		}
+		return array;
+	},
+
 
 	isEmpty: function(obj) {
 		for(var prop in obj) {
@@ -1045,7 +1061,7 @@ var RedditTV = Class.extend({
 		if (videoId === undefined || videoId === null || videoId === '')
 			videoId = null;
 
-		if (self.Globals.cur_chan.feed != feed) {
+		if (videoId === null || self.Globals.cur_chan.feed != feed) {
 			self.loadChannel(new_chan, videoId);
 		} else {
 			if (self.Globals.videos[feed] !== undefined){
@@ -1201,12 +1217,20 @@ var RedditTV = Class.extend({
 		self.Globals.videoListCloseTimeout = window.setTimeout(self.closeVideoList, 2000);
 	}, // loadVideoList()
 
+	shuffleChan: function(chan) {
+		self.Globals.shuffled = [];
+		for(var x in self.Globals.videos[chan.feed].video){
+			self.Globals.shuffled.push(x);
+		}
+		self.Globals.shuffled = self.shuffleArray(self.Globals.shuffled);
+	},
+
 	loadVideo: function(video, sponsored) {
 		var this_chan = self.Globals.cur_chan,
 			this_video = self.Globals.cur_video,
 			selected_video = this_video,
 			videos_size = 0,
-			sponsoredChannel = (this.owner == 'sponsor'),
+			sponsoredChannel = (self.Globals.cur_chan.owner == 'sponsor'),
 			thumbAnchor, newAnchor, isAdVideo, video;
 
 		if (this_chan.feed) videos_size = Object.size(self.Globals.videos[this_chan.feed].video)-1;
@@ -1436,7 +1460,7 @@ var RedditTV = Class.extend({
 	}, // thumbElement()
 
 	getVideoKey: function(key){
-		if(self.Globals.shuffle && self.Globals.shuffled.length === Globals.videos[self.Globals.cur_chan.feed].video.length){
+		if(self.Globals.shuffle && self.Globals.shuffled.length === self.Globals.videos[self.Globals.cur_chan.feed].video.length){
 			return self.Globals.shuffled[key];
 		} else {
 			return key;
